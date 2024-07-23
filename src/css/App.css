@@ -1,0 +1,28 @@
+body, html {
+  height: 100%;
+}
+
+.App {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+.navBar {
+  height: 120px;
+  width: 100%;
+  background-color: #6aa0be;
+  flex: 0 1 auto;
+}
+
+.productsLayout {
+  width: 100%;
+  background-color: #b1b1b1;
+  flex: 1 1 auto;
+}
+
+footer {
+  height: 32px;
+  width: 100%;
+  background-color: #bec288;
+}

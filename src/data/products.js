@@ -1,0 +1,26 @@
+export const products = [
+    {
+        name:'prod1',
+        category:'cat1',
+        colors:'blue, red',
+        price:'100',
+        quantity:'12',
+        img: 'product.jpg',
+    },
+    {
+        name:'prod2',
+        category:'cat4',
+        colors:'black, orange',
+        price:'230',
+        quantity:'5',
+        img: 'product.jpg',
+    },
+    {
+        name:'prod3',
+        category:'cat7',
+        colors:'yellow, grey',
+        price:'500',
+        quantity:'3',
+        img: 'product.jpg',
+    },
+]

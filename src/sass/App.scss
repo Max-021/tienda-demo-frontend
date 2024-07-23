@@ -1,0 +1,116 @@
+
+$mainColor: #230903;
+$secondColor: #2F4858;
+$lightColor: #DAD7CD;
+$darkColor: #1f1f1f;
+
+$navBarHeight: 120px;
+$footerHeight: 32px;
+
+
+@mixin center-flex($direction: row,$main: center, $cross: center) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $main;
+    align-items: $cross;
+}
+
+body, html {
+    height: 100%;
+}
+a, a:visited{
+    color: $lightColor;
+}
+li{
+    list-style: none;
+    display: inline-block
+}
+
+.App{
+    @include center-flex(column, flex-start);
+    height: 100%;
+}
+//navbar
+.navBar{
+    @include center-flex(column, space-between, flex-start);
+    min-height: $navBarHeight;
+    width: 100%;
+    background-color:$secondColor;
+    z-index: 3;
+}
+h1{
+    margin: 0;
+    color: $lightColor;
+}
+.menu,.searchBarContainer {
+    @include center-flex(row, space-between, flex-end);
+    width: 100%;
+    padding: 0 12px;
+    justify-self: flex-end;
+    box-sizing: border-box;
+    margin: 0 0 12px 0;
+    font-size: 1.4rem;
+    color: $lightColor;
+
+}
+.categories {
+    padding: 0;
+    margin: 0;
+}
+li{
+    padding-right: 5px;
+}
+.searchBarContainer {
+    box-sizing: border-box;
+    color: $secondColor;
+    background-color: $lightColor;
+    margin: 0;
+    padding: 6px 12px;
+    z-index: 1;
+    box-shadow: 0 4px 5px -5px gray;
+}
+.searchBar{
+    box-sizing: border-box;
+    padding: 6px;
+    border-radius: 5px;
+    background-color: #fff;
+    margin: 3px 0;
+    width: 25%;
+}
+.searchBarExtras{
+    display: flex;
+    gap: 8px;
+    align-self: center;
+}
+
+// layout
+.productsLayout{
+    width:100%;
+    background-color: $lightColor;
+    min-height: calc(100vh - ($navBarHeight + $footerHeight));
+    box-sizing: border-box;
+    padding-top: 12px;
+    @include center-flex(column, flex-start, flex-start);
+}
+.productList{
+    box-sizing: border-box;
+    // border: 2px solid $mainColor;
+    width: 100%;
+    margin: 12px 0;
+    padding: 0 16px;
+}
+.divider{
+    height: 2px;
+    width: 75%;
+    background-color: #414141d3;
+    border-radius: 10px;
+    align-self: center;
+}
+
+//footer
+
+footer{
+    height: $footerHeight;
+    width: 100%;
+    background-color: $mainColor;
+}
