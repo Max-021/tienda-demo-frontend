@@ -1,16 +1,21 @@
-import React, {useState} from 'react'
+import React from 'react'
+import { useSelector } from 'react-redux';
+import { currentViewValue } from '../redux/searchBarSlice';
+import { filteredProducts } from '../redux/ProductsSlice';
 
-import { products } from '../data/products'
 
-const Products = () => {
+const Products = (props) => {
 
-  const [productView, setProductView] = useState('list')
+  const vista = true;
+  const currentView = useSelector(currentViewValue)
+  const productList = useSelector(filteredProducts)
 
   return (
     <div className='productsLayout'>
-        {products.map((product,index) => {
+        {/* {products.map((product,index) => { */}
+        {productList.map((product,index) => {
           return <>
-            <div key={index} className={productView === 'list' ? 'productList' : 'productGrid'}>
+            <div key={index} className={`productView ${currentView === 'list' ? 'productList' : 'productGrid'}`}>
               {/* falta la imagen */}
               <p>Nombre:{product.name}</p>
               <p>Categoría:{product.category}</p>
@@ -20,7 +25,7 @@ const Products = () => {
               <p>Disponible:{product.quantity}</p>
             </div>
             {/* TEMPORAL */}
-            <div className='divider'></div>
+            {/* <div className='divider'></div> */}
           </>
         })}
     </div>

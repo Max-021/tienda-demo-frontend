@@ -1,4 +1,6 @@
 import React from 'react'
+import { useDispatch } from 'react-redux';
+import { changeView, showCurrentState } from '../../redux/searchBarSlice';
 
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -16,22 +18,23 @@ const vertAlign = {
 }
 
 const SearchBar = () => {
-  return (
-    <div className='searchBarContainer'>
-        <div className='searchBar'>
-            <InputBase
-            sx={{width:'100%'}}
-            placeholder="Buscar..."
-            inputProps={{ 'aria-label': 'barra de busqueda' }}
-            endAdornment={<IoSearch style={vertAlign}/>}
-            fullWidth
-            />
+    const dispatch = useDispatch();
+    return (
+        <div className='searchBarContainer'>
+            <div className='searchBar'>
+                <InputBase
+                sx={{width:'100%'}}
+                placeholder="Buscar..."
+                inputProps={{ 'aria-label': 'barra de busqueda' }}
+                endAdornment={<IoSearch style={vertAlign}/>}
+                fullWidth
+                />
+            </div>
+            <div className='searchBarExtras'>
+                <MdGridView onClick={() => dispatch(changeView())}/>
+                <FiFilter onClick={() => dispatch(showCurrentState())}/>
+            </div>
         </div>
-        <div className='searchBarExtras'>
-            <MdGridView/>
-            <FiFilter/>
-        </div>
-    </div>
 )
 }
 

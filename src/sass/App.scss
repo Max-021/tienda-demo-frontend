@@ -25,6 +25,13 @@ li{
     list-style: none;
     display: inline-block
 }
+svg{
+    transition: all 0.6s;
+    cursor: pointer;
+}
+svg:hover{
+    transform: scale(1.4);
+}
 
 .App{
     @include center-flex(column, flex-start);
@@ -56,9 +63,20 @@ h1{
 .categories {
     padding: 0;
     margin: 0;
+    li{
+        cursor: pointer;
+        transition: 2s;
+    }
+    li:hover{
+        border-bottom: 2px solid $lightColor;
+    }
 }
 li{
     padding-right: 5px;
+}
+.activeCategory{
+    color: $mainColor;
+    text-decoration: underline;
 }
 .searchBarContainer {
     box-sizing: border-box;
@@ -90,14 +108,23 @@ li{
     min-height: calc(100vh - ($navBarHeight + $footerHeight));
     box-sizing: border-box;
     padding-top: 12px;
-    @include center-flex(column, flex-start, flex-start);
+    @include center-flex(row, flex-start, flex-start);
+    flex-wrap: wrap;
+}
+.productView {
+    box-sizing: border-box;
+    border: 1px solid $mainColor;
+    //revisar la transicion si queda bien
+    transition: all 0.3s;
 }
 .productList{
-    box-sizing: border-box;
-    // border: 2px solid $mainColor;
     width: 100%;
     margin: 12px 0;
     padding: 0 16px;
+}
+.productGrid{
+    width: calc(100% / 4);
+    aspect-ratio: 1/1;
 }
 .divider{
     height: 2px;
@@ -106,6 +133,7 @@ li{
     border-radius: 10px;
     align-self: center;
 }
+
 
 //footer
 
