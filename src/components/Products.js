@@ -1,19 +1,19 @@
 import React from 'react'
 import { useSelector } from 'react-redux';
 import { currentViewValue } from '../redux/searchBarSlice';
-import { filteredProducts } from '../redux/ProductsSlice';
+import { filteredProducts, noSearchRes } from '../redux/ProductsSlice';
 
 
 const Products = (props) => {
 
-  const vista = true;
   const currentView = useSelector(currentViewValue)
   const productList = useSelector(filteredProducts)
+  const noRes = useSelector(noSearchRes)
 
   return (
     <div className='productsLayout'>
-        {/* {products.map((product,index) => { */}
-        {productList.map((product,index) => {
+      {!noRes ? 
+        productList.map((product,index) => {
           return <>
             <div key={index} className={`productView ${currentView === 'list' ? 'productList' : 'productGrid'}`}>
               {/* falta la imagen */}
@@ -27,7 +27,11 @@ const Products = (props) => {
             {/* TEMPORAL */}
             {/* <div className='divider'></div> */}
           </>
-        })}
+        })
+      : 
+       <div>La búsqueda no arrojó resultados. CAMBIAR ESTO! temporal</div>
+       }
+      
     </div>
   )
 }

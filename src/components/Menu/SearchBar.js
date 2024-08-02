@@ -1,13 +1,9 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { useDispatch } from 'react-redux';
 import { changeView, showCurrentState } from '../../redux/searchBarSlice';
+import { searchProduct } from '../../redux/ProductsSlice';
 
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 import InputBase from '@mui/material/InputBase';
-import FilledInput from '@mui/material/FilledInput';
-import InputAdornment from '@mui/material/InputAdornment';
-
 
 import { FiFilter } from "react-icons/fi";
 import { MdGridView } from "react-icons/md";
@@ -19,17 +15,27 @@ const vertAlign = {
 
 const SearchBar = () => {
     const dispatch = useDispatch();
+    const [searchBarText, setSearchBarText] = useState('')
+    const handleChange = (e) => {
+        setSearchBarText(e.target.value)
+    }
+    const submitSearch = (e) => {
+        e.preventDefault();
+        dispatch(searchProduct(searchBarText))
+    }
     return (
         <div className='searchBarContainer'>
-            <div className='searchBar'>
+            <form className='searchBar' onSubmit={submitSearch}>
                 <InputBase
                 sx={{width:'100%'}}
                 placeholder="Buscar..."
                 inputProps={{ 'aria-label': 'barra de busqueda' }}
                 endAdornment={<IoSearch style={vertAlign}/>}
                 fullWidth
+                onChange={handleChange}
+                value={searchBarText}
                 />
-            </div>
+            </form>
             <div className='searchBarExtras'>
                 <MdGridView onClick={() => dispatch(changeView())}/>
                 <FiFilter onClick={() => dispatch(showCurrentState())}/>
