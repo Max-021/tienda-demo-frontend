@@ -6,7 +6,8 @@ import { products } from "../data/products";
 const initialState = {
     activeCat: '',
     searchText: '',
-    filterSelection: [],
+    colorFilter: [],
+    priceFilter:{min:null, max:null},
     products: products,//cambiar acá despues por la base de datos posta, temporal
     filteredProducts: products,
     noSearchResults: false,

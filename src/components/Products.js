@@ -31,7 +31,6 @@ const Products = (props) => {
       : 
        <div>La búsqueda no arrojó resultados. CAMBIAR ESTO! temporal</div>
        }
-      
     </div>
   )
 }

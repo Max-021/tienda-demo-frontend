@@ -65,7 +65,7 @@ h1{
     margin: 0;
     li{
         cursor: pointer;
-        transition: 2s;
+        transition: 0.3s;
     }
     li:hover{
         border-bottom: 2px solid $lightColor;
@@ -100,7 +100,13 @@ li{
     gap: 8px;
     align-self: center;
 }
-
+.popoverFilter{
+    box-sizing: border-box;
+}
+.filterOptions{
+    color: $darkColor;
+    padding: 8px;
+}
 // layout
 .productsLayout{
     width:100%;
