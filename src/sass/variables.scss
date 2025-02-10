@@ -1,0 +1,17 @@
+$mainColor: #230903;
+$secondColor: #2F4858;
+$thirdColor: #FF7D00;
+$lightColor: #DAD7CD;
+$darkColor: #1f1f1f;
+
+$thirdColorOpacity: #ff7b0062;
+
+$navBarHeight: 120px;
+$footerHeight: 32px;
+$fullHeight: calc(100vh - ($navBarHeight + $footerHeight));
+
+$lateralPadding:12px;
+
+:export {
+    navbarHeight: $navBarHeight;    
+}

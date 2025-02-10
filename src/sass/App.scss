@@ -1,12 +1,4 @@
-
-$mainColor: #230903;
-$secondColor: #2F4858;
-$lightColor: #DAD7CD;
-$darkColor: #1f1f1f;
-
-$navBarHeight: 120px;
-$footerHeight: 32px;
-
+@use 'variables';
 
 @mixin center-flex($direction: row,$main: center, $cross: center) {
     display: flex;
@@ -14,12 +6,18 @@ $footerHeight: 32px;
     justify-content: $main;
     align-items: $cross;
 }
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
 
 body, html {
     height: 100%;
 }
 a, a:visited{
-    color: $lightColor;
+    color: variables.$lightColor;
+    text-decoration: none;
 }
 li{
     list-style: none;
@@ -30,35 +28,63 @@ svg{
     cursor: pointer;
 }
 svg:hover{
-    transform: scale(1.4);
+    transform: scale(1.2);
 }
 
 .App{
     @include center-flex(column, flex-start);
     height: 100%;
 }
+//generic classes
+.icon-btn{
+    background-color: transparent;
+    border: 0;
+}
+
+//icon classes
+.logout-btn{
+    color: variables.$lightColor;
+    font-size: 120%;
+    position: absolute;
+    top: 1%;
+    right: 0.5%;
+    border: 1px solid variables.$lightColor;
+    border-radius: 5px;
+}
 //navbar
 .navBar{
     @include center-flex(column, space-between, flex-start);
-    min-height: $navBarHeight;
+    min-height: variables.$navBarHeight;
     width: 100%;
-    background-color:$secondColor;
+    background-color:variables.$secondColor;
     z-index: 3;
+}
+.navBarSimple {
+    justify-content: center;
+    h1{
+        margin: 0;
+    }
 }
 h1{
     margin: 0;
-    color: $lightColor;
+    color: variables.$lightColor;
+    box-sizing: border-box;
+    margin-top: 12px;
+    padding: 0 variables.$lateralPadding;
 }
 .menu,.searchBarContainer {
     @include center-flex(row, space-between, flex-end);
     width: 100%;
-    padding: 0 12px;
+    padding: 0 variables.$lateralPadding;
     justify-self: flex-end;
     box-sizing: border-box;
     margin: 0 0 12px 0;
     font-size: 1.4rem;
-    color: $lightColor;
+    color: variables.$lightColor;
 
+}
+.cartIcon{
+    justify-self: flex-end;
 }
 .categories {
     padding: 0;
@@ -68,22 +94,21 @@ h1{
         transition: 0.3s;
     }
     li:hover{
-        border-bottom: 2px solid $lightColor;
+        color:variables.$thirdColor;
     }
 }
 li{
     padding-right: 5px;
 }
 .activeCategory{
-    color: $mainColor;
-    text-decoration: underline;
+    color: variables.$thirdColor;
 }
 .searchBarContainer {
     box-sizing: border-box;
-    color: $secondColor;
-    background-color: $lightColor;
+    color: variables.$secondColor;
+    background-color: variables.$lightColor;
     margin: 0;
-    padding: 6px 12px;
+    padding: 6px variables.$lateralPadding;
     z-index: 1;
     box-shadow: 0 4px 5px -5px gray;
 }
@@ -104,47 +129,253 @@ li{
     box-sizing: border-box;
 }
 .filterOptions{
-    color: $darkColor;
+    color: variables.$darkColor;
     padding: 8px;
 }
+//signup and login section
+.signContainer{
+    @include center-flex(column, flex-start);
+    box-sizing: border-box;
+    height: variables.$fullHeight;
+    padding-top: 48px;
+}
+.signForm{
+    @include center-flex(column,flex-start,flex-start);
+}
+
+
+
 // layout
 .productsLayout{
     width:100%;
-    background-color: $lightColor;
-    min-height: calc(100vh - ($navBarHeight + $footerHeight));
+    background-color: variables.$lightColor;
+    min-height: variables.$fullHeight;
     box-sizing: border-box;
+    padding: 0 variables.$lateralPadding;
     padding-top: 12px;
     @include center-flex(row, flex-start, flex-start);
     flex-wrap: wrap;
+    gap: 12px;
 }
 .productView {
     box-sizing: border-box;
-    border: 1px solid $mainColor;
     //revisar la transicion si queda bien
     transition: all 0.3s;
+    background-color: whitesmoke;
+    display: flex;
+    height: 220px;
+    &:hover {
+        cursor: pointer;
+        p:first-of-type{
+            transition: 0.4s;
+            color: variables.$secondColor;
+            transform: scale(1.025);
+        }
+    }
 }
 .productList{
     width: 100%;
-    margin: 12px 0;
-    padding: 0 16px;
 }
 .productGrid{
-    width: calc(100% / 4);
+    //temporal, revisar lo que pasa cuando son menos de cuatro productos, se ve feo
+    width: 24%;
     aspect-ratio: 1/1;
+    flex-direction: column;
 }
-.divider{
-    height: 2px;
-    width: 75%;
-    background-color: #414141d3;
-    border-radius: 10px;
-    align-self: center;
+.productImgContainer{
+    height: 100%;
+}
+.productImg {
+    height: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+}
+.productInfo{
+    margin-left: 12px;
+    p{
+        margin: 0;
+    }
+    p:first-of-type {
+        font-size: 200%;
+        margin: 12px 0;
+    }
+    p:not(:first-of-type) {
+        margin: 8px 0;
+    }
 }
 
+//product dialog, es la vista en detalle del producto
+.productCard{
+    // height: 90vh;
+    @include center-flex(row,flex-start,flex-start);
+    p{
+        margin: 0;
+    }
+}
+.closeBtn {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    font-size: 300%;
+    &:hover{
+        transform: none;
+    }
+
+}
+.productDetailImg{
+    height: 500px;
+    aspect-ratio: 1/1;
+}
+.productDetails{
+    margin-left: 12px;
+    width: 100%;
+    & > * {
+        color: variables.$darkColor;
+    }
+}
+.productDetailCategory{
+    font-size: 100%;
+}
+.productDetailName{
+    margin: 0;
+    font-size: 3rem;
+    margin-bottom: 24px;
+    color: variables.$darkColor;
+    font-weight: normal;
+}
+.productDetailColors{
+    p{
+        font-size: 140%;
+        margin-right:12px;
+        margin-bottom: 12px;
+    }
+}
+.productDetailAmount{
+    p{
+        font-size: 140%;
+    }
+}
+.productDetailDescr{
+    p:first-of-type{
+        font-size: 140%;
+        margin-bottom: 12px;
+    }
+}
+.colorBtn{
+    margin-right:8px;
+    margin-bottom: 8px;
+    background-color: #fff;
+    border: 0;
+    font-size: 140%;
+    border-radius: 5px;
+    padding: 8px;
+    cursor: pointer;
+}
+.activeColorBtn{
+    transition: all 0.2s;
+    background-color: variables.$secondColor;
+    color: variables.$lightColor;
+}
+
+.addToCartBtn{
+    margin-top: 24px;
+    border:0;
+    background-color: variables.$secondColor;
+    color: variables.$lightColor;
+    font-size: 140%;
+    border-radius: 5px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.7s;
+    &:hover{
+        transform: scale(1.03);
+    }
+}
+
+//las partes del prod card que ve el admin
+.editIconContainer{
+    @include center-flex();
+    border-left: 2px solid black;
+    padding: 0 24px;
+    margin-left: auto;
+}
+.prodModIcons{
+    margin-left: auto !important;
+    height: 100%;
+    align-self: center;
+    display: flex;
+    margin-left: 12px;
+    height: 50%;
+    svg{
+        vertical-align: middle;
+        align-self: center;
+        margin: 0 6px;
+    }
+}
+.editBtn{
+    color: variables.$thirdColor;//temporal, revisar color
+}
+.deleteBtn{
+    color: red; //temporal, revisar color
+}
+
+//cart prod items
+
+.cartProdItem{
+    border: 1px solid black;//temporal, borrar despues
+    box-sizing: border-box;
+    padding: 8px;
+    width: 100%;
+}
+
+.cartProdAmount{
+    display: flex;
+    button{
+        height: 50%;
+        align-self: center;
+        margin: 0 6px;
+        border-radius: 5px;
+        border: 0;
+        background-color: variables.$darkColor;
+        color: variables.$lightColor;
+    }
+}
+
+
+//new product
+.newProductContainer{
+    height: variables.$fullHeight;
+    padding-top: 12px;
+    width: 100%;
+    @include center-flex(row, space-evenly, flex-start);
+}
+
+//enumFields
+.enumFieldsContainer{
+
+}
+.enunmFieldsInput{
+
+}
+
+.enumFieldsFields{
+    @include center-flex(row,flex-start,flex-start);
+    flex-wrap: wrap;
+}
+
+.enumField{
+    display: flex;
+    justify-content: row;
+    flex-wrap: wrap;
+}
+.activeFieldToUpdate{
+    border: 1px solid lightcoral;
+}
 
 //footer
 
 footer{
-    height: $footerHeight;
+    height: variables.$footerHeight;
     width: 100%;
-    background-color: $mainColor;
+    background-color: variables.$mainColor;
 }

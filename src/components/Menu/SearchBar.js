@@ -14,6 +14,7 @@ import FilterOptions from './FilterOptions';
 
 const vertAlign = {
     verticalAlign: 'middle',
+    marginLeft: '16px'
 }
 
 const SearchBar = () => {
@@ -47,6 +48,7 @@ const SearchBar = () => {
                 fullWidth
                 onChange={handleChange}
                 value={searchBarText}
+                type='search'
                 />
             </form>
             <div className='searchBarExtras'>
@@ -57,7 +59,7 @@ const SearchBar = () => {
                     open={isPopoverOpen}
                     anchorEl={anchorEl}
                     onClose={closePopover}
-                    anchorOrigin={{vertical: 'middle', horizontal: 'left'}}
+                    anchorOrigin={{vertical: 'center', horizontal: 'left'}}
                     transformOrigin={{vertical: 'top', horizontal:'right'}}
                     disableScrollLock={true}
                 >

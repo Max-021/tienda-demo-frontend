@@ -1,0 +1,101 @@
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux';
+
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField'
+
+import { addNewProductToCart } from '../redux/CartSlice';
+//revisar que sirve y que no para construir la tarjeta expandida
+
+const cardSx = {
+    width:'100%',
+    height: 'auto',
+  }
+  const linkCard = {
+    textDecoration: 'underline',
+    color: 'black',
+    transition: 'all 0.6s',
+    "&:hover": {
+      color: '#EEF0EB !important',
+    }
+  }
+
+// const ProductCard = ({productInfo}) => {
+const ProductCard = (props) => {
+
+  const {name,descr,img,category,colors,price,quantity} = {...props}
+  const [amountChosen,setAmountChosen] = useState('');
+  const [activeColor, setActiveColor] = useState(0);
+  const [prodToCart,setProdToCart] = useState({
+    name,
+    price,
+    quantity: 1,
+    color: colors[0],
+  })
+  const dispatch = useDispatch();
+
+  const setColorsData = (color,index) => {
+    setProdToCart({...prodToCart, color})
+    setActiveColor(index)
+  }
+  const addToCart = () => {
+    console.log(prodToCart)
+    dispatch(addNewProductToCart(prodToCart))
+  }
+
+    return (
+      <div className='productCard'>
+        <div>
+            <img className='productDetailImg' src={require(`../assets/${img}`)} alt={`${img}`}/>
+        </div>
+        <div className='productDetails'>
+          <div className='productDetailTitle'>
+            <p className='productDetailCategory'>{category}</p>
+            <h2 className='productDetailName'>
+              {name}
+            </h2>
+          </div>
+          <div className='productDetailColors'>
+            <p>Colores</p>
+            {colors.map((color,index) => {
+              return <button key={index} className={`colorBtn ${activeColor === index ? 'activeColorBtn':null}`}  onClick={() => setColorsData(color,index)}>
+                {color}
+              </button>
+            })}
+          </div>
+          <div className='productDetailAmount'>
+            <InputLabel id={`quantity-select`} />
+            <p>Cantidad</p>
+            <TextField
+              value={prodToCart.quantity} onChange={(e) => setProdToCart({...prodToCart, quantity: Number(e.target.value)})} 
+              name={`prod-quantity`} id={`prod-quantity`} type='number' inputProps={{style:{padding:5}}}/>
+            {/* {prodToCart.quantity !== 'otro' && prodToCart.quantity <= 5 ?
+              <Select disabled={quantity>=1?false:true}  name={`quantity-select`}labelId={`quantity-select`} id={`quantity-select`} value={prodToCart.quantity} onChange={(e)=>setProdToCart({...prodToCart, quantity: e.target.value})} label={`quantity-label`}>
+                <MenuItem value={1}>1</MenuItem>
+                <MenuItem value={2}>2</MenuItem>
+                <MenuItem value={3}>3</MenuItem>
+                <MenuItem value={4}>4</MenuItem>
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={'otro'}>Otro</MenuItem>
+              </Select>
+            : null}
+                {prodToCart.quantity == 'otro' || prodToCart.quantity > 5 ?
+                  <input type='number' onChange={(e) => setProdToCart({...prodToCart, quantity: e.target.value})}/>
+                  : null
+                } */}
+          </div>
+          <div className='productDetailDescr'>
+            <p>Descripción del producto</p>
+            <p>{descr}</p>
+          </div>
+          <button className='addToCartBtn' onClick={() => addToCart()}> Agregar al carrito</button>
+        </div>
+      </div>
+
+
+    )
+}
+
+export default ProductCard
