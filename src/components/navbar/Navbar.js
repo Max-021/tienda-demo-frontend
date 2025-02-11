@@ -34,19 +34,29 @@ const Navbar = () => {
     setOpen(false);
     logout();
   }
+  const titleText = () => {//Agregar dependiendo del contenido que quiera al texto del titulo
+    switch (showCats) {
+      case '/nuevo-producto':
+        return ' - Nuevo producto'
+      case '/editar-producto':
+        return ' - Editar producto'
+      default:
+        return '';
+    }
+  }
 
   return (
     <div className={`navBar ${showCats === '/nuevo-producto' || showCats === '/editar-producto' ? 'navBarSimple' : null}`}>
       <h1>
         <Link to='/'>Fly shop</Link>
         {/* temporal, ver como refactorizar rutas para que sean de comodo acceso a toda la app y sensibles al idioma */}
-        {showCats === '/nuevo-producto' ? ' - Nuevo producto' : ' - Editar producto'}
+        {titleText()}
       </h1>
       {console.log(authSt)}
       {
         authSt && <button type='button' title='Cerrar sesión' className='icon-btn logout-btn' onClick={() => setOpen(true)}><MdLogout /></button>
       }
-      <Menu showCats={showCats}/>
+      <Menu showCats={showCats} authSt={authSt}/>
       <Dialog fullWidth maxWidth='90%' open={open} onClose={() => setOpen(false)} TransitionComponent={Transition}>
         Desea cerrar sesion?
         <button type='button' title='confirmar cierre de sesión' onClick={() => cerrarSesion()}> Sí </button>

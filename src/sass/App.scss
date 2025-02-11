@@ -83,8 +83,10 @@ h1{
     color: variables.$lightColor;
 
 }
-.cartIcon{
+.rightSide{
     justify-self: flex-end;
+    @include center-flex();
+    gap: 12px;
 }
 .categories {
     padding: 0;
@@ -141,6 +143,18 @@ li{
 }
 .signForm{
     @include center-flex(column,flex-start,flex-start);
+}
+
+//************************************************* REUSABLES **********************************************************
+.linksContainer {
+    @include center-flex();
+    gap: 12px;
+}
+.madeContainer {
+    @include center-flex();
+    p {
+        margin: 0;
+    }
 }
 
 
@@ -375,7 +389,10 @@ li{
 //footer
 
 footer{
+    box-sizing: border-box;
+    @include center-flex(row, space-between, center);
     height: variables.$footerHeight;
     width: 100%;
     background-color: variables.$mainColor;
+    padding: 0 12px;
 }

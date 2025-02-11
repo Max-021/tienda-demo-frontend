@@ -21,6 +21,7 @@ const Login = () => {
     console.log(loginStatus)
     if(loginStatus) {
       navigate('/');
+      navigate(0);
     }
   }
   

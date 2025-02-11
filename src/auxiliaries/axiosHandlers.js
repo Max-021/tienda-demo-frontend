@@ -133,6 +133,15 @@ export const updateProduct = async(productData) => {
 //------------------    ENUM FIELDS    -------------------------------------------------------------------------------------------------------------------------------//
 
 //enumRelated for validation on specific fields, temporal, falta revisar que se puedan borrar bien los enums
+export const getCategoriesList = async () => {
+    try {
+        const res = await axios.get(`${apiSource}${enumRoute}/categories`)
+        return res.data.data;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 export const getEnumList = async () => {
     var enumData = {}
     await axios.get(`${apiSource}${enumRoute}/`,credObj())
