@@ -125,9 +125,30 @@ export const uploadProduct = async(productData) => {
 }
 
 export const updateProduct = async(productData) => {
-    // await axios.patch(``, productData, credObj())
-    alert("falta cargar el patch!")
-    alert(productData)
+    try {
+        console.log(productData._id)
+        await axios.patch(`${apiSource}${productsRoute}/${productData._id}`, productData, credObj());
+        alert("hacer algo para indicar una edicion exitosa")        
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const updateProductsToNewCategory = async (oldNewCat) => {
+    try {
+        await axios.patch(`${apiSource}${productsRoute}/changedCategory`,oldNewCat , credObj());
+    } catch (error) {
+        console.log(error)
+    }
+}
+export const updateProductsToNewColor = async (oldColor, newColor) => {
+    try {
+        const colorInfo = {newColor, oldColor}
+        alert("trabajar esta funcion")
+        // await axios.patch(`${apiSource}${productsRoute}/changedColor`,colorInfo , credObj());
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 //------------------    ENUM FIELDS    -------------------------------------------------------------------------------------------------------------------------------//

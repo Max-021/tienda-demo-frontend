@@ -1,9 +1,16 @@
 import React, { useState } from 'react'
-import { uploadEnumField } from '../../auxiliaries/axiosHandlers';
+import { uploadEnumField, updateProductsToNewCategory, updateProductsToNewColor } from '../../auxiliaries/axiosHandlers';
 
 import TextField from '@mui/material/TextField'
 import FormControl from '@mui/material/FormControl';
+import Dialog from '@mui/material/Dialog';
+import Slide from '@mui/material/Slide';
 import { IoMdClose } from "react-icons/io";
+
+
+const Transition = React.forwardRef(function Transition(props,ref) {
+  return <Slide direction='up' ref={ref} {...props}/>
+})
 
 //este componente devuelve un input para agregar o editar los campos que sean enums en la creacion de productos
 //por ej: categorias, aca aparecerian para editar todas las categorias existentes y se podrian agregar nuevas categorias
@@ -12,6 +19,8 @@ const EnumFieldsManager = (props) => {
   const [addFieldText, setAddFieldText] = useState(true)
   const [fieldVal, setFieldVal] = useState('');
   const [activeFieldToUpdate, setActiveFieldToUpdate] = useState(null);
+  const [open, setOpen] = useState(false)
+  const [pairedUpdateInfo, setPairedUpdateInfo] = useState({oldInfo: '', newInfo:''})
 
   const handleChange = (e) => {
     setFieldVal(e.target.value)
@@ -43,13 +52,16 @@ const EnumFieldsManager = (props) => {
   const editEnumField = () => {
     alert("editado")
     var updatedEnumList = props.dataField;
-    updatedEnumList.splice(activeFieldToUpdate,1,fieldVal)
+    setPairedUpdateInfo(prevState => ({...prevState, oldInfo: props.dataField[activeFieldToUpdate]}))//asigno el nombre de la categoria reemplazada
+    updatedEnumList.splice(activeFieldToUpdate,1,fieldVal)//-------------------------------------------reemplazo la categoria vieja
+    setPairedUpdateInfo(prevState => ({...prevState, newInfo: props.dataField[activeFieldToUpdate]}))//asigno el nombre actualizado de la categoria
     const fieldsUpdated = {
       [props.enumName]: updatedEnumList,
     }
 
     uploadEnumField(fieldsUpdated)
     props.updateList(true)
+    setOpen(true);
   }
 
   const deleteEnumField = (pos) => {
@@ -61,10 +73,25 @@ const EnumFieldsManager = (props) => {
     uploadEnumField(fieldsUpdated)
     props.updateList(true)
   }
+  
+  const updateToNewFieldContent = () => {//esta funcion toma condiciones para cada uno de los enumFields que hayan, no solo para los dos de modelo de plantilla
+    setOpen(false)
+    switch (props.enumName) {
+      case 'category':
+        updateProductsToNewCategory(pairedUpdateInfo)
+        break;
+      case 'colors':
+        updateProductsToNewColor()
+        break;
+      default:
+        alert('No functionality implemented for this yet');
+        break;
+    }
+  }
 
   return <div className='enumFieldsContainer'>
     <div className='enunmFieldsInput'>
-      <p>{props.enumName}</p>
+      <h4>{props.enumName}</h4>
       <FormControl>
         <TextField type='text' required value={fieldVal} onChange={handleChange}/>
         {!addFieldText && 
@@ -84,6 +111,11 @@ const EnumFieldsManager = (props) => {
         </div>
       })}
     </div>
+    <Dialog fullWidth maxWidth='90%' open={open} onClose={() => setOpen(false)} TransitionComponent={Transition}>
+      Desea actualizar los productos de esta categoría para que pertenezcan a la nueva categoría actualizada o desea que los productos permanezcan en la categoría en que están?temporal, revisar texto
+      <button type='button' title='confirmar cierre de sesión' onClick={() => updateToNewFieldContent()}> Sí </button>
+      <button type='button' title='No' onClick={() => setOpen(false)}> No </button>
+    </Dialog>
   </div>
 }
 
