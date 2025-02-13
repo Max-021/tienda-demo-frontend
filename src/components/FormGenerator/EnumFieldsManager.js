@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { uploadEnumField, updateProductsToNewCategory, updateProductsToNewColor } from '../../auxiliaries/axiosHandlers';
+import { uploadEnumField, updateProductsToNewSimpleField, updateProductsToNewArray } from '../../auxiliaries/axiosHandlers';
 
 import TextField from '@mui/material/TextField'
 import FormControl from '@mui/material/FormControl';
@@ -20,7 +20,7 @@ const EnumFieldsManager = (props) => {
   const [fieldVal, setFieldVal] = useState('');
   const [activeFieldToUpdate, setActiveFieldToUpdate] = useState(null);
   const [open, setOpen] = useState(false)
-  const [pairedUpdateInfo, setPairedUpdateInfo] = useState({oldInfo: '', newInfo:''})
+  const [pairedUpdateInfo, setPairedUpdateInfo] = useState({oldInfo: '', newInfo:'',fieldName:''})
 
   const handleChange = (e) => {
     setFieldVal(e.target.value)
@@ -74,19 +74,20 @@ const EnumFieldsManager = (props) => {
     props.updateList(true)
   }
   
-  const updateToNewFieldContent = () => {//esta funcion toma condiciones para cada uno de los enumFields que hayan, no solo para los dos de modelo de plantilla
+  const updateToNewFieldContent = () => {//esta funcion toma condiciones para cada uno de los enumFields que hayan, y asigno el nombre del campo donde se va a hacer el reemplazo
     setOpen(false)
     switch (props.enumName) {
       case 'category':
-        updateProductsToNewCategory(pairedUpdateInfo)
+        updateProductsToNewSimpleField({...pairedUpdateInfo, fieldName:'category'})
         break;
       case 'colors':
-        updateProductsToNewColor()
+        updateProductsToNewArray({...pairedUpdateInfo, fieldName:'colors'})
         break;
       default:
-        alert('No functionality implemented for this yet');
+        alert('No functionality implemented for this fields yet');
         break;
     }
+    setPairedUpdateInfo({oldInfo:'',newInfo:'',fieldName:''})//después de ejecutar la actualizacion siempre limpio este objeto
   }
 
   return <div className='enumFieldsContainer'>

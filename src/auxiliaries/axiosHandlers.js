@@ -134,23 +134,29 @@ export const updateProduct = async(productData) => {
     }
 }
 
-export const updateProductsToNewCategory = async (oldNewCat) => {
+export const updateProductsToNewSimpleField= async (oldNewField) => {
     try {
-        await axios.patch(`${apiSource}${productsRoute}/changedCategory`,oldNewCat , credObj());
+        await axios.patch(`${apiSource}${productsRoute}/changedSimpleField`,oldNewField , credObj());
     } catch (error) {
         console.log(error)
     }
 }
-export const updateProductsToNewColor = async (oldColor, newColor) => {
+export const updateProductsToNewArray = async (oldNewArr) => {
     try {
-        const colorInfo = {newColor, oldColor}
-        alert("trabajar esta funcion")
-        // await axios.patch(`${apiSource}${productsRoute}/changedColor`,colorInfo , credObj());
+        await axios.patch(`${apiSource}${productsRoute}/changedArrayField`,oldNewArr , credObj());
     } catch (error) {
         console.log(error)
     }
 }
 
+export const deleteProduct = async (productData) => {
+    try {
+        await axios.delete(`${apiSource}${productsRoute}/${productData._id}`,credObj())
+    } catch (error) {
+        console.log(error)
+    }
+
+} 
 //------------------    ENUM FIELDS    -------------------------------------------------------------------------------------------------------------------------------//
 
 //enumRelated for validation on specific fields, temporal, falta revisar que se puedan borrar bien los enums

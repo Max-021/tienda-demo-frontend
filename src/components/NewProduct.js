@@ -3,11 +3,12 @@ import { useLocation } from 'react-router-dom'
 import FormGenerator from './FormGenerator/FormGenerator';
 import EnumFieldsManager from './FormGenerator/EnumFieldsManager';
 
-import {getEnumList, getProductModel, uploadProduct, updateProduct} from '../auxiliaries/axiosHandlers'
+import {getEnumList, getProductModel, uploadProduct, updateProduct, deleteProduct} from '../auxiliaries/axiosHandlers'
 import { remakeObj } from '../auxiliaries/functions';
 
 import Box  from '@mui/material/Box'
 import Button from '@mui/material/Button';
+import { MdDeleteOutline } from "react-icons/md";
 
 const NewProduct = () => {
 
@@ -77,7 +78,10 @@ const NewProduct = () => {
   return (
     <div className='newProductContainer'>
         <Box component='form' onSubmit={submitProduct}>
-            <p>{locRoute === '/nuevo-producto' ? 'Nuevo' : 'Editar'} producto</p>
+            <div>
+                <p>{locRoute === '/nuevo-producto' ? 'Nuevo' : 'Editar'} producto</p>
+                {locRoute === '/editar-producto' && <button title='Eliminar producto' onClick={() => deleteProduct(newProduct)}><MdDeleteOutline/></button>}
+            </div>
             {Object.keys(productModel).map((el,index) => {
                 if (!el.startsWith('_')) {// temporal, aca hacer que el return devuelva los inputs, llevar el codigo del input a otro archivo para que no se haga muy largo???Factorizar???
                     return (
