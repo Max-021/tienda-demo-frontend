@@ -19,9 +19,9 @@ const Login = () => {
     const loginStatus = await login(mail, password)
     console.log("loginsatus")
     console.log(loginStatus)
-    if(loginStatus) {
-      navigate('/');
-      navigate(0);
+    if(loginStatus.status) {
+      // navigate('/');
+      // navigate(0);
     }
   }
   

@@ -6,7 +6,7 @@ const urlStart = 'https://'
 
 export const sessionBtns = [
     {icon: <FiPlusCircle/>, linkUrl: '/nuevo-producto', title:'Nuevo producto'},
-    {icon: <FaRegUserCircle/>, linkUrl: '/mi-perfil', title: 'Mi perfil'},
+    {icon: <FaRegUserCircle/>, linkUrl: '/my-profile', title: 'Mi perfil'},
 ]
 
 export const footerBtns = [

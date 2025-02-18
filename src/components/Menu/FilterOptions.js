@@ -1,7 +1,8 @@
 import React from 'react'
 import _, { forIn } from 'lodash'
 
-import { productTemplate } from '../../data/products'
+//temporal, falta poblar los datos de los filtros con datos reales del servidor
+const productTemplate = {}
 
 const toBeExcluded = ['name', 'category','quantity','img']
 

@@ -9,7 +9,6 @@ import { onCategorySelected, activeCategory } from '../../redux/ProductsSlice';
 import { totalProducts } from '../../redux/CartSlice';
 import { currentCategories, setCategories } from '../../redux/searchBarSlice';
 
-import { categories } from '../../data/categories'//temporal, tengo que armar el menu de categorias desde un axios.get
 import { sessionBtns } from '../../data/iconsArray';
 import { getCategoriesList } from '../../auxiliaries/axiosHandlers';
 
@@ -33,14 +32,14 @@ const Menu = ({showCats, authSt}) => {
 
 
   return (
-    showCats !== '/' ? null : <div className='menu' style={{justifyContent: showCats === '/cart'?'flex-end':null}}>
-      {showCats==='/cart'? null :
-          <ul className='categories'>
-            {currentCats.map((cat, index) => {
-              return <li className={`${ activeCat === cat ? 'activeCategory' : ''}`} key={index} onClick={() => dispatch(onCategorySelected(cat))} >{cat}</li>
-            })}
-          </ul>
-        }
+    showCats === '/' && <div className='menu' style={{justifyContent: showCats === '/cart'?'flex-end':null}}>
+      {/* {showCats==='/' && */}
+        <ul className='categories'>
+          {currentCats.map((cat, index) => {
+            return <li className={`${ activeCat === cat ? 'activeCategory' : ''}`} key={index} onClick={() => dispatch(onCategorySelected(cat))} >{cat}</li>
+          })}
+        </ul>
+      {/* // } */}
         <div className='rightSide'>
           {authSt && <Links linkArray={sessionBtns}/>}
           <Link to='/cart'><BsCart2/>{prodsInCart}</Link>

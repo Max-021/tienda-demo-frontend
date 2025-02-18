@@ -27,9 +27,12 @@ export const login = async (mail, password) => {
     try {
         const res = await axios.post(`${apiSource}${userBasics}/login`,{mail, password},{withCredentials: true})
         // document.cookie = `jwt=${res.cookie}; path=/; secure; samesite=strict; max-age=86400`;
-        console.log(res)//temporal ver que hago cuando si se inicia sesion
+        console.log(res.data.data)//temporal ver que hago cuando si se inicia sesion
         alert('inicio correcto!');
-        return true
+        return {
+            user: res.data.data,
+            status: true,
+        }
     } catch (error) {
         console.log('An error occurred '+error)
     }
@@ -47,14 +50,13 @@ export const logout = async () => {
     }
 }
 
-export const signup = async (username,mail,password) => {
+export const signup = async (username,mail,password) => {//temporal, ver si agrego algo más
     await axios.post(`${apiSource}${userBasics}/signup`,{username, mail, password,});
 }
 
 export const checkSession = async () => {
     try {
         const res = await axios.get(`${apiSource}${userBasics}/checkSession`, credObj());
-        console.log(res.data)
         return {
             success: true,
             message: res.data.message, // Los datos del servidor
@@ -68,17 +70,39 @@ export const updateUser = async () => {
 
 }
 export const deleteUser = async () => {
-
+    // try {
+    //     // const res = await axios.delete(`${apiSource}${userRoute}/`)
+    // } catch (error) {
+    //     console.log(error)
+    // }
 }
 export const updatePassword = async () => {
-
+    //IMPORTANTE COMPLETAR ------------------------------------------------------------------
 }
 export const retryPassword = async () => {
-
+    //IMPORTANTE COMPLETAR ------------------------------------------------------------------
 }
 export const passwordForgotten = async () => {
     await axios.post(`${apiSource}${userRoute}/passwordForgotten`);
 
+}
+export const getUserInfo = async (userId) => {
+    try {
+        const res = await axios.get(`${apiSource}${userRoute}/userInfo`,credObj())
+        return res.data.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+export const listUsers = async () => {
+    try {
+        const res = await axios.get(`${apiSource}${userRoute}/usersList`, credObj())
+        console.log('res del listusers')
+        console.log(res.data.data)
+        return res.data.data
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 

@@ -9,16 +9,24 @@ import FormControl from '@mui/material/FormControl';
 //hacer que categorias sea un select en el que solo puedas ponerle un valor
 //que colores sea un select con multiples valores posibles
 
-const FormGenerator = ({modelKey,enumValues, handleChange, currentNewProdField}) => {
+const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProdField}) => {
 
 
   const renderSwitch = (keyModel) => {//esto se podria factorizar para que el textfield solo aparezca una vez y antes del return le cargo lo que corresponda
     const modelInputInfo = {
-      isRequired: false,dataType: 'text',isMultiline: false,
+      isRequired: false,dataType: 'text',isMultiline: false, isDisabled: false,
     }
     switch (keyModel) {
       case 'name':
+      case 'username':
         modelInputInfo.isRequired=true;
+      break;
+      case 'mail':
+        modelInputInfo.isRequired=true;
+        modelInputInfo.dataType='mail';
+      break;
+      case 'userRole':
+        modelInputInfo.isDisabled=true;
       break;
       case 'descr':
         modelInputInfo.isRequired=true;
@@ -62,7 +70,7 @@ const FormGenerator = ({modelKey,enumValues, handleChange, currentNewProdField})
       <TextField 
             required={modelInputInfo.isRequired} label={`${keyModel}-label`} value={currentNewProdField} onChange={handleChange} 
             name={`${keyModel}`} id={`${keyModel}-input`}type={modelInputInfo.dataType}//valores basicos
-            multiline={modelInputInfo.isMultiline} minRows={2} maxRows={8}/>{/*valores especiales si se cumplen ciertas condiciones*/}
+            multiline={modelInputInfo.isMultiline} minRows={2} maxRows={8} disabled={modelInputInfo.isDisabled}/>{/*valores especiales si se cumplen ciertas condiciones*/}
             {/* //agregar mas y tener en cuenta los selects y los campos que sean arrays, tambien revisar como hacer con el campo img, y dejar */}
             {/* //algo default para posibles nuevos campos */}
     </FormControl>

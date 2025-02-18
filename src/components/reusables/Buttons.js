@@ -1,12 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const Buttons = ({icon, btnType = 'button'}) => {
+const Buttons = (props) => {
   return (
     <div>
-        {props.linkArray.map((icon, index) => {
-            return <button key={index} type={btnType}>
-                {icon}
+        {props.btnArray.map((btn, index) => {
+            return <button key={index} type={'button'} onClick={btn.action} title={btn.name}>
+              {btn.name}
             </button>
         })}
     </div>

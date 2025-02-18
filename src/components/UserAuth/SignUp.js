@@ -12,7 +12,8 @@ const SignUp = () => {
     const [userData, setUserData] = useState({//IMPORTANTE EN ALGUN lugar agregar algun tipo de encriptado o ver como se hace para cuidar la contraseña cuando se ingresa en el front
         username:'',
         mail:'',
-        password:''
+        password:'',
+        confirmedPassword:'',
     })
 
     const createUser = async(username, mail, password) => {//ver como la puedo factorizar con la de login
@@ -53,7 +54,10 @@ const SignUp = () => {
                 <FormControl>
                     <TextField required label={'Contraseña'} value={userData.password} onChange={handleChange} name={`password`} id={`password-id`} type='password'/>
                 </FormControl>
-                <Button type='submit'>Iniciar sesión</Button>
+                <FormControl>
+                    <TextField required label={'Confirmar contraseña'} value={userData.password} onChange={handleChange} name={`confirmPassword`} id={`confirmPassword-id`} type='password'/>
+                </FormControl>
+                <Button type='submit'>Crear Cuenta</Button>
             </Box>
         </div>
     )

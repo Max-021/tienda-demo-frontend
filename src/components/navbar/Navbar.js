@@ -16,7 +16,7 @@ const Transition = React.forwardRef(function Transition(props,ref) {
 
 const Navbar = () => {
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const location = useLocation();
   
   const [showCats,setShowCats] = useState('')
@@ -26,9 +26,9 @@ const Navbar = () => {
   useEffect(()=>{
     setShowCats(location.pathname);
   },[location])
-  useEffect(()=> {
-    dispatch(checkLogin());
-  },[])
+  // useEffect(()=> {
+  //   dispatch(checkLogin());
+  // },[])
 
   const cerrarSesion = () => {
     setOpen(false);

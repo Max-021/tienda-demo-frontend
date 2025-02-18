@@ -396,3 +396,20 @@ footer{
     background-color: variables.$mainColor;
     padding: 0 12px;
 }
+
+//my profile
+
+.myProfileContainer{
+    @include center-flex();
+    gap: 32px;
+}
+
+.optionsList{
+    @include center-flex(column,center,center);
+}//a partir de aca todas las clases debajo hasta donde indique se encuentran adentro de optionsList
+.relatedData{
+    @include center-flex();
+}
+.userInfoForm{
+    @include center-flex(column);
+}
