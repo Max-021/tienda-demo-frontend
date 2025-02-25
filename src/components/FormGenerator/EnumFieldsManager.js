@@ -3,14 +3,10 @@ import { uploadEnumField, updateProductsToNewSimpleField, updateProductsToNewArr
 
 import TextField from '@mui/material/TextField'
 import FormControl from '@mui/material/FormControl';
-import Dialog from '@mui/material/Dialog';
-import Slide from '@mui/material/Slide';
+import Button from '@mui/material/Button';
 import { IoMdClose } from "react-icons/io";
+import ConfirmMessage from '../reusables/ConfirmMessage';
 
-
-const Transition = React.forwardRef(function Transition(props,ref) {
-  return <Slide direction='up' ref={ref} {...props}/>
-})
 
 //este componente devuelve un input para agregar o editar los campos que sean enums en la creacion de productos
 //por ej: categorias, aca aparecerian para editar todas las categorias existentes y se podrian agregar nuevas categorias
@@ -36,6 +32,7 @@ const EnumFieldsManager = (props) => {
   const setBtnType = () => {
     setAddFieldText(true);
     setActiveFieldToUpdate(null)
+    setFieldVal('')
   }
 
   const addEnumField = () => {
@@ -90,33 +87,31 @@ const EnumFieldsManager = (props) => {
     setPairedUpdateInfo({oldInfo:'',newInfo:'',fieldName:''})//después de ejecutar la actualizacion siempre limpio este objeto
   }
 
-  return <div className='enumFieldsContainer'>
+  return <div className='enumFieldsList'>
     <div className='enunmFieldsInput'>
-      <h4>{props.enumName}</h4>
+      <p className='enumTitle'>{props.enumName}</p>
       <FormControl>
         <TextField type='text' required value={fieldVal} onChange={handleChange}/>
-        {!addFieldText && 
-          <>
-            <span>Se va a modificar el campo resaltado, para anular la modificación y que el valor ingresado sea un nuevo campo hacer click en el ícono</span>
-            <IoMdClose onClick={setBtnType}/>
-          </>
-        }
+        {!addFieldText && <><span onClick={setBtnType} className='editSpanWarning'>Para anular la edición, hacer click aquí <IoMdClose/></span></>}
       </FormControl>
-        <button type='submit' onClick={addFieldText ? addEnumField : editEnumField}>{addFieldText ? 'Agregar':'Editar'}</button>
+        <Button sx={{marginTop: '6px'}} variant='outlined' type='submit' onClick={addFieldText ? addEnumField : editEnumField}>{addFieldText ? 'Agregar':'Editar'}</Button>
     </div>
     <div className='enumFieldsFields'>
       {props.dataField.map((field,index) => {
         return <div className={`enumField ${activeFieldToUpdate === index && 'activeFieldToUpdate'}`} key={index}>
           <p onClick={() => setInputField(field,index)}>{field}</p>
-          <button onClick={() => deleteEnumField(index)}>X</button>
+          <IoMdClose onClick={() => deleteEnumField(index)}/>
         </div>
       })}
     </div>
-    <Dialog fullWidth maxWidth='90%' open={open} onClose={() => setOpen(false)} TransitionComponent={Transition}>
-      Desea actualizar los productos de esta categoría para que pertenezcan a la nueva categoría actualizada o desea que los productos permanezcan en la categoría en que están?temporal, revisar texto
-      <button type='button' title='confirmar cierre de sesión' onClick={() => updateToNewFieldContent()}> Sí </button>
-      <button type='button' title='No' onClick={() => setOpen(false)}> No </button>
-    </Dialog>
+    {/* <FormControl>
+      <Select>
+        {props.dataField.map((field, index) => {
+          return <MenuItem key={index} value={field}>{field}</MenuItem>
+        })}
+      </Select>
+    </FormControl> */}
+    <ConfirmMessage windowStatus={open} confirmFc={updateToNewFieldContent} cancelFc={setOpen} textMsg={"Desea actualizar los productos de esta categoría para que pertenezcan a la nueva categoría actualizada o desea que los productos permanezcan en la categoría en que están?temporal, revisar texto"}/>
   </div>
 }
 

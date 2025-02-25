@@ -66,6 +66,9 @@ const NewProduct = () => {
         })
     }
     const handleChangeOnArray = (e) => {
+        console.log(e.target.name)
+        console.log(newProduct[e.target.name])
+        console.log(e.target.value)
         //aca hacer que si el campo es un arreglo se haga un push con los datos, si no es un array que lo cree
         if(!newProduct[e.target.name].includes(e.target.value)){
             const newColors = [...newProduct[e.target.name],e.target.value]
@@ -77,9 +80,9 @@ const NewProduct = () => {
 
   return (
     <div className='newProductContainer'>
-        <Box component='form' onSubmit={submitProduct}>
+        <Box component='form' onSubmit={submitProduct} className='productForm'>
             <div>
-                <p>{locRoute === '/nuevo-producto' ? 'Nuevo' : 'Editar'} producto</p>
+                <p className='formTitle'>{locRoute === '/nuevo-producto' ? 'Nuevo' : 'Editar'} producto</p>
                 {locRoute === '/editar-producto' && <button title='Eliminar producto' onClick={() => deleteProduct(newProduct)}><MdDeleteOutline/></button>}
             </div>
             {Object.keys(productModel).map((el,index) => {
@@ -101,10 +104,10 @@ const NewProduct = () => {
                     return null;//temporal, revisar este return
                 }
             })}
-            <Button className='submitBtn' type='submit'>Subir</Button>
+            <Button className='submitBtn' type='submit' variant='contained' sx={{alignSelf: 'flex-end'}}>Subir</Button>
         </Box>
-        <Box>
-            <h2>Campos con valores fijos</h2>
+        <Box className='enumFieldsContainer'>
+            <p className='formTitle'>Campos con valores fijos</p>
             {Object.keys(enumFields).map((el, index) => {
                 if (!el.startsWith('_')) {
                     return <EnumFieldsManager key={index} dataField={enumFields[el]} enumName={el} updateList={setUpdateEnumList}/>
