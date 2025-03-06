@@ -139,13 +139,36 @@ export const getProductModel = async () => {
 }
 
 export const uploadProduct = async(productData) => {
-    await axios.post(`${apiSource}${productsRoute}`,productData,credObj())
-    // await axios.post(`${apiSource}${productsRoute}`,productData,{withCredentials: false})
+    console.log(productData)
+    const formData = new FormData();
+    formData.append('name', productData.name);
+    formData.append('descr', productData.descr);
+    formData.append('category', productData.category);
+    formData.append('price', productData.price);
+    formData.append('quantity', productData.quantity);
+    formData.append('colors', JSON.stringify(productData.colors));
+
+    productData.img.forEach((file,index) => {
+        console.log(`archivo: ${file.name} tipo: ${file.type}`)
+        formData.append('img', file,file.name)
+    });
+
+    for (var pair of formData.entries()) {
+        console.log(pair[0]+ ', ')
+        console.log(pair[1]); 
+    }
+    await axios.post(`${apiSource}${productsRoute}`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data', // Esto es esencial para enviar archivos
+           
+        },
+        ...credObj()
+    })
+    // await axios.post(`${apiSource}${productsRoute}`,productData,credObj())
     .then(res=>{
         console.log(res)//temporal, revisar esto
     })
     .catch(err => console.log('an error occurred'+err))
-
 }
 
 export const updateProduct = async(productData) => {

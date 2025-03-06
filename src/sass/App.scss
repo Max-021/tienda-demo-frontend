@@ -46,6 +46,13 @@ svg:hover{
     background-color: transparent;
     border: 0;
 }
+//carousel
+// .swiper{
+//     width: 100%;
+// }
+.swiper-slide{
+    height: auto !important;
+}
 
 //icon classes
 .logout-btn{
@@ -243,7 +250,9 @@ li{
 
 }
 .productDetailImg{
-    height: 500px;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
     aspect-ratio: 1/1;
 }
 .productDetails{

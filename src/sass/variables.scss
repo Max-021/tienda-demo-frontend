@@ -13,6 +13,9 @@ $fullHeight: calc(100vh - ($navBarHeight + $footerHeight));
 
 $lateralPadding:12px;
 
+$imgWidth: 500px;
+
+
 :export {
     navbarHeight: $navBarHeight;    
 }

@@ -52,11 +52,11 @@ const NewProduct = () => {
         if(location.pathname === '/editar-producto'){//temporal ver como refactorizar este if con el de useEffect, o al menos la condicion
             updateProduct(newProduct);
         }else{
-            const prodWithImgDef= newProduct;
-            prodWithImgDef.img = ['test.jpg']//sacar esto, es para un soft default value
+            const previewUrls = newProduct.img.map((file) => URL.createObjectURL(file));
+            // const finalProd = {...newProduct, img: previewUrls};            
             alert('uploading!')
-            setNewProduct(prodWithImgDef);
-            uploadProduct(newProduct)
+            // uploadProduct(finalProd);
+            uploadProduct(newProduct);
         }
     }
     const handleChange = (e) => {
@@ -77,6 +77,11 @@ const NewProduct = () => {
         }
         console.log(newProduct[e.target.name])
     }
+    const handleImgOnChange = (files) => { // MUI File Input pasa directamente los archivos
+        console.log(files)
+        if (!files || files.length === 0) return;
+        setNewProduct({...newProduct, img: files})
+    };
 
   return (
     <div className='newProductContainer'>
@@ -91,13 +96,13 @@ const NewProduct = () => {
                         <div key={index}>
                             <FormGenerator key={index} modelKey={el}
                                 enumValues={enumFields[el]?enumFields[el]:null} 
-                                handleChange={Array.isArray(productModel[el].type)?handleChangeOnArray:handleChange} 
+                                handleChange={Array.isArray(productModel[el].type)?el==='img'?handleImgOnChange:handleChangeOnArray:handleChange} 
                                 currentNewProdField={newProduct[el]} />
-                            {Array.isArray(productModel[el].type)?<div>
+                            {Array.isArray(productModel[el].type) && el !== 'img'&&<div>
                                 {newProduct[el].map((arrayEl, index) => {
                                     return <p key={index}>{arrayEl}</p>
                                 })}
-                            </div>:null}
+                            </div>}
                         </div>
                     )
                 }else{

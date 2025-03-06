@@ -6,12 +6,13 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import {Button} from '@mui/material';
+import { MuiFileInput } from 'mui-file-input';
+import { MdOutlineImage } from "react-icons/md";
 
 //hacer que categorias sea un select en el que solo puedas ponerle un valor
 //que colores sea un select con multiples valores posibles
 
-const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProdField}) => {
-
+const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProdField, fileInputRef=null}) => {
 
   const renderSwitch = (keyModel) => {//esto se podria factorizar para que el textfield solo aparezca una vez y antes del return le cargo lo que corresponda
     const modelInputInfo = {
@@ -73,8 +74,11 @@ const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProd
       break;
       case 'img':
         return (<>
-          <p>Img:</p>
-          <Button variant='outlined'>Agregar</Button>
+          {console.log('valor de currentImg: ', currentNewProdField)}
+          <MuiFileInput name={`${keyModel}`} label={`Imágenes`} placeholder='Agregar'
+            value={currentNewProdField} onChange={handleChange} multiple
+            InputProps={{ startAdornment: <MdOutlineImage/>, inputProps:{accept: 'image/*'}}}
+          />
         </>)
       break;
       default:

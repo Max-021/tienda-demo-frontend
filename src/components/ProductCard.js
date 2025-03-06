@@ -4,7 +4,13 @@ import { useDispatch } from 'react-redux';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import TextField from '@mui/material/TextField'
+import TextField from '@mui/material/TextField';
+import {Swiper, SwiperSlide} from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+
+import 'swiper/css';
+import 'swiper/css/navigation';
+
 
 import { addNewProductToCart } from '../redux/CartSlice';
 //revisar que sirve y que no para construir la tarjeta expandida
@@ -47,9 +53,21 @@ const ProductCard = (props) => {
 
     return (
       <div className='productCard'>
-        <div>
-            <img className='productDetailImg' src={require(`../assets/${img}`)} alt={`${img}`}/>
+        {img.length === 1 ?
+          <div>
+            <img className='productDetailImg' src={img[0].startsWith('https') ? img[0] : require(`../assets/${img}`)} alt={`${img}`}/>
+          </div>
+        :
+        <div style={{width: '500px'}}>
+          <Swiper navigation={true} modules={[Navigation]} className='mySwiper' loop={true}>
+            {img.map((image, index) => {
+              return <SwiperSlide>
+                <img className='productDetailImg' src={image.startsWith('https') ? image : require(`../assets/${image}`)} alt={`${image}`}/>
+              </SwiperSlide>
+            })}
+          </Swiper>
         </div>
+        }
         <div className='productDetails'>
           <div className='productDetailTitle'>
             <p className='productDetailCategory'>{category}</p>

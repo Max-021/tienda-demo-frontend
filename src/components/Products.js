@@ -53,7 +53,7 @@ const Products = (props) => {
         selectorData.map((product,index) => {//Esta seria la tarjeta de cada producto, se puede sacar a otro archivo
           return <div key={index} className={`productView ${currentView === 'list' ? 'productList' : 'productGrid'}`} onClick={() => handleOpen(index)}>
               <div className='productImgContainer'>
-                <img className='productImg' src={require(`../assets/${product.img[0]}`)} alt={`prod${index}`}/>
+                <img className='productImg' src={product.img[0].startsWith('https') ? product.img[0] : require(`../assets/${product.img[0]}`)} alt={`prod${index}`}/>
               </div>
               <div className='productInfo'>
                 <p> {product.name}</p>
