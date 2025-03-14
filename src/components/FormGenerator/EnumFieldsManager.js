@@ -3,6 +3,7 @@ import { uploadEnumField, updateProductsToNewSimpleField, updateProductsToNewArr
 
 import TextField from '@mui/material/TextField'
 import FormControl from '@mui/material/FormControl';
+import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
 import { IoMdClose } from "react-icons/io";
 import ConfirmMessage from '../reusables/ConfirmMessage';
@@ -14,6 +15,7 @@ import ConfirmMessage from '../reusables/ConfirmMessage';
 const EnumFieldsManager = (props) => {
   const [addFieldText, setAddFieldText] = useState(true)
   const [fieldVal, setFieldVal] = useState('');
+  const [autoCompVal, setAutoCompVal] = useState('')
   const [activeFieldToUpdate, setActiveFieldToUpdate] = useState(null);
   const [open, setOpen] = useState(false)
   const [pairedUpdateInfo, setPairedUpdateInfo] = useState({oldInfo: '', newInfo:'',fieldName:''})
@@ -33,6 +35,7 @@ const EnumFieldsManager = (props) => {
     setAddFieldText(true);
     setActiveFieldToUpdate(null)
     setFieldVal('')
+    setAutoCompVal('');
   }
 
   const addEnumField = () => {
@@ -61,9 +64,9 @@ const EnumFieldsManager = (props) => {
     setOpen(true);
   }
 
-  const deleteEnumField = (pos) => {
+  const deleteEnumField = () => {
     var updatedEnumList = props.dataField;
-    updatedEnumList.splice(pos,1);
+    updatedEnumList.splice(activeFieldToUpdate,1);
     const fieldsUpdated = {
       [props.enumName]: updatedEnumList,
     }
@@ -86,6 +89,20 @@ const EnumFieldsManager = (props) => {
     }
     setPairedUpdateInfo({oldInfo:'',newInfo:'',fieldName:''})//después de ejecutar la actualizacion siempre limpio este objeto
   }
+  const setChangedField = (newVal) => {
+    if(newVal === null){
+      setFieldVal('');
+      setActiveFieldToUpdate(null);
+      setAddFieldText(true);
+    }else{
+      const indVal = props.dataField.indexOf(newVal)
+      if(indVal !== -1){
+        setAddFieldText(false)
+        setFieldVal(newVal)
+        setActiveFieldToUpdate(indVal)
+      }
+    }
+  }
 
   return <div className='enumFieldsList'>
     <div className='enunmFieldsInput'>
@@ -96,21 +113,19 @@ const EnumFieldsManager = (props) => {
       </FormControl>
         <Button sx={{marginTop: '6px'}} variant='outlined' type='submit' onClick={addFieldText ? addEnumField : editEnumField}>{addFieldText ? 'Agregar':'Editar'}</Button>
     </div>
-    <div className='enumFieldsFields'>
+    {/* <div className='enumFieldsFields'>
       {props.dataField.map((field,index) => {
         return <div className={`enumField ${activeFieldToUpdate === index && 'activeFieldToUpdate'}`} key={index}>
           <p onClick={() => setInputField(field,index)}>{field}</p>
           <IoMdClose onClick={() => deleteEnumField(index)}/>
         </div>
       })}
-    </div>
-    {/* <FormControl>
-      <Select>
-        {props.dataField.map((field, index) => {
-          return <MenuItem key={index} value={field}>{field}</MenuItem>
-        })}
-      </Select>
-    </FormControl> */}
+    </div> */}
+    <FormControl>
+      <Autocomplete value={autoCompVal} renderInput={(params) => <TextField variant='filled' sx={{minWidth:220}} {...params} label={props.enumName}/>} 
+        options={props.dataField} disablePortal onChange={(event, newValue) => setChangedField(newValue)}/>
+        {activeFieldToUpdate !== null && <button onClick={() => deleteEnumField()}>Eliminar elemento</button>}
+    </FormControl>
     <ConfirmMessage windowStatus={open} confirmFc={updateToNewFieldContent} cancelFc={setOpen} textMsg={"Desea actualizar los productos de esta categoría para que pertenezcan a la nueva categoría actualizada o desea que los productos permanezcan en la categoría en que están?temporal, revisar texto"}/>
   </div>
 }

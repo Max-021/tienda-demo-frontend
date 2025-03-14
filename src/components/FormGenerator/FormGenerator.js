@@ -1,18 +1,19 @@
 import React from 'react'
 
+import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField'
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import {Button} from '@mui/material';
 import { MuiFileInput } from 'mui-file-input';
-import { MdOutlineImage } from "react-icons/md";
+
+import ImageUploader from '../reusables/ImageUploader';
 
 //hacer que categorias sea un select en el que solo puedas ponerle un valor
 //que colores sea un select con multiples valores posibles
 
-const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProdField, fileInputRef=null}) => {
+const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProdField, existingImages = null}) => {
+
+  const handleAutocompleteChange = (event, newValue) => handleChange({ target: { name: modelKey,value: newValue, }});
 
   const renderSwitch = (keyModel) => {//esto se podria factorizar para que el textfield solo aparezca una vez y antes del return le cargo lo que corresponda
     const modelInputInfo = {
@@ -50,35 +51,29 @@ const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProd
       break;
       case 'category':
         return (
-          <FormControl fullWidth>
-            <InputLabel id={`${keyModel}-select`}>Categoria</InputLabel>
-            <Select sx={{minWidth:220}} name={`${keyModel}`}labelId={`${keyModel}-select`} id={`select-${keyModel}`} value={currentNewProdField} onChange={handleChange} label={`Categoría`} variant='filled'>
-              {enumValues ? enumValues.map((el, index) => {
-                return <MenuItem key={index} value={enumValues[index]}>{el}</MenuItem>
-              }) : null}
-            </Select>
+          <FormControl>
+            <Autocomplete renderInput={(params) => <TextField variant='filled' sx={{minWidth:220}} {...params} label={'Categoría'}/>} 
+              options={enumValues} disablePortal value={currentNewProdField} onChange={handleAutocompleteChange}/>
           </FormControl>
         )
         break;
       case 'colors':
         return (
           <FormControl>
-            <InputLabel id={`${keyModel}-select`}>Color</InputLabel>
-            <Select sx={{minWidth:220}} name={`${keyModel}`} labelId={`${keyModel}-select`} id={`select-${keyModel}`} value={currentNewProdField} onChange={handleChange} label={`Colores`} variant='filled'>
-              {enumValues ? enumValues.map((el, index) => {
-                return <MenuItem key={index} value={enumValues[index]}>{el}</MenuItem>
-              }) : null}
-            </Select>
+            <Autocomplete renderInput={(params) => <TextField variant='filled' sx={{minWidth:220}} {...params} label={'Color'}/>} 
+              options={enumValues} disablePortal /*value={currentNewProdField}*/ onChange={handleAutocompleteChange}/>
           </FormControl>
         )
       break;
       case 'img':
         return (<>
-          {console.log('valor de currentImg: ', currentNewProdField)}
-          <MuiFileInput name={`${keyModel}`} label={`Imágenes`} placeholder='Agregar'
+          {/* <MuiFileInput name={`${keyModel}`} label={`Imágenes`} placeholder='Agregar'
             value={currentNewProdField} onChange={handleChange} multiple
             InputProps={{ startAdornment: <MdOutlineImage/>, inputProps:{accept: 'image/*'}}}
-          />
+          /> */}
+          {console.log(currentNewProdField)}
+          <ImageUploader name={`${keyModel}`} onImgChange={handleChange} images={currentNewProdField}/>
+          {/* <ImageUploader name={`${keyModel}`} onImgChange={handleChange} images={currentNewProdField} existingImages={existingImages}/> */}
         </>)
       break;
       default:
@@ -97,9 +92,7 @@ const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProd
   }
 
   return (
-    <>
-      {renderSwitch(modelKey)}
-    </>
+    <>{renderSwitch(modelKey)}</>
   )
 }
 

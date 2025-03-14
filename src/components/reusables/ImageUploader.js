@@ -1,0 +1,80 @@
+import React, { useCallback, useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { MdDelete } from "react-icons/md";
+
+const SortableImage = ({ file, index, onDelete }) => {
+  const id = typeof file === "string" ? file : `${file.name}-${file.lastModified}`;
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+  const [objectUrl, setObjectUrl] = useState(typeof file === "string" ? file : "");
+
+  useEffect(() => {
+    if (typeof file !== "string") {
+      const url = URL.createObjectURL(file);
+      setObjectUrl(url);
+      return () => URL.revokeObjectURL(url);
+    }
+  }, [file]);
+
+  return (
+    <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition, position: "relative", width: 100, margin: 10, cursor: "grab" }} {...attributes} {...listeners}>
+      <img src={objectUrl} alt={`preview-${index}`} width={100} />
+      <button type="button" onPointerDown={(e) => e.stopPropagation()} onClick={() => onDelete(id)} style={{ position: "absolute", top: 0, right: 0, background: "rgba(0,0,0,0.5)", border: "none", borderRadius: "50%", color: "white", cursor: "pointer", padding: 5, zIndex: 10 }}>
+        <MdDelete size={20} />
+      </button>
+    </div>
+  );
+};
+
+const ImageUploader = ({ images = [], onImgChange, name }) => {
+  const validImages = Array.isArray(images) ? images : [];
+
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      onImgChange([...validImages, ...acceptedFiles]);
+    },
+    [validImages, onImgChange]
+  );
+
+  const handleDelete = (id) => {
+    const newImages = validImages.filter((file) => (typeof file === "string" ? file !== id : `${file.name}-${file.lastModified}` !== id));
+    onImgChange(newImages);
+  };
+
+  const handleDragEnd = (event) => {
+    if (validImages.length === 0) return;
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = validImages.findIndex((file) => (typeof file === "string" ? file === active.id : `${file.name}-${file.lastModified}` === active.id));
+    const newIndex = validImages.findIndex((file) => (typeof file === "string" ? file === over.id : `${file.name}-${file.lastModified}` === over.id));
+
+    const updatedImages = arrayMove(validImages, oldIndex, newIndex);
+    onImgChange(updatedImages);
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: "image/*" });
+
+  return (
+    <div>
+      <p>Subir imágenes para: <strong>{name}</strong></p>
+      <div {...getRootProps()} style={{ border: "2px dashed #ccc", padding: 20, textAlign: "center", cursor: "pointer", marginBottom: 20 }}>
+        <input {...getInputProps()} />
+        <p>Arrastra y suelta imágenes aquí o haz clic para seleccionar</p>
+      </div>
+      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={validImages.map((file) => (typeof file === "string" ? file : `${file.name}-${file.lastModified}`))} strategy={verticalListSortingStrategy}>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            {validImages.map((file, index) => (
+              <SortableImage key={typeof file === "string" ? file : `${file.name}-${file.lastModified}`} file={file} index={index} onDelete={handleDelete} />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
+    </div>
+  );
+};
+
+export default ImageUploader;

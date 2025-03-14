@@ -18,22 +18,25 @@ const NewProduct = () => {
     const [enumFields,setEnumFields] = useState({})
     const [newProduct,setNewProduct] = useState({})
     const [updateEnumList,setUpdateEnumList] = useState(false);
+    // const [existingImages, setExistingImages] = useState(null)
 
     useEffect(()=> {
         const fetchSingleData = async () => {
             const modelValue = await getProductModel();
             const enumList = await getEnumList();
-            setProductModel(modelValue)//temporal, ahora prod mod no da el primer doc de la coleccion, da el modelo, tengo que revisar como trasladar esto bien al form
+            setProductModel(modelValue)
             setEnumFields(enumList);
             //temporal, ver si dejo esto acá o lo pongo abajo de la llamada de la funcion
             if(location.pathname === '/editar-producto'){//aca agregar que si viene por /editar-producto el set newProduct lo haga con el producto ya puesto, temporal
-                setNewProduct(location.state)
-            }else{
-                setNewProduct(remakeObj(modelValue));
-            }
+                const productData = {...location.state};
+                // const productData = {...location.state, img: []};
+                // setExistingImages(location.state.img)
+                setNewProduct(productData)
+
+            }else setNewProduct(remakeObj(modelValue));
         }
         fetchSingleData();
-    }, [])
+    }, [location.pathname, location.state])//temporal, ojo aca! por si sale algun error por la falta de re-render cuando pasa algo con el objeto de productos
     useEffect(() => {
         setLocRoute(location.pathname)
     }, [location])
@@ -48,23 +51,12 @@ const NewProduct = () => {
 
     const submitProduct = async (e) => {
         e.preventDefault();
+        //temporal ver como refactorizar este if con el de useEffect, o al menos la condicion
+        if(location.pathname === '/editar-producto') updateProduct(newProduct);
+        else uploadProduct(newProduct);
+    }
+    const handleChange = (e) => setNewProduct({ ...newProduct,[e.target.name]: e.target.value })//temporal, ojo aca! borrar comentario si no pasa nada
 
-        if(location.pathname === '/editar-producto'){//temporal ver como refactorizar este if con el de useEffect, o al menos la condicion
-            updateProduct(newProduct);
-        }else{
-            const previewUrls = newProduct.img.map((file) => URL.createObjectURL(file));
-            // const finalProd = {...newProduct, img: previewUrls};            
-            alert('uploading!')
-            // uploadProduct(finalProd);
-            uploadProduct(newProduct);
-        }
-    }
-    const handleChange = (e) => {
-        setNewProduct({
-            ...newProduct,
-            [e.target.name]: e.target.value
-        })
-    }
     const handleChangeOnArray = (e) => {
         console.log(e.target.name)
         console.log(newProduct[e.target.name])
@@ -77,10 +69,10 @@ const NewProduct = () => {
         }
         console.log(newProduct[e.target.name])
     }
-    const handleImgOnChange = (files) => { // MUI File Input pasa directamente los archivos
+    const handleImgOnChange = (files) => {
         console.log(files)
-        if (!files || files.length === 0) return;
-        setNewProduct({...newProduct, img: files})
+        if (!files || files.length === 0) setNewProduct({...newProduct, img: []})
+        else setNewProduct({...newProduct, img: files})
     };
 
   return (
@@ -97,9 +89,10 @@ const NewProduct = () => {
                             <FormGenerator key={index} modelKey={el}
                                 enumValues={enumFields[el]?enumFields[el]:null} 
                                 handleChange={Array.isArray(productModel[el].type)?el==='img'?handleImgOnChange:handleChangeOnArray:handleChange} 
-                                currentNewProdField={newProduct[el]} />
+                                currentNewProdField={newProduct[el]}/>
+                                {/* currentNewProdField={newProduct[el]}  {...(el === 'img' && { existingImages })}/> */}
                             {Array.isArray(productModel[el].type) && el !== 'img'&&<div>
-                                {newProduct[el].map((arrayEl, index) => {
+                                {(newProduct[el] || []).map((arrayEl, index) => {
                                     return <p key={index}>{arrayEl}</p>
                                 })}
                             </div>}

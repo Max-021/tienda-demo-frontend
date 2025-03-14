@@ -139,6 +139,7 @@ export const getProductModel = async () => {
 }
 
 export const uploadProduct = async(productData) => {
+    alert('uploading!')
     console.log(productData)
     const formData = new FormData();
     formData.append('name', productData.name);
@@ -173,9 +174,31 @@ export const uploadProduct = async(productData) => {
 
 export const updateProduct = async(productData) => {
     try {
+        alert('uploading!')
+        console.log(productData)
+        const formData = new FormData();
+        formData.append('name', productData.name);
+        formData.append('descr', productData.descr);
+        formData.append('category', productData.category);
+        formData.append('price', productData.price);
+        formData.append('quantity', productData.quantity);
+        formData.append('colors', JSON.stringify(productData.colors));
+
+        productData.img.forEach((item) => {
+            if (typeof item === 'string') {// Es una imagen existente (URL)
+              formData.append('img', item);
+            } else {// Es una imagen nueva (File)
+              formData.append('img', item, item.name);
+            }
+          });
+        for (var pair of formData.entries()) {
+            console.log(pair[0]+ ', ')
+            console.log(pair[1]); 
+        }
         console.log(productData._id)
-        await axios.patch(`${apiSource}${productsRoute}/${productData._id}`, productData, credObj());
-        alert("hacer algo para indicar una edicion exitosa")        
+        console.log(productData)
+        await axios.patch(`${apiSource}${productsRoute}/${productData._id}`, productData, { headers: { 'Content-Type': 'multipart/form-data',}, ...credObj() });
+        // alert("hacer algo para indicar una edicion exitosa")        
     } catch (error) {
         console.log(error)
     }

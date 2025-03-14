@@ -373,7 +373,7 @@ li{
 
 //new product
 .newProductContainer{
-    height: variables.$fullHeight;
+    min-height: variables.$fullHeight;
     padding-top: 12px;
     width: 100%;
     background-color: variables.$lightColorShade;
@@ -413,7 +413,7 @@ li{
 .enumFieldsList{
     @include center-flex();
     box-sizing: border-box;
-    overflow: auto;
+    // overflow: auto;
     padding: 0 variables.$lateralPadding;
     gap: 12px;
     width: 100%;
