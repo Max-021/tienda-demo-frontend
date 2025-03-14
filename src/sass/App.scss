@@ -400,6 +400,24 @@ li{
         text-transform: uppercase;
     }
 }
+.fieldsContainer {
+    @include center-flex(row, flex-start, flex-start);
+    gap: 6px;
+    flex-wrap: wrap;
+    border: 2px dashed variables.$thirdColor;
+    margin-top: 12px;
+    max-height: 150px;
+    overflow-y: auto;
+    p{
+        @include floating-box();
+        padding: 8px;
+        svg{
+            // display: flex;
+            justify-self: center;
+        }
+    }
+
+}
 
 //enumFields
 .enumFieldsContainer {

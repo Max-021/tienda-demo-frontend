@@ -8,7 +8,7 @@ import { remakeObj } from '../auxiliaries/functions';
 
 import Box  from '@mui/material/Box'
 import Button from '@mui/material/Button';
-import { MdDeleteOutline } from "react-icons/md";
+import { MdDeleteOutline, MdOutlineClear } from "react-icons/md";
 
 const NewProduct = () => {
 
@@ -74,6 +74,7 @@ const NewProduct = () => {
         if (!files || files.length === 0) setNewProduct({...newProduct, img: []})
         else setNewProduct({...newProduct, img: files})
     };
+    const deleteColor = (colorIndex) => setNewProduct({...newProduct, colors: newProduct.colors.filter((_,index) => index != colorIndex)})
 
   return (
     <div className='newProductContainer'>
@@ -91,9 +92,9 @@ const NewProduct = () => {
                                 handleChange={Array.isArray(productModel[el].type)?el==='img'?handleImgOnChange:handleChangeOnArray:handleChange} 
                                 currentNewProdField={newProduct[el]}/>
                                 {/* currentNewProdField={newProduct[el]}  {...(el === 'img' && { existingImages })}/> */}
-                            {Array.isArray(productModel[el].type) && el !== 'img'&&<div>
+                            {Array.isArray(productModel[el].type) && el !== 'img'&&<div className='fieldsContainer'>
                                 {(newProduct[el] || []).map((arrayEl, index) => {
-                                    return <p key={index}>{arrayEl}</p>
+                                    return <p key={index}>{arrayEl}<MdOutlineClear onClick={() => deleteColor(index)}/></p>
                                 })}
                             </div>}
                         </div>
