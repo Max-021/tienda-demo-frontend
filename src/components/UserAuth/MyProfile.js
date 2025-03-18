@@ -34,7 +34,8 @@ const MyProfile = () => {
     return (
         <div className='myProfileContainer'>
             <div className='optionsList'>
-                <Buttons btnArray={btnArray}/>
+                <h5>Mi cuenta</h5>
+                <Buttons btnArray={btnArray} btnDivClass='optionsListBtnContainer' btnClass='optionsListBtnUnit'/>
             </div>
             <div className='relatedData'>
                 {renderSelectedOption(activeOption)}

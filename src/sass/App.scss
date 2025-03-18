@@ -1,4 +1,5 @@
 @use 'variables';
+@use 'reusables';
 
 @mixin center-flex($direction: row,$main: center, $cross: center) {
     display: flex;
@@ -10,6 +11,9 @@
     border-radius: 10px;
     background-color: variables.$lightColorShade;
     box-shadow: 8px 15px $blurPx -5px gray;
+}
+@mixin section-height() {
+    height: variables.$fullHeight;
 }
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
@@ -176,11 +180,11 @@ li{
 .productsLayout{
     width:100%;
     background-color: variables.$lightColor;
-    min-height: variables.$fullHeight;
     box-sizing: border-box;
-    padding: 0 variables.$lateralPadding;
-    padding-top: 12px;
+    padding: variables.$lateralPadding;
     @include center-flex(row, flex-start, flex-start);
+    @include section-height();
+    flex: 1;
     flex-wrap: wrap;
     gap: 12px;
 }
@@ -349,7 +353,11 @@ li{
 }
 
 //cart prod items
-
+.cartContainer{
+    @include section-height();
+    // @include center-flex();
+    flex: 1;
+}
 .cartProdItem{
     border: 1px solid black;//temporal, borrar despues
     box-sizing: border-box;
@@ -373,7 +381,7 @@ li{
 
 //new product
 .newProductContainer{
-    min-height: variables.$fullHeight;
+    @include section-height();
     padding-top: 12px;
     width: 100%;
     background-color: variables.$lightColorShade;
@@ -498,18 +506,46 @@ footer{
 }
 
 //my profile
-
 .myProfileContainer{
     @include center-flex();
-    gap: 32px;
+    @include section-height();
+    align-items: stretch;
+    // gap: 16px;
+    width: 100%;
 }
 
 .optionsList{
-    @include center-flex(column,center,center);
+    @include center-flex(column,flex-start,flex-start);
+    padding: 0 32px 0 variables.$lateralPadding;
+    height: 100%;
+    background-color: variables.$lightColorShade;
 }//a partir de aca todas las clases debajo hasta donde indique se encuentran adentro de optionsList
+.optionsListBtnContainer{
+    @include center-flex(column, flex-start, flex-start);
+}
+.optionsListBtnUnit{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 8px 0;
+    background-color: transparent;
+    width: 100%;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.7s;
+    &:hover{
+        color: variables.$thirdColor;
+
+    }
+}
 .relatedData{
-    @include center-flex();
+    @include center-flex(column, flex-start, center);
+    box-sizing: border-box;
+    width: 100%;
+    flex: 1;
+    padding: 0 variables.$lateralPadding;
+    margin-top: variables.$lateralPadding;
 }
 .userInfoForm{
-    @include center-flex(column);
+    @include center-flex(column, flex-start, flex-start);
 }

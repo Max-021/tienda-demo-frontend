@@ -20,7 +20,7 @@ const Cart = () => {
         window.open(url,'_blank');
     }
 
-  return <>
+  return <div className='cartContainer'>
         {
         prodList.length > 0
         ?
@@ -47,7 +47,7 @@ const Cart = () => {
             {/* temporal, si el carrito es 0 que no se pueda comprar, que este el boton deshabilitado y que diga ir a comprar y lleve al menu principal */}
             <button onClick={()=>enviarLista()}>Comprar</button>
         </div>
-    </>
+    </div>
 }
 
 export default Cart

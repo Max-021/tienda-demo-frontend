@@ -1,13 +1,16 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 
-const Buttons = (props) => {
+const Buttons = ({btnArray, btnDivClass = 'btnList', btnClass = 'btnUnit'}) => {
   return (
-    <div>
-        {props.btnArray.map((btn, index) => {
-            return <button key={index} type={'button'} onClick={btn.action} title={btn.name}>
+    <div className={btnDivClass}>
+        {btnArray.map((btn, index) => {
+            return (<>
+            <button className={btnClass} key={index} type={'button'} onClick={btn.action} title={btn.name}>
               {btn.name}
             </button>
+            {/* separador desactivado temporalmente */}
+            {/* <div className='btnSeparator'></div> */}
+            </>)
         })}
     </div>
   )

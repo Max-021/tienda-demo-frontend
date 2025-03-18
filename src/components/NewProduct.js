@@ -74,7 +74,7 @@ const NewProduct = () => {
         if (!files || files.length === 0) setNewProduct({...newProduct, img: []})
         else setNewProduct({...newProduct, img: files})
     };
-    const deleteColor = (colorIndex) => setNewProduct({...newProduct, colors: newProduct.colors.filter((_,index) => index != colorIndex)})
+    const deleteColor = (colorIndex) => setNewProduct({...newProduct, colors: newProduct.colors.filter((_,index) => index !== colorIndex)})
 
   return (
     <div className='newProductContainer'>
