@@ -4,7 +4,7 @@ import { catchErrorMsgHandler } from "./functions";
 //TEMPORAL, fijarse si lo que está comentado siguiente lo dejo, revisar porque si esta activo tira error el CORS
 // axios.defaults.withCredentials = true;//pasado como objeto de config en las funciones necesarias
 
-const apiUrl = 'aca la dire final de la api'//temporal, poner valor final aca
+const apiUrl = 'https://shoptemplateserver.onrender.com/'//temporal, poner valor final aca <-----------------CAMBIAR PARA PRODUCTO FINAL
 
 //temporal, revisar que las rutas sean https y no http para el deploy
 const apiSource = process.env.NODE_ENV === 'development' ? 'http://localhost:9000/api/v1' : apiUrl;
