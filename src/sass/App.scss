@@ -13,7 +13,7 @@
     box-shadow: 8px 15px $blurPx -5px gray;
 }
 @mixin section-height() {
-    height: variables.$fullHeight;
+    height: variables.$fullHeight;    
 }
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
@@ -43,7 +43,7 @@ svg:hover{
 
 .App{
     @include center-flex(column, flex-start);
-    height: 100%;
+    min-height: 100vh;
 }
 //generic classes
 .icon-btn{
@@ -362,35 +362,90 @@ li{
 
 //cart prod items
 .cartContainer{
-    @include section-height();
-    // @include center-flex();
+    @include center-flex(row, flex-start, flex-start);
+    width: 100%;
     flex: 1;
+    gap: variables.$lateralPadding;
+    box-sizing: border-box;
+    padding: variables.$lateralPadding;
+}
+.cartProducts{
+    @include center-flex(column, flex-start, flex-start);
+    width: 70%;
+    gap: 12px;
+    @include floating-box();
 }
 .cartProdItem{
-    border: 1px solid black;//temporal, borrar despues
     box-sizing: border-box;
-    padding: 8px;
+    padding: 12px;
     width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.cartProdInfoLeft{}
+.cartProdInfoRight{
+    display: flex;
+    flex-direction: column;
 }
 
 .cartProdAmount{
     display: flex;
+    height: 50%;
     button{
-        height: 50%;
+        padding: 3px 9px;
         align-self: center;
         margin: 0 6px;
-        border-radius: 5px;
+        border-radius: 15px;
         border: 0;
-        background-color: variables.$darkColor;
+        background-color: variables.$secondColor;
         color: variables.$lightColor;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.7s;
+        &:hover{
+            transform: scale(1.1);
+        }
     }
 }
-
+.cartProdTotalAmount{
+    display: flex;
+    align-self: flex-end;
+}
+.cartProdItemSeparator{
+    width: 90%;
+    height: 2px;
+    align-self: center;
+    margin: 12px 0;
+    background-color: variables.$lightColor;
+}
+.cartResume{
+    width: 30%;
+    @include floating-box();
+    flex: 1;
+    padding: variables.$lateralPadding;
+    align-self: stretch;
+    justify-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    h4{
+        margin: 0;
+    }
+}
+.cartResumeTotalProducts,
+.cartResumeFinalAmount {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
 
 //new product
 .newProductContainer{
     @include section-height();
-    padding-top: 12px;
+    height: 100%;
+    padding: 12px 0;
     width: 100%;
     background-color: variables.$lightColorShade;
     @include center-flex(row, space-evenly, flex-start);

@@ -35,7 +35,9 @@ export const cartSlice = createSlice({
                     updatedList[action.payload[1]].quantity++;                    
                     break;
                 case '-':
-                    updatedList[action.payload[1]].quantity--;
+                    if(updatedList[action.payload[1]].quantity > 0) {
+                        updatedList[action.payload[1]].quantity--;
+                    }
                     break;
                 default:
                     console.log("Invalid argument");
