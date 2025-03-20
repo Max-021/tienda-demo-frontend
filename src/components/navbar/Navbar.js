@@ -24,11 +24,8 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(()=>{
-    setShowCats(location.pathname);
+    setShowCats(location.pathname);//mover esto de setShowCats para que solo se ejecute dentro de manu, asi no se ejecuta cada vez que voy a otra pestaña
   },[location])
-  // useEffect(()=> {
-  //   dispatch(checkLogin());
-  // },[])
 
   const cerrarSesion = () => {
     setOpen(false);

@@ -146,10 +146,16 @@ li{
 }
 .popoverFilter{
     box-sizing: border-box;
+    width: 100%;
 }
 .filterOptions{
     color: variables.$darkColor;
     padding: 8px;
+    // width: 50%;
+}
+.filterTitle{
+    margin-bottom: 0;
+    font-weight: bold;
 }
 //signup and login section
 .signContainer{
@@ -195,6 +201,7 @@ li{
     background-color: whitesmoke;
     display: flex;
     height: 220px;
+    @include floating-box(20px);
     &:hover {
         cursor: pointer;
         p:first-of-type{
@@ -209,7 +216,8 @@ li{
 }
 .productGrid{
     //temporal, revisar lo que pasa cuando son menos de cuatro productos, se ve feo
-    width: 24%;
+    width: 15%;
+    height: auto;
     aspect-ratio: 1/1;
     flex-direction: column;
 }

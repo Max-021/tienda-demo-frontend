@@ -25,12 +25,6 @@ const EnumFieldsManager = (props) => {
     console.log(typeof fieldVal)
   }
 
-  const setInputField = (enumField, i) => {
-    setAddFieldText(false);
-    setFieldVal(enumField);
-    setActiveFieldToUpdate(i)
-  }
-
   const setBtnType = () => {
     setAddFieldText(true);
     setActiveFieldToUpdate(null)
@@ -52,9 +46,9 @@ const EnumFieldsManager = (props) => {
   const editEnumField = () => {
     alert("editado")
     var updatedEnumList = props.dataField;
-    setPairedUpdateInfo(prevState => ({...prevState, oldInfo: props.dataField[activeFieldToUpdate]}))//asigno el nombre de la categoria reemplazada
+    setPairedUpdateInfo(prevState => ({...prevState, oldInfo: props.dataField[activeFieldToUpdate].tolowerCase}))//asigno el nombre de la categoria reemplazada
     updatedEnumList.splice(activeFieldToUpdate,1,fieldVal)//-------------------------------------------reemplazo la categoria vieja
-    setPairedUpdateInfo(prevState => ({...prevState, newInfo: props.dataField[activeFieldToUpdate]}))//asigno el nombre actualizado de la categoria
+    setPairedUpdateInfo(prevState => ({...prevState, newInfo: props.dataField[activeFieldToUpdate].tolowerCase}))//asigno el nombre actualizado de la categoria
     const fieldsUpdated = {
       [props.enumName]: updatedEnumList,
     }
@@ -78,10 +72,10 @@ const EnumFieldsManager = (props) => {
     setOpen(false)
     switch (props.enumName) {
       case 'category':
-        updateProductsToNewSimpleField({...pairedUpdateInfo, fieldName:'category'})
+        updateProductsToNewSimpleField({...pairedUpdateInfo, fieldName: props.enumName})
         break;
       case 'colors':
-        updateProductsToNewArray({...pairedUpdateInfo, fieldName:'colors'})
+        updateProductsToNewArray({...pairedUpdateInfo, fieldName: props.enumName})
         break;
       default:
         alert('No functionality implemented for this fields yet');
@@ -107,20 +101,12 @@ const EnumFieldsManager = (props) => {
   return <div className='enumFieldsList'>
     <div className='enunmFieldsInput'>
       <p className='enumTitle'>{props.enumName}</p>
-      <FormControl>
-        <TextField type='text' required value={fieldVal} onChange={handleChange}/>
-        {!addFieldText && <><span onClick={setBtnType} className='editSpanWarning'>Para anular la edición, hacer click aquí <IoMdClose/></span></>}
-      </FormControl>
-        <Button sx={{marginTop: '6px'}} variant='outlined' type='submit' onClick={addFieldText ? addEnumField : editEnumField}>{addFieldText ? 'Agregar':'Editar'}</Button>
+        <FormControl>
+          <TextField size='small' type='text' required value={fieldVal} onChange={handleChange}/>
+          {!addFieldText && <><span onClick={setBtnType} className='editSpanWarning'>Para anular la edición, hacer click aquí <IoMdClose/></span></>}
+        </FormControl>
+        <Button sx={{marginTop: '6px',}} variant='outlined' type='submit' onClick={addFieldText ? addEnumField : editEnumField}>{addFieldText ? 'Agregar':'Editar'}</Button>
     </div>
-    {/* <div className='enumFieldsFields'>
-      {props.dataField.map((field,index) => {
-        return <div className={`enumField ${activeFieldToUpdate === index && 'activeFieldToUpdate'}`} key={index}>
-          <p onClick={() => setInputField(field,index)}>{field}</p>
-          <IoMdClose onClick={() => deleteEnumField(index)}/>
-        </div>
-      })}
-    </div> */}
     <FormControl>
       <Autocomplete value={autoCompVal} renderInput={(params) => <TextField variant='filled' sx={{minWidth:220}} {...params} label={props.enumName}/>} 
         options={props.dataField} disablePortal onChange={(event, newValue) => setChangedField(newValue)}/>

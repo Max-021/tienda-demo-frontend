@@ -232,7 +232,7 @@ export const deleteProduct = async (productData) => {
 //enumRelated for validation on specific fields, temporal, falta revisar que se puedan borrar bien los enums
 export const getCategoriesList = async () => {
     try {
-        const res = await axios.get(`${apiSource}${enumRoute}/categories`)
+        const res = await axios.get(`${apiSource}${enumRoute}/filterData`)
         return res.data.data;
     } catch (error) {
         console.log(error)

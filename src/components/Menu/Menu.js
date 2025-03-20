@@ -7,7 +7,7 @@ import Links from '../reusables/Links';
 
 import { onCategorySelected, activeCategory } from '../../redux/ProductsSlice';
 import { totalProducts } from '../../redux/CartSlice';
-import { currentCategories, setCategories } from '../../redux/searchBarSlice';
+import { currentCategories, setFilterInfo } from '../../redux/searchBarSlice';
 
 import { sessionBtns } from '../../data/iconsArray';
 import { getCategoriesList } from '../../auxiliaries/axiosHandlers';
@@ -22,9 +22,9 @@ const Menu = ({showCats, authSt}) => {
   useEffect(()=>{
     console.log(currentCats)
     const getCategories = async () => {
-      const cats = await getCategoriesList()
+      const filterInfo = await getCategoriesList()
       if(currentCats.length === 0) {
-        dispatch(setCategories(cats))
+        dispatch(setFilterInfo(filterInfo))
       }
     }
     getCategories();

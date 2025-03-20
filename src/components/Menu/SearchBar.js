@@ -52,8 +52,7 @@ const SearchBar = () => {
                 />
             </form>
             <div className='searchBarExtras'>
-                <MdGridView onClick={() => dispatch(changeView())}/>
-                <FiFilter onClick={openPopover}/>
+                <FiFilter title='Filtros' onClick={openPopover}/>
                 <Popover className='popoverFilter'
                     id={popoverId}
                     open={isPopoverOpen}
@@ -65,6 +64,7 @@ const SearchBar = () => {
                 >
                     <FilterOptions/>
                 </Popover>
+                <MdGridView title='Cambiar vista' onClick={() => dispatch(changeView())}/>
             </div>
         </div>
 )
