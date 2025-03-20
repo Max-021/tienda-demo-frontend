@@ -78,6 +78,7 @@ const Cart = () => {
         <div className='cartResume'>
             <div className='cartResumeTitle'>
                 <h4>Resúmen</h4>
+                <div className='cartProdItemSeparator'></div>
             </div>
             <div className='cartResumeDetails'>
                 <div className='cartResumeTotalProducts'>

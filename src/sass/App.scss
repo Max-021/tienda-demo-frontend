@@ -362,7 +362,7 @@ li{
 
 //cart prod items
 .cartContainer{
-    @include center-flex(row, flex-start, flex-start);
+    @include center-flex(row, space-between, flex-start);
     width: 100%;
     flex: 1;
     gap: variables.$lateralPadding;
@@ -420,7 +420,7 @@ li{
     background-color: variables.$lightColor;
 }
 .cartResume{
-    width: 30%;
+    max-width: 30%;
     @include floating-box();
     flex: 1;
     padding: variables.$lateralPadding;
