@@ -5,6 +5,11 @@ const initialState = {
     searchText: '',
     colorFilter: [],
     priceFilter:{min:null, max:null},
+    filters: {//aca agregar los filtros segun corresponda
+        colorFilter: [],
+        minPrice: null,
+        maxPrice: null,
+    },
     products: [],
     filteredProducts: [],
     noSearchResults: true,
@@ -27,9 +32,8 @@ export const productsSlice = createSlice({
             }else{
                 state.activeCat = action.payload;
                 state.filteredProducts = state.products.filter((product) => product.category === action.payload)
-                if(state.filteredProducts.length === 0) {
-                    state.filteredProducts = state.products
-                }
+
+                if(state.filteredProducts.length === 0) state.filteredProducts = state.products
             }
         },
         searchProduct: (state,action) => {
@@ -53,64 +57,75 @@ export const productsSlice = createSlice({
                 state.filteredProducts = state.products
             }
         },
+        cleanTextFilter: (state, action) => {
+            switch (action.payload) {
+                case 'maxPrice':
+                    state.filters.maxPrice = null;
+                    break;
+                case 'minPrice':
+                    state.filters.minPrice = null
+                    break;
+                default:
+                    break;
+            }
+        },
+        cleanArrayFilter: (state, action) => {
+            const [val, arrayType] = [...action.payload];
+            switch (arrayType) {
+                case 'color':
+                    const updatedArr = state.filters.colorFilter.filter(col => col !== val);
+                    state.filters.colorFilter = [...updatedArr]
+                    break;
+                default:
+                    break;
+            }
+        },
         empyFilters: (state) => {
-            state.colorFilter = [];
-            state.priceFilter.max = null;
-            state.priceFilter.min = null;
+            state.filters.colorFilter = [];
+            state.filters.maxPrice = null;
+            state.filters.minPrice = null;
             state.filteredProducts = state.products
         },
         setFilters: (state, action) => {
             let priceMin = Number(action.payload.priceMin);
             let priceMax = Number(action.payload.priceMax);
-            console.log(action.payload)
+            if(isNaN(priceMin)) priceMin = null;
+            if(isNaN(priceMax)) priceMax = null;
+            if(priceMax === 0) priceMax = null;//condicion extra porque number(action.payload.priceMax) lo pone a 0 y puede saltear el isNan
 
-            //asignaciones con verificaciones
-            if(priceMax === 0 && priceMin === 0){
-                priceMax = null;
+            if(priceMin === 0 && priceMax === 0){
                 priceMin = null;
-            }else {   
-                if (priceMin > priceMax) {
-                    console.log('Está al revés');
-                    state.priceFilter.max = priceMin;
-                    state.priceFilter.min = priceMax;
-                } else {
-                    state.priceFilter.max = priceMax;
-                    state.priceFilter.min = priceMin;
+                priceMax = null;
+            } else {
+                if(priceMin !== null && priceMax !== null && priceMin > priceMax){
+                    [priceMin, priceMax] = [priceMax, priceMin];
                 }
             }
-            state.colorFilter = action.payload.colors;
+            // Asignar a los filtros del estado
+            state.filters.minPrice = priceMin;
+            state.filters.maxPrice = priceMax;
+            state.filters.colorFilter = action.payload.colors || [];
+
             state.filteredProducts = state.products;
+        },
+        filterProducts : (state) => {
 
-            const compareLength = () => state.products.length === state.filteredProducts.length
-
-            //configurar filtro por precios
-            if(state.priceFilter.max !== null) {
-                if(compareLength()) state.filteredProducts = state.products.filter(prod => prod.price < state.priceFilter.max)
-                else state.filteredProducts = state.filteredProducts.filter(prod => prod.price < state.priceFilter.max)
-            }
-            if(state.priceFilter.min !== null) {
-                if(compareLength()) state.filteredProducts = state.products.filter(prod => prod.price > state.priceFilter.min)
-                else state.filteredProducts = state.filteredProducts.filter(prod => prod.price > state.priceFilter.min)
-            }
-
-            //configurar filtro por colores
-            if(state.colorFilter.length > 0){
-                if(compareLength()) {
-                    state.filteredProducts = state.products.filter(prod => {
-                        return prod.colors.some(color => state.colorFilter.includes(color));
-                    })
-                }
-            }
+            const result = state.products.filter(prod => {
+                const cumpleMax = state.filters.maxPrice !== null ? prod.price <= state.filters.maxPrice : true;
+                const cumpleMin = state.filters.minPrice !== null ? prod.price >= state.filters.minPrice : true;
+                const cumpleColores = state.filters.colorFilter.length > 0 ? prod.colors.some(color => state.filters.colorFilter.includes(color)) : true;
+                return cumpleMax && cumpleMin && cumpleColores;
+            });
+            state.filteredProducts = result;
         },
     }
 })
 
-export const {getProductsList, onCategorySelected, searchProduct, setFilters, empyFilters} = productsSlice.actions
+export const {getProductsList, onCategorySelected, searchProduct, setFilters, filterProducts, empyFilters, cleanArrayFilter, cleanTextFilter} = productsSlice.actions
 
 export const filteredProducts = (state) => state.products.filteredProducts
 export const activeCategory = (state) => state.products.activeCat
 export const noSearchRes = (state) => state.products.noSearchResults
-export const colorsFilter = (state) => state.products.colorFilter
-export const pricesFilter = (state) => state.products.priceFilter
+export const activeFilters = (state) => state.products.filters
 
 export default productsSlice.reducer;

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 
 import { colorsList } from '../../redux/searchBarSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import { setFilters, empyFilters } from '../../redux/ProductsSlice';
+import { setFilters, empyFilters, filterProducts } from '../../redux/ProductsSlice';
 
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -11,10 +11,14 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 
+
+const checkId = 'colorCheckId-'
+
 const FilterOptions = () => {
     const dispatch = useDispatch();
     const totalColors = useSelector(colorsList);
     const [filterOptions, setFilterOptions] = useState({priceMin:'', priceMax:'', colors:[]})
+    const [checkStatus, setCheckStatus] = useState(totalColors.map(()=> false));
 
     const rows = [];
     for (let i = 0; i < totalColors.length; i += 2) {
@@ -34,9 +38,20 @@ const FilterOptions = () => {
             ? [...prev.colors, value]
             : prev.colors.filter((col) => col !== value)
         }))
+        const checkInd = totalColors.indexOf(value);
+        if (checkInd !== -1) {
+            // Crea una copia del array para no mutar el estado directamente
+            const newCheckStatus = [...checkStatus];
+            newCheckStatus[checkInd] = checked;
+            setCheckStatus(newCheckStatus);
+        }
     }
 
-    const resetFilter = () => setFilterOptions({priceMin:'', priceMax:'', colors:[]})//temporal, refactorizar junto a filteroptions
+    const resetFilter = () => {
+        setFilterOptions({priceMin:'', priceMax:'', colors:[]})
+        setCheckStatus(totalColors.map(() => false));
+    }
+
     const applyFilter = (e) => {
         e.preventDefault();
         console.log('filterset')
@@ -46,6 +61,7 @@ const FilterOptions = () => {
             dispatch(empyFilters());
         }else{
             dispatch(setFilters(filterOptions));
+            dispatch(filterProducts());
         }
     }
 
@@ -69,7 +85,7 @@ const FilterOptions = () => {
                     totalColors.map((color, index) => (
                     <FormControlLabel
                         key={`${index}-${color}`}
-                        control={<Checkbox sx={{padding:'5px'}} value={color} size='small' onChange={useCheckValue}/>}
+                        control={<Checkbox sx={{padding:'5px'}} id={`${checkId}${index}`} value={color} size='small' onChange={useCheckValue} checked={checkStatus[index]}/>}
                         label={color}
                         sx={{ justifySelf: "start" }}
                     />

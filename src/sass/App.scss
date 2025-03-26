@@ -123,7 +123,6 @@ li{
     color: variables.$thirdColor;
 }
 .searchBarContainer {
-    box-sizing: border-box;
     color: variables.$secondColor;
     background-color: variables.$lightColor;
     margin: 0;
@@ -138,6 +137,25 @@ li{
     background-color: #fff;
     margin: 3px 0;
     width: 25%;
+}
+.searchBarFilterInfo{
+    margin-right: auto;
+    margin-left: 12px;
+    align-self: center;
+    gap: 12px;
+    @include center-flex();
+}
+.activeFilter{
+    margin: 0;
+    border-radius: 5px;
+    padding: 1px 3px;
+    button{
+        border: none;
+        padding: 0 0 5px 3px;
+        background-color: transparent;
+        font-size: 75%;
+        vertical-align: middle;
+    }
 }
 .searchBarExtras{
     display: flex;
