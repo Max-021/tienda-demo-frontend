@@ -630,3 +630,32 @@ footer{
 .userInfoForm{
     @include center-flex(column, flex-start, flex-start);
 }
+
+//not found
+.notFoundPageContainer{
+    background-color: variables.$lightColor;
+    width:100%;
+    box-sizing: border-box;
+    padding: variables.$lateralPadding;
+    @include center-flex(row, flex-start, flex-start);
+    @include section-height();
+    flex: 1;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.notFoundPageInfo{
+    @include center-flex(column, flex-start, flex-start);
+    h3{
+        color: variables.$darkColor;
+    }
+    a{
+        vertical-align: middle;
+        color: variables.$secondColor;
+        text-decoration: underline;
+        font-weight: bold;
+        transition: all 0.7s;
+        &:hover{
+            transform: scale(1.1);
+        }
+    }
+}

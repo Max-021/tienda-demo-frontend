@@ -9,7 +9,8 @@ $lightColorShade: #f4f3f2;
 
 $navBarHeight: 120px;
 $footerHeight: 32px;
-$fullHeight: calc(100vh - ($navBarHeight + $footerHeight));
+$fullHeight: calc(100vh - ($navBarHeight));
+// $fullHeight: calc(100vh - ($navBarHeight + $footerHeight));//opcional, desactivado por ahora, temporal, ver si queda mejor la opcion actualmente activa
 
 $lateralPadding:24px;
 
