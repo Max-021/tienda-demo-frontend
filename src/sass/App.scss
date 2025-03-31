@@ -253,7 +253,7 @@ li{
         margin: 0;
     }
     p:first-of-type {
-        font-size: 200%;
+        font-size: variables.$titleFontSize;
         margin: 12px 0;
     }
     p:not(:first-of-type) {
@@ -357,6 +357,7 @@ li{
     border-left: 2px solid black;
     padding: 0 24px;
     margin-left: auto;
+    font-size: calc(variables.$titleFontSize * 2);
 }
 .prodModIcons{
     margin-left: auto !important;
@@ -583,7 +584,7 @@ footer{
     height: variables.$footerHeight;
     width: 100%;
     background-color: variables.$mainColor;
-    padding: 0 12px;
+    padding: 0 variables.$lateralPadding;
 }
 
 //my profile
@@ -659,3 +660,70 @@ footer{
         }
     }
 }
+
+//MEDIA QUERIES
+
+//--------------------------------------------------------- LAPTOP
+@media (max-width: variables.$md) {//1200
+
+
+}
+
+//--------------------------------------------------------- TABLET
+@media (max-width: variables.$sm) {//900
+    .searchBarContainer, .menu,
+    h1, .optionsList, footer{
+        padding: 0 calc(variables.$lateralPadding / 2);
+    }
+    .productsLayout, .notFoundPageContainer{
+        padding: calc(variables.$lateralPadding / 2);
+    }
+    .productView {
+        height: 150px;
+    }
+    .productInfo{
+        margin-left: 8px;
+        p{
+            margin: 0;
+        }
+        p:first-of-type {
+            margin: 6px 0;
+        }
+        p:not(:first-of-type) {
+            margin: 4px 0;
+        }
+    }
+    .editIconContainer{
+        padding: 0 calc(variables.$lateralPadding / 2);
+        font-size: variables.$titleFontSize;
+    }
+}
+
+//--------------------------------------------------------- MOBILE
+@media (max-width: variables.$xs) {//600
+    .productView {
+        height: 100px;
+    }
+    .productInfo{
+        margin-left: 4px;
+        p{
+            margin: 0;
+        }
+        p:first-of-type {
+            font-size: variables.$responsiveTitle;
+            margin: 3px 0;
+        }
+        p:not(:first-of-type) {
+            margin: 2px 0;
+        }
+        p:last-of-type {
+            display: none;
+        }
+    }
+    .editIconContainer{
+        padding: 0 calc(variables.$lateralPadding / 4);
+        font-size: calc(variables.$titleFontSize / 1.2);
+    }
+}
+
+//revisar si agregar alguna media query más para mayor a lg

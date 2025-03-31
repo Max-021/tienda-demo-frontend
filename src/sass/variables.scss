@@ -7,16 +7,30 @@ $darkColor: #1f1f1f;
 $thirdColorOpacity: #ff7b0062;
 $lightColorShade: #f4f3f2;
 
-$navBarHeight: 120px;
+$navBarHeight: 162px;
+// $navBarHeight: 120px;
 $footerHeight: 32px;
 $fullHeight: calc(100vh - ($navBarHeight));
 // $fullHeight: calc(100vh - ($navBarHeight + $footerHeight));//opcional, desactivado por ahora, temporal, ver si queda mejor la opcion actualmente activa
 
+//utilities
 $lateralPadding:24px;
-
 $imgWidth: 500px;
 
+//fonts
+$titleFontSize: 2rem;
+$responsiveTitle: 1.5rem;
+$subtitleFontSize: 1rem;
+// $normalTextSize: 100%;
 
+//media query
+$xs: 600px;
+$sm: 900px;
+$md: 1200px;
+$lg: 1536px;
+
+
+//exports
 :export {
     navbarHeight: $navBarHeight;    
 }

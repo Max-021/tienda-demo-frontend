@@ -57,15 +57,15 @@ const Products = (props) => {
               </div>
               <div className='productInfo'>
                 <p> {product.name}</p>
-                <p>{product.colors.length} colores disponibles</p>
-                <p>$ {product.price}</p>{/*temporal, revisar el $ y pensar alguna manera de hacer esto adaptable por si hay que incluir tipo de moneda  */}
                 <p>{product.quantity > 0 ? 'Unidades disponibles' : 'No disponible temporalmente, consultar por el producto'}</p>
+                <p>$ {product.price}</p>{/*temporal, revisar el $ y pensar alguna manera de hacer esto adaptable por si hay que incluir tipo de moneda  */}
+                <p>{product.colors.length} colores</p>
               </div>
               {
                 authStatus ?
                 <div className='editIconContainer'>
                   <Link to={'/editar-producto'} state={product}>
-                    <MdEditSquare size={50} className='editBtn'/>
+                    <MdEditSquare /*size={50}*/ className='editBtn'/>
                   </Link>
                 </div>
                 : null

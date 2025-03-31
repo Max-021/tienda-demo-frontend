@@ -9,6 +9,7 @@ import Dialog from '@mui/material/Dialog';
 import Slide from '@mui/material/Slide';
 
 import Menu from '../Menu/Menu'
+import SearchBar from '../Menu/SearchBar';
 
 const Transition = React.forwardRef(function Transition(props,ref) {
   return <Slide direction='up' ref={ref} {...props}/>
@@ -59,6 +60,7 @@ const Navbar = () => {
         <button type='button' title='confirmar cierre de sesión' onClick={() => cerrarSesion()}> Sí </button>
         <button type='button' title='No' onClick={() => setOpen(false)}> No </button>
       </Dialog>
+      {/* {showCats !== '/'  ? null : <SearchBar/> } */}
     </div>
   )
 }
