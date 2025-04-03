@@ -139,16 +139,28 @@ li{
     width: 25%;
 }
 .searchBarFilterInfo{
-    margin-right: auto;
-    margin-left: 12px;
-    align-self: center;
+    box-sizing: border-box;
+    background-color: variables.$lightColor;
+    @include center-flex(row, flex-start, flex-start);
     gap: 12px;
-    @include center-flex();
+    width: 100%;
+    overflow: hidden;
+    padding: 0 variables.$lateralPadding;
+    max-height: 0;
+    transition: all 0.7s ease;
+}
+.searchBarFilterInfo.active{
+    max-height: 200px;
+    padding: 0 variables.$lateralPadding;
+    padding-top: 12px;
+    padding-bottom: 0;
 }
 .activeFilter{
     margin: 0;
-    border-radius: 5px;
+    border-radius: 5px !important;
     padding: 1px 3px;
+    background-color: variables.$lightColorShade;
+    @include floating-box();
     button{
         border: none;
         padding: 0 0 5px 3px;
