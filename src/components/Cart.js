@@ -25,12 +25,11 @@ const Cart = () => {
     const enviarLista = () => {
         console.log(prodList);
 
-        const cel=null;//temporal, borrar
         const lista=`Hola! Esta es mi lista de compra:%0a${prodList.map((el,index) => {
             return `Nombre: *${el.name}*%0a* Cantidad: ${el.quantity}%0a* Color: ${el.color}%0a* Precio: ${el.price}%0a`;
         })}`;
 
-        const url =`https://api.whatsapp.com/send/?phone=${cel}&text=${(lista)}&type=phone_number&app_absent=0`
+        const url =`https://api.whatsapp.com/send/?phone=${telNumber}&text=${(lista)}&type=phone_number&app_absent=0`
         window.open(url,'_blank');
     }
 

@@ -61,6 +61,7 @@ export const checkSession = async () => {
             success: true,
             message: res.data.message, // Los datos del servidor
             status: res.data.status,
+            userInfo: {role: res.data.userInfo.role, username: res.data.userInfo.username}
         };
     } catch (err) {
         return catchErrorMsgHandler(err)

@@ -2,7 +2,8 @@ import React, {useEffect,useState} from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { currentViewValue } from '../redux/searchBarSlice';
 import { filteredProducts, noSearchRes, getProductsList } from '../redux/ProductsSlice';
-import { authenticateStatus, checkLogin } from '../redux/UserSlice';
+import { authenticateStatus, userRole } from '../redux/UserSlice';
+import { allowedEditingRole } from '../data/permissions';
 import { getAllProducts } from '../auxiliaries/axiosHandlers';
 
 import { GrFormClose } from "react-icons/gr";
@@ -27,6 +28,7 @@ const Products = (props) => {
   const selectorData = useSelector(filteredProducts);
   const noRes = useSelector(noSearchRes);
   const authStatus = useSelector(authenticateStatus)
+  const role = useSelector(userRole);
   const dispatch = useDispatch();
 
   useEffect(()=> {
@@ -56,18 +58,16 @@ const Products = (props) => {
                 <img className='productImg' src={product.img[0].startsWith('https') ? product.img[0] : require(`../assets/${product.img[0]}`)} alt={`prod${index}`}/>
               </div>
               <div className='productInfo'>
-                <p> {product.name}</p>
+                <p key={`${index}-prodName`} title={product.name}>{product.name}</p>
                 <p>{product.quantity > 0 ? 'Unidades disponibles' : 'No disponible temporalmente, consultar por el producto'}</p>
                 <p>$ {product.price}</p>{/*temporal, revisar el $ y pensar alguna manera de hacer esto adaptable por si hay que incluir tipo de moneda  */}
                 <p>{product.colors.length} colores</p>
               </div>
               {
-                authStatus ?
-                <div className='editIconContainer'>
-                  <Link to={'/editar-producto'} state={product}>
-                    <MdEditSquare /*size={50}*/ className='editBtn'/>
+                authStatus && role === allowedEditingRole ?
+                  <Link className='editIconContainer' to={'/editar-producto'} state={product} title='Editar Producto'>
+                    <MdEditSquare className='editBtn'/>
                   </Link>
-                </div>
                 : null
               }
           </div >

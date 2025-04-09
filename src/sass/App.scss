@@ -240,6 +240,7 @@ li{
             transform: scale(1.025);
         }
     }
+    position: relative;
 }
 .productList{
     width: 100%;
@@ -250,6 +251,25 @@ li{
     height: auto;
     aspect-ratio: 1/1;
     flex-direction: column;
+    .editIconContainer{
+        box-sizing: border-box;
+        border-radius: 10px;
+        border: none;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        z-index: 10;
+        padding: 6px;
+        margin: 0;
+        @include floating-box();
+        background-color: variables.$darkColorOpacity;
+    }
+    .productInfo{
+        margin: 0 12px;
+        p:first-of-type{
+            margin: 0;
+        }
+    }
 }
 .productImgContainer{
     height: 100%;
@@ -261,8 +281,15 @@ li{
 }
 .productInfo{
     margin-left: 12px;
+    flex: 1;         // Permite que se expanda/reduce en el layout flex
+    min-width: 0;    // Crucial: permite que el contenido se reduzca y se active el overflow
     p{
         margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+        display: block;
     }
     p:first-of-type {
         font-size: variables.$titleFontSize;
@@ -677,7 +704,14 @@ footer{
 
 //--------------------------------------------------------- LAPTOP
 @media (max-width: variables.$md) {//1200
-
+    .productsLayout{
+        // justify-content: space-between;
+        gap: 18px;
+    }
+    //acá ajustar los de grilla
+    .productGrid{
+        width: 23%;
+    }
 
 }
 
@@ -690,7 +724,7 @@ footer{
     .productsLayout, .notFoundPageContainer{
         padding: calc(variables.$lateralPadding / 2);
     }
-    .productView {
+    .productList {
         height: 150px;
     }
     .productInfo{
@@ -709,11 +743,21 @@ footer{
         padding: 0 calc(variables.$lateralPadding / 2);
         font-size: variables.$titleFontSize;
     }
+    .productGrid{
+        width: 30%;
+        .productImgContainer{
+            height: fit-content;
+            img{
+                width: 100%;
+                aspect-ratio: 1/1;
+            }
+        }
+    }
 }
 
 //--------------------------------------------------------- MOBILE
 @media (max-width: variables.$xs) {//600
-    .productView {
+    .productList {
         height: 100px;
     }
     .productInfo{
@@ -736,6 +780,18 @@ footer{
         padding: 0 calc(variables.$lateralPadding / 4);
         font-size: calc(variables.$titleFontSize / 1.2);
     }
+    .productGrid{
+        width: 45%;
+    }
 }
 
+
+@media (max-width: 210px){
+    .productsLayout{
+        justify-content: center;
+    }
+    .productGrid{
+        width: 90%;
+    }
+}
 //revisar si agregar alguna media query más para mayor a lg
