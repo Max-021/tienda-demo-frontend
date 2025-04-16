@@ -86,7 +86,7 @@ const NewProduct = () => {
             {Object.keys(productModel).map((el,index) => {
                 if (!el.startsWith('_')) {// temporal, aca hacer que el return devuelva los inputs, llevar el codigo del input a otro archivo para que no se haga muy largo???Factorizar???
                     return (
-                        <div key={index}>
+                        <div key={index} style={{width: '100%'}}>
                             <FormGenerator key={index} modelKey={el}
                                 enumValues={enumFields[el]?enumFields[el]:null} 
                                 handleChange={Array.isArray(productModel[el].type)?el==='img'?handleImgOnChange:handleChangeOnArray:handleChange} 
@@ -105,7 +105,7 @@ const NewProduct = () => {
             })}
             <Button className='submitBtn' type='submit' variant='contained' sx={{alignSelf: 'flex-end'}}>Subir</Button>
         </Box>
-        <Box className='enumFieldsContainer'>
+        <Box className='enumFieldsWrapper'>
             <p className='formTitle'>Campos con valores fijos</p>
             {Object.keys(enumFields).map((el, index) => {
                 if (!el.startsWith('_')) {

@@ -51,11 +51,11 @@ svg:hover{
     border: 0;
 }
 //carousel
-// .swiper{
-//     width: 100%;
-// }
 .swiper-slide{
     height: auto !important;
+}
+.swiperContainer{
+    width: 500px;
 }
 
 //icon classes
@@ -131,12 +131,13 @@ li{
     box-shadow: 0 4px 5px -5px gray;
 }
 .searchBar{
+    transition: all 0.7s;
     box-sizing: border-box;
     padding: 6px;
     border-radius: 5px;
     background-color: #fff;
     margin: 3px 0;
-    width: 25%;
+    width: 40%;
 }
 .searchBarFilterInfo{
     box-sizing: border-box;
@@ -510,20 +511,21 @@ li{
 }
 .formTitle{
     font-size: 150%;
-    margin-top: variables.$lateralPadding;
-    margin-bottom: -12px;
+    margin-top: 0;
+    margin-bottom: -6px;
 }
 .productForm{
+    box-sizing: border-box;
     @include center-flex(column, center, flex-start);
     @include floating-box();
-    padding: 0 variables.$lateralPadding;
+    padding: variables.$lateralPadding;
     gap: 12px;
     width: 30vw;
 }
 .enumTitle{
     font-size: 120%;
-    margin: 0 0 variables.$lateralPadding 0;
-    margin-top: variables.$lateralPadding;
+    margin-bottom: 6px;
+    margin-top: 4px;
     font-weight: bold;
     &::first-letter{
         text-transform: uppercase;
@@ -549,24 +551,34 @@ li{
 }
 
 //enumFields
-.enumFieldsContainer {
+.enumFieldsWrapper {
     box-sizing: border-box;
-    padding:  0 variables.$lateralPadding variables.$lateralPadding variables.$lateralPadding ;
+    padding: variables.$lateralPadding;
     width: 45vw;
     @include center-flex(column, center, flex-start);
     gap: 36px;
     @include floating-box();
 }
+.enumFieldsContainer{
+    width: 100%;
+}
 .enumFieldsList{
-    @include center-flex();
+    @include center-flex(row, center, flex-start);
     box-sizing: border-box;
     // overflow: auto;
-    padding: 0 variables.$lateralPadding;
+    // padding: 0 variables.$lateralPadding;
     gap: 12px;
     width: 100%;
 }
 .enunmFieldsInput{
     width: 70%;
+}
+.deleteEnumFieldBtn{
+    background-color: transparent;
+    padding: 4px 0;
+    border: 1px solid variables.$secondColor;
+    border-radius: 5px;
+    font-size: variables.$subtitleFontSize;
 }
 .editSpanWarning{
     cursor: pointer;
@@ -577,6 +589,7 @@ li{
     font-size: 80%;
     font-weight: bold;
     padding-left: 2px;
+    margin-right: 12px;
     background-color: rgb(126, 0, 0);
     color: variables.$lightColor;
 }
@@ -712,7 +725,15 @@ footer{
     .productGrid{
         width: 23%;
     }
-
+    .swiperContainer{
+        width: 400px;
+    }
+    .productDetailName{
+        margin-bottom: 0;
+    }
+    .searchBar{
+        width: 60%;
+    }
 }
 
 //--------------------------------------------------------- TABLET
@@ -753,6 +774,50 @@ footer{
             }
         }
     }
+    .productCard{
+        flex-direction: column;
+    }
+    .swiperContainer{
+        width: 350px;
+    }
+    .newProductContainer{
+        flex-direction: column;
+        gap: 24px;
+        align-items: center;
+    }
+    .productForm, .enumFieldsWrapper{
+        width: 80%;
+    }
+    .enumFieldsList{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .enunmFieldsInput{
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap; // Evita que se haga wrap
+        width: 100%;
+    }
+    .enunmFieldsInput > *:first-child {
+        flex: 1;
+        margin-right: 8px;
+    }
+    .enunmFieldsInput > button {
+        flex-shrink: 0;
+    }
+    .enumFieldsAutocomp {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .deleteEnumFieldBtn {
+        width: 100%;
+        margin-top: 8px;
+    }
+    .searchBar{
+        width: 80%;
+    }
 }
 
 //--------------------------------------------------------- MOBILE
@@ -783,8 +848,22 @@ footer{
     .productGrid{
         width: 45%;
     }
+    .swiperContainer{
+        width: 350px;
+    }
 }
 
+@media (max-width: 400px) {
+    .swiperContainer {
+        width: 250px;
+    }
+}
+
+@media (max-width: 320px) {//temporal, pulir un poco más acá en otro momento
+    .swiperContainer {
+        width: 150px;
+    }
+}
 
 @media (max-width: 210px){
     .productsLayout{

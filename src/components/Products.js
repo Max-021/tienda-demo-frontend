@@ -76,7 +76,15 @@ const Products = (props) => {
        <div>La búsqueda no arrojó resultados. CAMBIAR ESTO! temporal</div>
        }
        {/* chequear tambien el atributo fullwidth si sirve */}
-    <Dialog fullWidth maxWidth='90%' open={open} onClose={() => setOpen(false)} TransitionComponent={Transition}>
+    <Dialog PaperProps={{
+      sx:{
+        boxSizing: 'border-box',
+        transition: '0.7s all',
+        height: {lg:'auto',md: '50vh', },
+        width: {md: '90%',sm: 'fit-content', xs: 'fit-content'},
+      }
+    }} 
+    fullWidth maxWidth='90%' open={open} onClose={() => setOpen(false)} TransitionComponent={Transition}>
       <GrFormClose className='closeBtn' onClick={() => setOpen(false)}/>
       <ProductCard {...productData}/>
     </Dialog>

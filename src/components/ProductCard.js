@@ -58,7 +58,7 @@ const ProductCard = (props) => {
             <img className='productDetailImg' src={img[0].startsWith('https') ? img[0] : require(`../assets/${img}`)} alt={`${img}`}/>
           </div>
         :
-        <div style={{width: '500px'}}>
+        <div className='swiperContainer'>
           <Swiper navigation={true} modules={[Navigation]} className='mySwiper' loop={true}>
             {img.map((image, index) => {
               return <SwiperSlide>
@@ -89,23 +89,9 @@ const ProductCard = (props) => {
             <TextField
               value={prodToCart.quantity} onChange={(e) => setProdToCart({...prodToCart, quantity: Number(e.target.value)})} 
               name={`prod-quantity`} id={`prod-quantity`} type='number' inputProps={{style:{padding:5}}}/>
-            {/* {prodToCart.quantity !== 'otro' && prodToCart.quantity <= 5 ?
-              <Select disabled={quantity>=1?false:true}  name={`quantity-select`}labelId={`quantity-select`} id={`quantity-select`} value={prodToCart.quantity} onChange={(e)=>setProdToCart({...prodToCart, quantity: e.target.value})} label={`quantity-label`}>
-                <MenuItem value={1}>1</MenuItem>
-                <MenuItem value={2}>2</MenuItem>
-                <MenuItem value={3}>3</MenuItem>
-                <MenuItem value={4}>4</MenuItem>
-                <MenuItem value={5}>5</MenuItem>
-                <MenuItem value={'otro'}>Otro</MenuItem>
-              </Select>
-            : null}
-                {prodToCart.quantity == 'otro' || prodToCart.quantity > 5 ?
-                  <input type='number' onChange={(e) => setProdToCart({...prodToCart, quantity: e.target.value})}/>
-                  : null
-                } */}
           </div>
           <div className='productDetailDescr'>
-            <p>Descripción del producto</p>
+            <p>Descripción</p>
             <p>{descr}</p>
           </div>
           <button className='addToCartBtn' onClick={() => addToCart()}> Agregar al carrito</button>

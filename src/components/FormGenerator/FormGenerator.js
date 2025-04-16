@@ -52,7 +52,7 @@ const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProd
       case 'category':
         return (
           <FormControl>
-            <Autocomplete renderInput={(params) => <TextField variant='filled' sx={{minWidth:220}} {...params} label={'Categoría'}/>} 
+            <Autocomplete renderInput={(params) => <TextField variant='filled' {...params} label={'Categoría'}/>} 
               options={enumValues} disablePortal value={currentNewProdField} onChange={handleAutocompleteChange}/>
           </FormControl>
         )
@@ -60,7 +60,7 @@ const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProd
       case 'colors':
         return (
           <FormControl>
-            <Autocomplete renderInput={(params) => <TextField variant='filled' sx={{minWidth:220}} {...params} label={'Color'}/>} 
+            <Autocomplete renderInput={(params) => <TextField variant='filled' {...params} label={'Color'}/>} 
               options={enumValues} disablePortal /*value={currentNewProdField}*/ onChange={handleAutocompleteChange}/>
           </FormControl>
         )
@@ -82,7 +82,7 @@ const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProd
     }
 
     return <FormControl>
-      <TextField sx={{minWidth:220}}
+      <TextField
             required={modelInputInfo.isRequired} label={`${modelInputInfo.labelName}`} value={currentNewProdField} onChange={handleChange} 
             name={`${keyModel}`} id={`${keyModel}-input`}type={modelInputInfo.dataType}//valores basicos
             multiline={modelInputInfo.isMultiline} minRows={2} maxRows={8} disabled={modelInputInfo.isDisabled} variant='filled'/>{/*valores especiales si se cumplen ciertas condiciones*/}
