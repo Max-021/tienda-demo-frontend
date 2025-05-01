@@ -29,6 +29,7 @@ const MyProfile = () => {
     const btnArray = [
         {name: 'Mi perfil', action: () => selectSwitchOption('myProfile')},
         {name: 'Listar Usuarios', action: () => selectSwitchOption('listUsers')},
+        {name: 'Crear Usuario', action: () => selectSwitchOption('newUser')},
     ]
 
     return (

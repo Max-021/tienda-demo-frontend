@@ -533,9 +533,12 @@ li{
 }
 .fieldsContainer {
     @include center-flex(row, flex-start, flex-start);
+    box-sizing: border-box;
+    padding: 0 10px;
     gap: 6px;
     flex-wrap: wrap;
     border: 2px dashed variables.$thirdColor;
+    border-radius: 5px;
     margin-top: 12px;
     max-height: 150px;
     overflow-y: auto;
@@ -639,19 +642,18 @@ footer{
     padding: 0 variables.$lateralPadding;
 }
 
-//my profile
+//------------------------------------------------------------------------------------MY PROFILE
 .myProfileContainer{
     @include center-flex();
     @include section-height();
+    flex: 1;
     align-items: stretch;
-    // gap: 16px;
     width: 100%;
 }
 
 .optionsList{
     @include center-flex(column,flex-start,flex-start);
     padding: 0 32px 0 variables.$lateralPadding;
-    height: 100%;
     background-color: variables.$lightColorShade;
 }//a partir de aca todas las clases debajo hasta donde indique se encuentran adentro de optionsList
 .optionsListBtnContainer{
@@ -677,14 +679,111 @@ footer{
     box-sizing: border-box;
     width: 100%;
     flex: 1;
-    padding: 0 variables.$lateralPadding;
-    margin-top: variables.$lateralPadding;
+    padding: variables.$lateralPadding;
 }
 .userInfoForm{
     @include center-flex(column, flex-start, flex-start);
+    box-sizing: border-box;
+    width: 100%;
+    gap: 24px;
+    h5{
+        margin-bottom: 0;
+    }
+}
+.userInformation {
+    @include center-flex(column, flex-start, flex-start);
+    width: fit-content;
+    button{
+        margin-top: 12px;
+        background-color: rgb(193, 255, 234);
+    }
+}
+.userInfoFields {
+    @include center-flex(row, flex-start, flex-start);
+    flex-wrap: wrap;
+    column-gap: 150px;
+}
+.userPwdInfo{
+    margin-top: 12px;
+    width: 100%;
+}
+.userInfoContainer{
+    @include center-flex(row, flex-start, center);
+    gap: 12px;
+    flex: 0 0 calc(50% - 12px); 
+    max-width: 500px;
+}
+.userInfoFieldName{
+    flex: 0 0 80px;
+    white-space: nowrap;
+    padding:12px 12px 12px 0;
+    text-align: right;
+}
+.userInfoFieldName:first-of-type{
+    min-width: 50px;
+}
+.userInfoTitles{
+    @include center-flex(row, center,center);
+    font-size: variables.$titleFontSize;
+    gap: 12px;
+    p{
+        margin: 0;
+    }
+}
+.userInfoTitleBtn{
+    cursor: pointer;
+    font-size: 50%;
+    align-self: flex-end;
+    margin-bottom: 6px;
+    background-color: transparent;
+    border: 0;
+    transition: transform 0.7s;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: rgb(158, 211, 255);
+    svg{
+        margin-left: 4px;
+        vertical-align: middle;
+        margin-bottom: 2px;
+        &:hover{
+            transform: scale(1);
+        }
+    }
+    &:hover{
+        transform: scale(1.1);
+    }
+}
+.userInfoTitleBtn.active{
+    background-color: rgb(255, 136, 136);
+}
+.userInfoBtn{
+    cursor: pointer;
+    box-sizing: border-box;
+    background-color: transparent;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 7px;
+    font-size: 120%;
+}
+.userInfoBtn.updateBtn,
+.userInfoBtn.updatePwdBtn{
+    background-color: variables.$secondColorShade;
+    color: white;
+    margin-top: 12px;
+}
+.pwdChangeContainer{
+    box-sizing: border-box;
+    margin-top: 24px;
+    padding: 12px;
+    border: 2px dashed black;
+    border-radius: 5px;
+    width: 35%;
+}
+.userInfoFieldName.pwdField{
+    flex: 0 0 200px;
 }
 
-//not found
+//----------------------------------------------------------------------------------NOT FOUND
 .notFoundPageContainer{
     background-color: variables.$lightColor;
     width:100%;

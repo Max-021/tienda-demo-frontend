@@ -37,9 +37,6 @@ const Products = (props) => {
       dispatch(getProductsList(catalogo));
     }
     fetchData();
-    // checkSession();//temporal, ver cuando lo saco porque el otro está mejor
-    // dispatch(checkLogin())
-    // console.log(authStatus)
   }, []);
 
   const handleOpen = (prodInd) =>{

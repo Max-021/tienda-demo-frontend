@@ -41,17 +41,15 @@ function App() {
   return (
     <div className="App">
       <Navbar/>
-      {/* <SearchBar/> */}
       {showSearch !== '/'  ? null : <SearchBar/> }
       <Routes>
         <Route path='/' element={<Products/>}/>
-        {/* temporal, revisar y cambiar segun sea necesario la ruta del /newProduct */}
         <Route path='/login' element={<Login/>}/>
-        {/* acá poner el if? está logeado */}
+        <Route path='/signup' element={<Signup/>}/>
         {
           authSt ?
             <>
-              <Route path='/signup' element={<Signup/>}/>
+              {/* <Route path='/signup' element={<Signup/>}/> */}
               <Route path='/my-profile' element={<MyProfile/>}/>
               <Route path='/nuevo-producto' element={<NewProduct/>}/>
               <Route path='/editar-producto' element={<NewProduct/>}/>

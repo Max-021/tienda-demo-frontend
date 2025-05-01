@@ -1,6 +1,9 @@
 import axios from "axios";
 import { catchErrorMsgHandler } from "./functions";
 
+import { excludedFields } from "../data/permissions";
+import { omit } from "lodash";
+
 //TEMPORAL, fijarse si lo que está comentado siguiente lo dejo, revisar porque si esta activo tira error el CORS
 // axios.defaults.withCredentials = true;//pasado como objeto de config en las funciones necesarias
 
@@ -57,17 +60,24 @@ export const signup = async (username,mail,password) => {//temporal, ver si agre
 export const checkSession = async () => {
     try {
         const res = await axios.get(`${apiSource}${userBasics}/checkSession`, credObj());
+        console.log(res.data.userInfo.role)
         return {
             success: true,
             message: res.data.message, // Los datos del servidor
             status: res.data.status,
-            userInfo: {role: res.data.userInfo.role, username: res.data.userInfo.username}
+            userInfo: {role: res.data.userInfo.role || 'none', username: res.data.userInfo.username || ''}
         };
     } catch (err) {
         return catchErrorMsgHandler(err)
     }
 }
-export const updateUser = async () => {
+export const updateUser = async (updatedData) => {
+    try {
+        const res = await axios.patch(`${apiSource}${userRoute}/updateMe/${updatedData._id}`, updatedData, credObj());
+        console.log(res)
+    } catch (err) {
+        return catchErrorMsgHandler(err);
+    }
 
 }
 export const deleteUser = async () => {
@@ -77,7 +87,15 @@ export const deleteUser = async () => {
     //     console.log(error)
     // }
 }
-export const updatePassword = async () => {
+export const updatePassword = async (pwdData) => {
+    const pwdChangeInfo = {password: pwdData.password, newPassword: pwdData.newPassword, newPasswordConfirm: pwdData.confirmNewPassword}
+    try {
+        const res = axios.patch(`${apiSource}${userRoute}/changePassword`, pwdChangeInfo, credObj())
+        console.log(res)
+        
+    } catch (err) {
+        return catchErrorMsgHandler(err)
+    }
     //IMPORTANTE COMPLETAR ------------------------------------------------------------------
 }
 export const retryPassword = async () => {
@@ -90,7 +108,8 @@ export const passwordForgotten = async () => {
 export const getUserInfo = async (userId) => {
     try {
         const res = await axios.get(`${apiSource}${userRoute}/userInfo`,credObj())
-        return res.data.data
+        const userInfo = omit(res.data.data, excludedFields);
+        return userInfo;
     } catch (error) {
         console.log(error)
     }

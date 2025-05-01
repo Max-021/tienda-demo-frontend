@@ -32,7 +32,7 @@ const initialState = {
     isAuthenticated: false,
     loading: false,
     error: null,
-    role: null,
+    userRole: null,
     username: null,
     //ir completando
 }
@@ -53,14 +53,14 @@ export const userSlice = createSlice({
         console.log(action.payload)
         state.loading = false;
         state.isAuthenticated = action.payload.message === 'logged' ? true : false;
-        state.role = action.payload.userInfo.role;
-        state.username = action.payload.userInfo.username;
+        state.userRole = action.payload.userInfo.role || 'none';
+        state.username = action.payload.userInfo.username || null;
       })
       .addCase(checkLogin.rejected, (state,action) => {
         console.log("rejected in thunk")
         state.loading = false;
         state.isAuthenticated = false;
-        state.role = null;
+        state.userRole = null;
         state.username = null;
         state.error = action.payload || 'unknown error'
       })
@@ -71,7 +71,7 @@ export const userSlice = createSlice({
       .addCase(logoutUser.fulfilled , (state) => {
         state.loading = false;
         state.isAuthenticated = false;
-        state.role = null;
+        state.userRole = null;
         state.username = null;
       })
       .addCase(logoutUser.rejected , (state, action) => {
@@ -82,7 +82,7 @@ export const userSlice = createSlice({
 })
 
 export const authenticateStatus = (state) => state.user.isAuthenticated;
-export const userRole = (state) => state.user.role;
+export const userRole = (state) => state.user.userRole;
 export const username = (state) => state.user.username;
 
 export default userSlice.reducer;

@@ -30,7 +30,7 @@ const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProd
         modelInputInfo.dataType='mail';
         modelInputInfo.labelName='Email'
       break;
-      case 'userRole':
+      case 'role':
         modelInputInfo.isDisabled=true;
         modelInputInfo.labelName='Rol'
       break;

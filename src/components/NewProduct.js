@@ -84,7 +84,7 @@ const NewProduct = () => {
                 {locRoute === '/editar-producto' && <button title='Eliminar producto' onClick={() => deleteProduct(newProduct)}><MdDeleteOutline/></button>}
             </div>
             {Object.keys(productModel).map((el,index) => {
-                if (!el.startsWith('_')) {// temporal, aca hacer que el return devuelva los inputs, llevar el codigo del input a otro archivo para que no se haga muy largo???Factorizar???
+                if (!el.startsWith('_')) {
                     return (
                         <div key={index} style={{width: '100%'}}>
                             <FormGenerator key={index} modelKey={el}
