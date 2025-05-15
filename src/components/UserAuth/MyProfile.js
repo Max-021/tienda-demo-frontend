@@ -5,10 +5,14 @@ import Buttons from '../reusables/Buttons'
 import UserInfoForm from './userOptionsComponents/UserInfoForm'
 import UsersList from './userOptionsComponents/UsersList'
 
+import { MdMenu } from "react-icons/md";
+
 const MyProfile = () => {
     const [activeOption, setActiveOption] = useState('myProfile')
+    const [isMenuActive, setIsMenuActive] = useState(false);
 
     const renderSelectedOption = (actOp) => {
+        // setIsMenuActive(false);//temporal, activar para que se cierre en un cambio
         switch (actOp) {
             case 'myProfile':
                 return <UserInfoForm/>
@@ -34,11 +38,13 @@ const MyProfile = () => {
 
     return (
         <div className='myProfileContainer'>
-            <div className='optionsList'>
+            <div className='myProfileMenuIcon'><MdMenu title='Menú usuario' onClick={() => setIsMenuActive(prev => !prev)}/></div>
+            <div className={`optionsList ${isMenuActive && 'activeOptionsList'}`}>
                 <h5>Mi cuenta</h5>
                 <Buttons btnArray={btnArray} btnDivClass='optionsListBtnContainer' btnClass='optionsListBtnUnit'/>
             </div>
-            <div className='relatedData'>
+            <div className={`relatedData`}>
+                {isMenuActive && (<div className='overlay' onClick={() => setIsMenuActive(false)}></div>)}
                 {renderSelectedOption(activeOption)}
             </div>
         </div>

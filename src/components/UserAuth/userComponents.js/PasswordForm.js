@@ -24,8 +24,8 @@ const PasswordForm = ({isChangePasswordActive}) => {
 
     return (
         <form className='pwdChangeContainer' method='post' onSubmit={submitUpdatedPassword}>
-            <div className='userInfoContainer'>
-                <p className='userInfoFieldName pwdField'>Contraseña:</p>
+            <div className='userInfoContainer pwdUserInfoContainer'>
+                <p title='Contraseña' className='userInfoFieldName pwdField'>Contraseña:</p>
                 <TextField name={'password'} type={showPassword?'text':'password'} inputProps={{style:{padding:'12px'}}} value={userPwd.password} onChange={handlePwd} disabled={!isChangePasswordActive}
                     InputProps={{endAdornment:(
                         <InputAdornment position='end'>
@@ -36,8 +36,8 @@ const PasswordForm = ({isChangePasswordActive}) => {
                     )}}
                 />
             </div>
-            <div className='userInfoContainer'>
-                <p className='userInfoFieldName pwdField'>Nueva contraseña:</p>
+            <div className='userInfoContainer pwdUserInfoContainer'>
+                <p title='Nueva contraseña' className='userInfoFieldName pwdField'>Nueva contraseña:</p>
                 <TextField name={'newPassword'} type={showNewPassword?'text':'password'} inputProps={{style:{padding:'12px'}}} value={userPwd.newPassword} onChange={handlePwd} disabled={!isChangePasswordActive}
                     InputProps={{endAdornment:(
                         <InputAdornment position='end'>
@@ -48,8 +48,8 @@ const PasswordForm = ({isChangePasswordActive}) => {
                     )}}
                     />
             </div>
-            <div className='userInfoContainer'>
-                <p className='userInfoFieldName pwdField'>Confirmar nueva contraseña:</p>
+            <div className='userInfoContainer pwdUserInfoContainer'>
+                <p title='Confirmar nueva contraseña' className='userInfoFieldName pwdField'>Confirmar nueva contraseña:</p>
                 <TextField disabled={!isChangePasswordActive} sx={{position: 'relative',}}
                     name={`confirmNewPassword`} type={showConfirmNewPassword?'text':'password'} 
                     value={userPwd.confirmNewPassword} onChange={handlePwd} 

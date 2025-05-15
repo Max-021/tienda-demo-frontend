@@ -52,11 +52,9 @@ export const logout = async () => {
         return catchErrorMsgHandler(err)
     }
 }
-
 export const signup = async (username,mail,password) => {//temporal, ver si agrego algo más
     await axios.post(`${apiSource}${userBasics}/signup`,{username, mail, password,});
 }
-
 export const checkSession = async () => {
     try {
         const res = await axios.get(`${apiSource}${userBasics}/checkSession`, credObj());
@@ -91,7 +89,7 @@ export const updatePassword = async (pwdData) => {
     const pwdChangeInfo = {password: pwdData.password, newPassword: pwdData.newPassword, newPasswordConfirm: pwdData.confirmNewPassword}
     try {
         const res = axios.patch(`${apiSource}${userRoute}/changePassword`, pwdChangeInfo, credObj())
-        console.log(res)
+        console.log(res)//temporal, hacer algo acá cuando el cambio es correcto, un spinner?
         
     } catch (err) {
         return catchErrorMsgHandler(err)
@@ -124,7 +122,32 @@ export const listUsers = async () => {
         console.log(error)
     }
 }
+export const toggleSuspension = async (user) => {
+    try {
+        const userToSuspend = user
+        axios.patch(`${apiSource}${userRoute}/toggleSuspension`, userToSuspend, credObj());
+    } catch (error) {
+        catchErrorMsgHandler(error);
+    }
+}
+export const setNewUserRole = async (user, newRole) => {
+    try {
+        const userToUpdate = {...user, role: newRole}
+        console.log(userToUpdate)
+        axios.patch(`${apiSource}${userRoute}/changeRole`, userToUpdate, credObj());
+    } catch (error) {
+        catchErrorMsgHandler(error);
+    }
 
+}
+export const getRolesList = async () => {
+    try {
+        const res = await axios.get(`${apiSource}${userRoute}/rolesList`, credObj());
+        return res.data.data.roles;
+    } catch (error) {
+        catchErrorMsgHandler(error)
+    }
+}
 
 //------------------    PRODUCTOS    -------------------------------------------------------------------------------------------------------------------------------//
 

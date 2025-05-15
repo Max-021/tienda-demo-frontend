@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { listUsers } from '../../../auxiliaries/axiosHandlers'
+import { listUsers, toggleSuspension, setNewUserRole, getRolesList } from '../../../auxiliaries/axiosHandlers'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -8,21 +8,58 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Dialog from '@mui/material/Dialog';
+import Slide from '@mui/material/Slide';
 
 import { FaCog } from "react-icons/fa";
 import { MdPersonOff } from "react-icons/md";
+import { GrFormClose } from "react-icons/gr";
+
+const Transition = React.forwardRef(function Transition(props,ref) {
+  return <Slide direction='up' ref={ref} {...props}/>
+})
 
 const UsersList = () => {
     const [usersList, setUsersList] = useState(null);
+    const [open, setOpen] = useState(false)
+    const [rolesList, setRolesList] = useState([])
+    const [selectedUser, setSelectedUser] = useState({});
+    const [newRole, setNewRole] = useState("");
 
     useEffect(()=>{
         const getUsers = async () => {
             const list = await listUsers();
+            const roles = await getRolesList();
             setUsersList(list);
-            console.log(list)
+            setRolesList(roles);
         }
         getUsers();
     },[])
+
+    const openDialog = (user) => {
+        setOpen(true)
+        setSelectedUser(user)
+    }
+    const cancelDialog = () => {
+        setOpen(false);
+        setTimeout(() => {
+            setNewRole("");
+            setSelectedUser({});
+        }, 700);
+    }
+    const selectRowStatus = (status) => {
+        switch (status) {
+            case "suspended":
+                return 'suspendedUser';
+            case "inactive":
+                return 'inactiveUser';
+            case "locked":
+                return 'lockedUser';        
+            default:
+                return '';
+        }
+    }
+
     return <>
         <TableContainer component={Paper}>
             <Table aria-label="client-list-table">
@@ -37,19 +74,40 @@ const UsersList = () => {
                 <TableBody>
                     {console.log(usersList)}
                     {Array.isArray(usersList) && usersList.map((user,index) => (
-                        <TableRow key={index}>
+                        <TableRow key={index} className={selectRowStatus(user.status)}>
                             <TableCell component={'th'} scope='row' align='left'>{user.username}</TableCell>
                             <TableCell align='left'>{user.role}</TableCell>
                             <TableCell align='right'>{user.mail}</TableCell>
                             <TableCell align='right' style={{display:'flex', gap:'10px', fontSize: '140%'}}>
-                                <FaCog title='Cambiar rol de usuario' onClick={() => alert("reasigned!")} style={{color: '#3B82F6'}}/>
-                                <MdPersonOff title='Suspender usuario' onClick={() => alert("user suspended!")} style={{color: 'grey'}}/>
+                                <FaCog title='Cambiar rol de usuario' onClick={() => openDialog(user)} style={{color: '#3B82F6'}}/>
+                                <MdPersonOff title={user.status === 'active' ? 'Suspender usuario' : 'Activar usuario'} onClick={() => toggleSuspension(user)} style={{color: 'grey'}}/>
                             </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
             </Table>
         </TableContainer>
+        <Dialog PaperProps={{sx:{boxSizing: 'border-box', padding: '0 12px 12px 12px', }}} fullWidth maxWidth='xs' open={open} onClose={cancelDialog} TransitionComponent={Transition}>
+            <GrFormClose className='closeBtn' onClick={() => setOpen(false)} style={{right: '0', top: '4px'}}/>
+            <div className='currentRoleContainer'>
+                <p className=''>Rol actual:</p>
+                <p className='selectedUser'>{rolesList.find(rol => rol === selectedUser.role)}</p>
+            </div>
+            <div className='separator'></div>
+            <div className='rolesAvContainer'>
+                <p className='title'>Roles disponibles</p>
+                <div className='rolesAv'>
+                    {rolesList && rolesList.filter((e) => e !== selectedUser.role).map((role, index) => {
+                        //tempora, ver si cambio el p por un button o algo mejor, dejar p por ahora
+                        return <p className={`${newRole === role ? 'activeNewRole':''}`} key={index} onClick={() => setNewRole(role)}>{role}</p>
+                    })}
+                </div>
+            </div>
+            <div className="rolesBtns">
+                <button type='button' onClick={cancelDialog}>Cancelar</button>
+                <button type='button' onClick={() => setNewUserRole(selectedUser, newRole)} disabled={newRole === '' ? true : false}>Actualizar</button>
+            </div>
+        </Dialog>
     </>
 }
 
