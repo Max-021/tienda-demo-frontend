@@ -50,7 +50,7 @@ const UserInfoForm = () => {
                             if (!el.startsWith('_')) {
                                 return (<div key={index} className='userInfoContainer'>
                                     <p className='userInfoFieldName'>{FIELD_LABELS[el] || el}:</p>
-                                    <TextField name={el} type={el === 'mail' ? 'email' : 'text'} inputProps={{style:{padding:'12px'}}} value={newuserInfo[el]} onChange={handleChange} disabled={isEditingActive}/>
+                                    <TextField fullWidth name={el} type={el === 'mail' ? 'email' : 'text'} inputProps={{style:{padding:'12px'}}} value={newuserInfo[el]} onChange={handleChange} disabled={isEditingActive}/>
                                 </div>)}
                     })}
                 </div>

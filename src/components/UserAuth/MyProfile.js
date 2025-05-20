@@ -6,6 +6,7 @@ import UserInfoForm from './userOptionsComponents/UserInfoForm'
 import UsersList from './userOptionsComponents/UsersList'
 
 import { MdMenu } from "react-icons/md";
+import NewUser from './userOptionsComponents/NewUser'
 
 const MyProfile = () => {
     const [activeOption, setActiveOption] = useState('myProfile')
@@ -16,14 +17,12 @@ const MyProfile = () => {
         switch (actOp) {
             case 'myProfile':
                 return <UserInfoForm/>
-            break;
             case 'listUsers':
                 return <UsersList/>
-            break;
-                
+            case 'newUser':
+                return <NewUser/>                
             default:
                 return <p>No option implemented yet</p>
-            break;
         }
     }
     const selectSwitchOption = (text) => {
@@ -41,7 +40,7 @@ const MyProfile = () => {
             <div className='myProfileMenuIcon'><MdMenu title='Menú usuario' onClick={() => setIsMenuActive(prev => !prev)}/></div>
             <div className={`optionsList ${isMenuActive && 'activeOptionsList'}`}>
                 <h5>Mi cuenta</h5>
-                <Buttons btnArray={btnArray} btnDivClass='optionsListBtnContainer' btnClass='optionsListBtnUnit'/>
+                <Buttons btnArray={btnArray} btnDivClass='optionsListBtnContainer' btnClass='optionsListBtnUnit' activeBtnClass='optionsListBtnUnitActive' defActiveVal={0}/>
             </div>
             <div className={`relatedData`}>
                 {isMenuActive && (<div className='overlay' onClick={() => setIsMenuActive(false)}></div>)}

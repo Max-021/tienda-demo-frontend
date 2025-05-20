@@ -668,9 +668,7 @@ footer{
     padding: 0 variables.$lateralPadding;
     z-index: 30;
 }
-
 //------------------------------------------------------------------------------------MY PROFILE
-
 .myProfileContainer{
     @include center-flex();
     @include section-height();
@@ -709,6 +707,9 @@ footer{
 
     }
 }
+.optionsListBtnUnit.optionsListBtnUnitActive{
+    color: variables.$thirdColor;
+}
 .relatedData{
     @include center-flex(column, flex-start, center);
     box-sizing: border-box;
@@ -739,32 +740,40 @@ footer{
         margin-bottom: 0;
     }
 }
+.userInfoForm .userInfoContainer{
+    display: contents;
+}
 .userInformation {
     @include center-flex(column, flex-start, flex-start);
-    // width: fit-content;
+    width: 100%;
     button{
         margin-top: 12px;
         background-color: rgb(193, 255, 234);
     }
 }
 .userInfoFields {
-    @include center-flex(row, flex-start, flex-start);
-    flex-wrap: wrap;
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: 
+    max-content  /* label col 1 */ 
+    minmax(0, 450px)           /* input col 1 */
+    max-content  /* label col 2 (usa el mismo max-content) */
+    minmax(0, 450px);           /* input col 1 */
     column-gap: clamp(30px, 4vw, 150px);
+    column-gap: 1rem;
+    row-gap: 1rem;      // espacio vertical entre filas
 }
 .userPwdInfo{
     margin-top: 12px;
     width: 100%;
 }
 .userInfoContainer{
-    @include center-flex(row, flex-start, center);
-    gap: 12px;
-    flex: 0 1 calc(50% - #{clamp(30px, 8vw, 150px)} / 2);
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 1rem;
+    align-items: center;
 }
 .userInfoFieldName{
-    flex: 0 0 80px;
-    white-space: nowrap;
-    padding:12px 12px 12px 0;
     text-align: right;
 }
 .userInfoFieldName:first-of-type{
@@ -826,7 +835,8 @@ footer{
     width: 700px;
 }
 .userInfoFieldName.pwdField{
-    flex: 0 0 200px;
+    // flex: 0 0 200px;
+    text-align: left;
 }
 //usersList
 .selectedUser {
@@ -900,6 +910,26 @@ footer{
 .lockedUser{
     background-color: rgba(128, 0, 128, 0.208);
 }
+//new user
+.newUserContainer{
+    @include center-flex(column, flex-start, flex-start);
+    width: 100%;
+}
+.newUserForm{
+    display: grid;
+    grid-template-columns: max-content minmax(0, 400px);
+    row-gap: 1rem;
+    column-gap: 1rem;
+    align-items: center;
+    width: fit-content;
+    .updateBtn {
+        grid-column: 2;       // ubica el botón en la segunda columna del grid
+        justify-self: end;    // lo alinea al final (derecha) de esa celda
+    }
+}
+.newUserContainer .userInfoContainer {
+  display: contents;
+}
 
 //----------------------------------------------------------------------------------NOT FOUND
 .notFoundPageContainer{
@@ -952,7 +982,7 @@ footer{
         width: 60%;
     }
      .userInfoContainer {
-        flex: 0 1 100%;
+        // flex: 0 1 100%;
     }
 }
 
@@ -1060,6 +1090,10 @@ footer{
         z-index: 18;
         overflow-y: auto;
     }
+    .userInfoFields{
+        width: 100%;
+        grid-template-columns: auto minmax(0, 1fr);
+    }
 }
 
 //--------------------------------------------------------- MOBILE
@@ -1094,19 +1128,26 @@ footer{
         width: 350px;
     }
     .userInfoContainer.pwdUserInfoContainer{
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0;
-        p{
-            flex: 0;
-            margin: 0;
-        }
+        display: grid;
+        grid-template-columns: auto;
+        column-gap: 1rem;
+        align-items: center;
     }
 }
 
 @media (max-width: 400px) {
     .swiperContainer {
         width: 250px;
+    }
+        .searchBarContainer, .menu,
+    h1, .optionsList, footer{
+        padding: 0 calc(variables.$lateralPadding / 8);
+    }
+    .productsLayout, .notFoundPageContainer{
+        padding: calc(variables.$lateralPadding / 8);
+    }
+    .relatedData{
+        padding: 0 calc(variables.$lateralPadding / 5);
     }
 }
 
@@ -1116,12 +1157,18 @@ footer{
     }
 }
 
-@media (max-width: 210px){
+@media (max-width: 250px){
     .productsLayout{
         justify-content: center;
     }
     .productGrid{
         width: 90%;
+    }
+    .userInfoFieldName{
+        text-align: justify;
+    }
+    .userInfoFields{
+        grid-template-columns: auto;
     }
 }
 //revisar si agregar alguna media query más para mayor a lg
