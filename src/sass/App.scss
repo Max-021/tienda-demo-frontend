@@ -215,14 +215,34 @@ li{
     font-weight: bold;
 }
 //signup and login section
-.signContainer{
-    @include center-flex(column, flex-start);
+.logSection{
+    @include center-flex(column, flex-start, center);
+    width: 100%;
     box-sizing: border-box;
     height: variables.$fullHeight;
-    padding-top: 48px;
+    padding: variables.$lateralPadding;
+    // gap: 12px;
+    h3{
+        font-size: 150%;
+        margin: 0;
+        margin-bottom: 12px;
+    }
+}
+.signupContainer{
+    @include floating-box(35px);
+    width: 100%;
+    max-width: 400px;
+    margin-top: 48px;
+    box-sizing: border-box;
+    padding: 12px;
+    background-color: white;
 }
 .signForm{
     @include center-flex(column,flex-start,flex-start);
+    gap: 12px;
+    button{
+        align-self: flex-end;
+    }
 }
 
 //************************************************* REUSABLES **********************************************************
@@ -259,12 +279,16 @@ li{
     display: flex;
     height: 220px;
     @include floating-box(20px);
+    p:first-of-type {
+        transition: transform 0.4s, color 0.4s;
+        transform-origin: left center;
+    }
     &:hover {
         cursor: pointer;
         p:first-of-type{
             transition: 0.4s;
             color: variables.$secondColor;
-            transform: scale(1.025);
+            transform: scale(1.05);
         }
     }
     position: relative;
@@ -1026,6 +1050,9 @@ footer{
     }
     .productCard{
         flex-direction: column;
+    }
+    .productDetails{
+        padding-bottom: 12px;
     }
     .swiperContainer{
         width: 350px;

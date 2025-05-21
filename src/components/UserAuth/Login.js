@@ -45,8 +45,9 @@ const Login = () => {
 }
 
   return (
-    <div className='signContainer'>
-        <h3>Iniciar Sesión</h3>
+    <div className='logSection'>
+      <div className='signupContainer'>
+        <h3>Inicio de Sesión</h3>
         <Box component='form' className='signForm' onSubmit={submitForm}>
           <FormControl>
             <TextField required label={'Email'} value={userData.mail} onChange={handleChange} name={`mail`} id={`email-id`} type='email'/>
@@ -56,6 +57,7 @@ const Login = () => {
           </FormControl>
           <Button type='submit'>Iniciar sesión</Button>
         </Box>
+      </div>
     </div>
   )
 }
