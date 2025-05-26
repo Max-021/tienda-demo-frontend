@@ -126,14 +126,22 @@ h1{
     color: variables.$lightColor;
 
 }
+.menu{
+    position: relative;
+    overflow: visible;
+}
 .rightSide{
     justify-self: flex-end;
     @include center-flex();
     gap: 12px;
+    height: 29px;
 }
 .categories {
+    @include center-flex(row, flex-start);
     padding: 0;
     margin: 0;
+    width: 100%;
+    overflow: hidden;
     li{
         cursor: pointer;
         transition: 0.3s;
@@ -147,6 +155,46 @@ li{
 }
 .activeCategory{
     color: variables.$thirdColor;
+}
+.more-btn {
+    box-sizing: border-box;
+    cursor: pointer;
+    padding: 0;
+    border: none;
+    border-radius: 5px;
+    background-color: variables.$lightColor;
+    color: variables.$secondColor;
+    transition: all 0.3s;
+    height: 100%;
+    aspect-ratio: 1/1;
+    position: relative;
+    overflow: visible;
+    @include center-flex();
+    &:hover { color: variables.$thirdColor; background-color: transparent;}
+    svg{
+        position: absolute;
+        width: 28px;
+        height: 28px;
+        transform: rotate(90deg);
+    }
+}
+.popoverCats{
+    box-sizing: border-box;
+    padding: 8px;
+    width: fit-content;
+    font-size: 120%;
+    @include center-flex(column, flex-start, flex-start);
+    gap: 4px;
+    li{
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    li:hover{
+        color:variables.$thirdColor;
+    }
+}
+.popoverCategory{
+    // display: block;
 }
 .searchBarContainer {
     color: variables.$secondColor;
