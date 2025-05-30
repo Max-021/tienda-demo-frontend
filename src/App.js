@@ -16,6 +16,7 @@ import NotFound from './components/NotFound';
 import Signup from './components/UserAuth/SignUp';
 import Login from './components/UserAuth/Login'
 import MyProfile from './components/UserAuth/MyProfile';
+import ResetPassword from './components/UserAuth/ResetPassword';
 //cart
 import Cart from './components/Cart';
 
@@ -58,6 +59,7 @@ function App() {
         }
         {/* acá termina el if? está logeado */}
         <Route path='/cart' element={<Cart/>}/>
+        <Route path='/reset-password/:token' element={<ResetPassword/>}/>
         <Route path='/*' element={<NotFound/>}/>
       </Routes>
       <Footer/>

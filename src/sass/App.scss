@@ -263,7 +263,8 @@ li{
     font-weight: bold;
 }
 //signup and login section
-.logSection{
+.logSection,
+.resetPwdSection{
     @include center-flex(column, flex-start, center);
     width: 100%;
     box-sizing: border-box;
@@ -292,7 +293,47 @@ li{
         align-self: flex-end;
     }
 }
-
+.forgotPwdBtn{
+    align-self: flex-start !important;
+    margin-top: 6px;
+    border: none;
+    background-color: transparent;
+    color: variables.$secondColor;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    &:hover{
+        filter: brightness(1.4);
+        text-shadow:
+        0 0 2px rgba(255, 255, 255, 0.8),
+        0 0 4px rgba(255, 255, 255, 0.6),
+        0 0 8px rgba(255, 255, 255, 0.4);
+    }
+}
+//resetpwd
+.pwdResetContainer{
+    box-sizing: border-box;
+    @include floating-box(85px);
+    padding: 12px;
+    border-color: white !important;
+    display: grid;
+    grid-template-columns: max-content minmax(0, 400px);
+    row-gap: 1rem;
+    column-gap: 1rem;
+    align-items: center;
+}
+/* Que el título abarque ambas columnas (opcional si ya lo tienes) */
+.pwdResetContainer > *:not(:first-of-type) {
+    display: contents !important;
+}
+.pwdResetContainer > .newUserTitle {
+  grid-column: 1 / -1;
+  width:100%;
+}
+.pwdResetContainer > :last-of-type{
+    grid-column: 1 / -1;
+    width: 100%;
+}
 //************************************************* REUSABLES **********************************************************
 .linksContainer {
     @include center-flex();
@@ -1207,6 +1248,15 @@ footer{
         grid-template-columns: auto;
         column-gap: 1rem;
         align-items: center;
+    }
+    .pwdResetContainer{
+        grid-template-columns: 1fr;
+    }
+    .pwdResetContainer > *:not(:first-of-type) {
+        display: grid !important;
+        p{
+            text-align: left;
+        }
     }
 }
 

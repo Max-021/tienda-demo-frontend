@@ -52,8 +52,23 @@ export const logout = async () => {
         return catchErrorMsgHandler(err)
     }
 }
-export const signup = async (username,mail,password) => {//temporal, ver si agrego algo más
-    await axios.post(`${apiSource}${userBasics}/signup`,{username, mail, password,});
+export const signup = async (newUser) => {//temporal, ver como manejo los campos nuevos en el modelo de usuario
+    try {
+       const res = await axios.post(`${apiSource}${userBasics}/signup`,newUser);
+       console.log(res);
+       return res;
+    } catch (error) {
+        return catchErrorMsgHandler(error)        
+    }
+}
+export const createUser = async (newUser) => {
+    try {
+        const res = await axios.post(`${apiSource}${userRoute}/createUser`,newUser)
+        console.log(res)
+        return res;
+    } catch (error) {
+        return catchErrorMsgHandler(error);
+    }
 }
 export const checkSession = async () => {
     try {
@@ -99,9 +114,33 @@ export const updatePassword = async (pwdData) => {
 export const retryPassword = async () => {
     //IMPORTANTE COMPLETAR ------------------------------------------------------------------
 }
-export const passwordForgotten = async () => {
-    await axios.post(`${apiSource}${userRoute}/passwordForgotten`);
-
+export const passwordForgotten = async (mail) => {
+    console.log(mail)
+    try {
+        const res = await axios.post(`${apiSource}${userBasics}/passwordForgotten`, {mail});
+        console.log(res);
+        return res;
+    } catch (error) {
+        return catchErrorMsgHandler(error)
+    }
+}
+export const resetPassword = async (newPwd, token) => {
+    console.log(newPwd)
+    try {
+        return await axios.patch(`${apiSource}${userBasics}/resetPassword/${token}`,newPwd);
+    } catch (error) {
+        const msg = catchErrorMsgHandler(error)
+        throw new Error(msg)
+    }
+}
+export const validateResetToken = async (token) => {
+    try {
+        const res = await axios.get(`${apiSource}${userBasics}/validateResetToken/${token}`);
+        return res;
+    } catch (error) {
+        const msg = catchErrorMsgHandler(error);
+        throw new Error(msg);
+    }
 }
 export const getUserInfo = async (userId) => {
     try {
