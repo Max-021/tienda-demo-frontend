@@ -13,7 +13,7 @@
     box-shadow: 8px 15px $blurPx -5px gray;
 }
 @mixin section-height() {
-    height: variables.$fullHeight;    
+    height: variables.$fullHeight;
 }
 @mixin buttonComp($bkgCol: transparent) {
     cursor: pointer;
@@ -59,13 +59,12 @@ svg:hover{
     background-color: transparent;
     border: 0;
 }
-// .shadowComponent::before{
-//     content: '';
-//     position: absolute;
-//     inset: 0;
-//     background: rgba(0, 0, 0, 0.3);
-//     z-index: 1;
-// }
+.spinnerStart{
+    align-self: flex-start;
+}
+.spinnerCenter{
+    align-self: center;
+}
 //carousel
 .swiper-slide{
     height: auto !important;
@@ -345,9 +344,6 @@ li{
         margin: 0;
     }
 }
-
-
-
 // layout
 .productsLayout{
     width:100%;
@@ -641,17 +637,30 @@ li{
 
 //----------------------------------------------------------------------------------new product
 .newProductContainer{
-    @include section-height();
-    height: 100%;
+    min-height: variables.$fullHeight;
+    height: fit-content;
     padding: 12px 0;
     width: 100%;
     background-color: variables.$lightColorShade;
     @include center-flex(row, space-evenly, flex-start);
 }
+.formTitleContainer{
+    width: 100%;
+    @include center-flex(row, space-between, flex-start);
+}
 .formTitle{
     font-size: 150%;
     margin-top: 0;
     margin-bottom: -6px;
+}
+.deleteProdBtn{
+    font-size: 160%;
+    background-color: transparent;
+    border: none;
+    transform: all 0.7s;
+    &:hover{
+        color: variables.$cancelColor;
+    }
 }
 .productForm{
     box-sizing: border-box;
@@ -689,9 +698,7 @@ li{
             justify-self: center;
         }
     }
-
 }
-
 //-----------------------------------------------------------------------------------------------------enumFields
 .enumFieldsWrapper {
     box-sizing: border-box;

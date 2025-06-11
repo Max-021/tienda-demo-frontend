@@ -2,7 +2,7 @@ import React, {useState,useEffect,useRef,useLayoutEffect} from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 
 import { currentCategories, setFilterInfo } from '../../redux/searchBarSlice';
-import { getCategoriesList } from '../../auxiliaries/axiosHandlers';
+import { getCategoriesList } from '../../auxiliaries/axios';
 
 const Categories = ({setHiddenCats, activeCat, onCategorySelected}) => {
     const dispatch = useDispatch();
@@ -16,7 +16,8 @@ const Categories = ({setHiddenCats, activeCat, onCategorySelected}) => {
       useEffect(() => {
         const getCategories = async () => {
           const filterInfo = await getCategoriesList();
-          if (currentCats.length === 0) dispatch(setFilterInfo(filterInfo));
+          console.log(filterInfo.data)
+          if (currentCats.length === 0) dispatch(setFilterInfo(filterInfo.data));
         };
         getCategories();
         setVisibleCats(currentCats);

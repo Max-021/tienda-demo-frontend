@@ -1,3 +1,9 @@
+/*******************************************IMPORTANTE
+todo lo que esta acá fue reescrito de una mejor manera, por eso este archivo esta en otro lugar,
+lo dejo como referencia para futuras modificaciones/correcciones
+
+*/
+
 import axios from "axios";
 import { catchErrorMsgHandler } from "./functions";
 
@@ -63,7 +69,7 @@ export const signup = async (newUser) => {//temporal, ver como manejo los campos
 }
 export const createUser = async (newUser) => {
     try {
-        const res = await axios.post(`${apiSource}${userRoute}/createUser`,newUser)
+        const res = await axios.post(`${apiSource}${userRoute}/createUser`,newUser, credObj())
         console.log(res)
         return res;
     } catch (error) {
@@ -189,6 +195,7 @@ export const getRolesList = async () => {
 }
 
 //------------------    PRODUCTOS    -------------------------------------------------------------------------------------------------------------------------------//
+//productos HECHOS
 
 //product related, temporal, falta revisar que se puedan actualizar y borrar productos, por ahora solo se piden uno o todos y se pueden crear -> C.R hechos, falta U.D
 export const getAllProducts = async () => {
@@ -310,6 +317,7 @@ export const deleteProduct = async (productData) => {
 
 } 
 //------------------    ENUM FIELDS    -------------------------------------------------------------------------------------------------------------------------------//
+//enum HECHOS
 
 //enumRelated for validation on specific fields, temporal, falta revisar que se puedan borrar bien los enums
 export const getCategoriesList = async () => {

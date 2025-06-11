@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 
-import { signup } from '../../auxiliaries/axiosHandlers'
+import { signup } from '../../auxiliaries/axios'
 
 import Box  from '@mui/material/Box'
 import Button from '@mui/material/Button';

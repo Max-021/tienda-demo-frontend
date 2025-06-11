@@ -19,7 +19,7 @@ export const catchErrorMsgHandler = (err) => {
         return {
             success: false,
             status: err.response.status,
-            message: err.response.data.message || "Unknown error",
+            message: err.response.data.message || "Error de red o del servidor",
         };
     } else {
         console.error("Error no relacionado con la respuesta del servidor", err.message);
@@ -27,5 +27,16 @@ export const catchErrorMsgHandler = (err) => {
             success: false,
             message: "No se pudo conectar al servidor",
         };
+    }
+}
+export const callAPI = async (func) => {
+    try {
+        const res = await func();
+        return {
+            status: true,
+            data: res.data.data,
+        }
+    } catch (error) {
+        throw error;
     }
 }

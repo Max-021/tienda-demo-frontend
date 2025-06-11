@@ -2,7 +2,7 @@ import React,{useState,useEffect} from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch} from 'react-redux';
 import { authenticateStatus, checkLogin } from '../../redux/UserSlice';
-import { logout } from '../../auxiliaries/axiosHandlers';
+import { logout } from '../../auxiliaries/axios';
 import { MdLogout } from "react-icons/md";
 
 import Dialog from '@mui/material/Dialog';

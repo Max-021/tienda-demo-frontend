@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 
 import TextField from '@mui/material/TextField'
-import { signup } from '../../../auxiliaries/axiosHandlers';
+import { signup } from '../../../auxiliaries/axios';
 
 const NewUser = () => {
-    const [newUser, setNewUser] = useState({username: '', mail: '',})
+    const [newUser, setNewUser] = useState({username: '', mail: '',})//aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
-    const createUser = (e) => {
+    const createUser = (e) => {//hacer async la llamada para que tenga notificaciones
         e.preventDefault();
         signup(newUser);
         alert("Hacer algo!")//temporal, adicionalmente cuando recibo el sí tengo que limpiar el form y cuando no mostrarlo bien

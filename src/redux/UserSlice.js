@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { checkSession, logout } from "../auxiliaries/axiosHandlers";
+import { checkSession, logout } from "../auxiliaries/axios";
 
 export const checkLogin = createAsyncThunk(
   'user/checkLogin',
@@ -8,7 +8,7 @@ export const checkLogin = createAsyncThunk(
       const data = await checkSession();
       console.log('del thunk con checkSession')
       console.log(data)
-      return data;
+      return data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message)
     }

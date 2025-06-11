@@ -1,24 +1,36 @@
 import React, {useState} from 'react'
+import { useNotification } from '../../reusables/NotificationContext';
+import LoadingSpinner from '../../reusables/LoadingSpinner';
 
-import { updatePassword } from '../../../auxiliaries/axiosHandlers';
+import { updatePassword } from '../../../auxiliaries/axios';
 
 import TextField from '@mui/material/TextField'
 import { IconButton, InputAdornment } from '@mui/material'
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 
 const PasswordForm = ({isChangePasswordActive}) => {
+    const notify = useNotification();
     const [userPwd, setUserPwd] = useState({password:'', newPassword:'',confirmNewPassword:''})
     const [showPassword, setShowPassword] = useState(false)
     const [showNewPassword, setShowNewPassword] = useState(false)
     const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false)
+    const [loadingStatus, setLoadingStatus] = useState(false);
 
     const handlePwd = (e) => setUserPwd(prev => ({...prev, [e.target.name]: e.target.value}))
 
-    const submitUpdatedPassword = (e) => {
+    const submitUpdatedPassword = async (e) => {
         e.preventDefault();
-
-        //dejar que esto pase solo cuando las validaciones del formulario son correctas
-        updatePassword(userPwd)
+        try {
+            setLoadingStatus(true);
+            //dejar que esto pase solo cuando las validaciones del formulario son correctas
+            await updatePassword(userPwd)
+            notify('success', 'Actualización de contraseña exitosa');
+            await new Promise(resolve => setTimeout(resolve, 3000));
+        } catch (error) {
+            notify('error', 'Ocurrio un error al intentar actualizar la contraseña, reintente.');
+        }finally{
+            setLoadingStatus(false);
+        }
     }
     const isMismatch = userPwd.confirmNewPassword !== '' && userPwd.confirmNewPassword !== userPwd.newPassword;
 
@@ -66,7 +78,7 @@ const PasswordForm = ({isChangePasswordActive}) => {
                     )}}
                 />
             </div>
-            <button className='userInfoBtn updatePwdBtn' type='submit'>Actualizar contraseña</button>
+            <button className='userInfoBtn updatePwdBtn' type='submit'>{!loadingStatus ? 'Actualizar contraseña': <LoadingSpinner/>}</button>
         </form>
     )
 }

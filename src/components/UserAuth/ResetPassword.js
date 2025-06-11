@@ -1,13 +1,16 @@
 import React, {useState, useEffect} from 'react';
+import { useNotification } from '../reusables/NotificationContext';
 import { useParams, useNavigate } from 'react-router-dom';
+import LoadingSpinner from '../reusables/LoadingSpinner';
 
 import TextField from '@mui/material/TextField'
 import { IconButton, InputAdornment } from '@mui/material'
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 
-import { resetPassword, validateResetToken } from '../../auxiliaries/axiosHandlers'
+import { resetPassword, validateResetToken } from '../../auxiliaries/axios';
 
 const ResetPassword = () => {
+  const notify = useNotification();
   const {token} = useParams();
   const navigate = useNavigate();
   const [passwordData, setPasswordData] = useState({password: '', confirmPassword: ''});
@@ -20,12 +23,13 @@ const ResetPassword = () => {
     const checkToken = async () => {
       try {
         await validateResetToken(token);
-        alert("Aca?")
         setIsValid(true);
+        notify('success', 'Token válido!');
       } catch (error) {
-        alert("NOOOOO")
         setIsValid(false);
         navigate('/notfound');
+      } finally {
+
       }
     }
     checkToken();
@@ -43,6 +47,7 @@ const ResetPassword = () => {
 
   if (isValid === null) {
     return <div className='resetPwdSection'>
+        <LoadingSpinner/>
         <p>Validando enlace…</p>
       </div>
   }

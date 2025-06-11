@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { getUserInfo } from '../../auxiliaries/axiosHandlers'
+import React, { useState } from 'react'
 
 import Buttons from '../reusables/Buttons'
 import UserInfoForm from './userOptionsComponents/UserInfoForm'
 import UsersList from './userOptionsComponents/UsersList'
+import NewUser from './userOptionsComponents/NewUser'
 
 import { MdMenu } from "react-icons/md";
-import NewUser from './userOptionsComponents/NewUser'
 
 const MyProfile = () => {
     const [activeOption, setActiveOption] = useState('myProfile')

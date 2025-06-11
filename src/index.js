@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import Providers from './Providers';
 import reportWebVitals from './reportWebVitals';
 
 import { ThemeProvider } from '@mui/material';
@@ -16,7 +16,7 @@ root.render(
     <Provider store={store}>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
-          <App />
+          <Providers />
         </ThemeProvider>
       </BrowserRouter>
     </Provider>

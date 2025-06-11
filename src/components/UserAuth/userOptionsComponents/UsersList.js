@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import { useLoadingHook } from '../../../hooks/useLoadingHook';
+import { useNotification } from '../../reusables/NotificationContext';
+import LoadingSpinner from '../../reusables/LoadingSpinner';
+import LoadingError from '../../reusables/LoadingError';
 
-import { listUsers, toggleSuspension, setNewUserRole, getRolesList } from '../../../auxiliaries/axiosHandlers'
+import { listUsers, toggleSuspension, setNewUserRole, getRolesList } from '../../../auxiliaries/axios'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -20,21 +24,28 @@ const Transition = React.forwardRef(function Transition(props,ref) {
 })
 
 const UsersList = () => {
+    const notify = useNotification();
     const [usersList, setUsersList] = useState(null);
     const [open, setOpen] = useState(false)
     const [rolesList, setRolesList] = useState([])
     const [selectedUser, setSelectedUser] = useState({});
     const [newRole, setNewRole] = useState("");
+    const [auxLoading, setAuxLoading] = useState(false);
 
     useEffect(()=>{
         const getUsers = async () => {
-            const list = await listUsers();
             const roles = await getRolesList();
-            setUsersList(list);
-            setRolesList(roles);
+            setRolesList(roles.data.roles);
         }
         getUsers();
     },[])
+
+    const {data: list, loading, error, refetch} = useLoadingHook(listUsers, []);
+    useEffect(()=>{
+        if(list){
+            setUsersList(list);
+        }
+    }, [list]);
 
     const openDialog = (user) => {
         setOpen(true)
@@ -46,6 +57,22 @@ const UsersList = () => {
             setNewRole("");
             setSelectedUser({});
         }, 700);
+    }
+    const awaitAndRefetch = async (fn,data, msg='Acción realizada con éxito!') => {
+        try {
+            setAuxLoading(true);
+            await fn(...data);
+            notify('success', msg);
+        } catch (error) {
+            notify('error', 'Error al realizar la acción, reintente');
+        }finally{
+            setAuxLoading(false);
+            refetch();
+        }
+    }
+    const changeRole = (user, role) => {
+        cancelDialog();
+        awaitAndRefetch(setNewUserRole,[user, role], 'Rol actualizado.')
     }
     const selectRowStatus = (status) => {
         switch (status) {
@@ -59,6 +86,8 @@ const UsersList = () => {
                 return '';
         }
     }
+    if(loading || auxLoading) return <LoadingSpinner containerClass={'spinnerCenter'}/>
+    if(error)   return <LoadingError containerClass='spinnerStart' fn={refetch} error={error}/>
 
     return <>
         <TableContainer component={Paper}>
@@ -80,7 +109,7 @@ const UsersList = () => {
                             <TableCell align='right'>{user.mail}</TableCell>
                             <TableCell align='right' style={{display:'flex', gap:'10px', fontSize: '140%'}}>
                                 <FaCog title='Cambiar rol de usuario' onClick={() => openDialog(user)} style={{color: '#3B82F6'}}/>
-                                <MdPersonOff title={user.status === 'active' ? 'Suspender usuario' : 'Activar usuario'} onClick={() => toggleSuspension(user)} style={{color: 'grey'}}/>
+                                <MdPersonOff title={user.status === 'active' ? 'Suspender usuario' : 'Activar usuario'} onClick={() => awaitAndRefetch(toggleSuspension,[user],'Usuario suspendido.')} style={{color: 'grey'}}/>
                             </TableCell>
                         </TableRow>
                     ))}
@@ -105,7 +134,7 @@ const UsersList = () => {
             </div>
             <div className="rolesBtns">
                 <button type='button' onClick={cancelDialog}>Cancelar</button>
-                <button type='button' onClick={() => setNewUserRole(selectedUser, newRole)} disabled={newRole === '' ? true : false}>Actualizar</button>
+                <button type='button' onClick={() => changeRole(selectedUser, newRole)} disabled={newRole === '' ? true : false}>Actualizar</button>
             </div>
         </Dialog>
     </>
