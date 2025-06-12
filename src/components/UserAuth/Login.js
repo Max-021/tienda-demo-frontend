@@ -32,9 +32,11 @@ const Login = () => {
       return;
     }
     if(isForgotten){
-      await recoverPassword(userData.password);
+      const res =await recoverPassword(userData.mail);
+      console.log(res);//revisar y borrar estas cosas en prod, temporal
     }else{
       const loginStatus = await loginUser(userData);
+      console.log(loginStatus)
       // if(loginStatus.status) {
       //   navigate('/');
       //   navigate(0);
