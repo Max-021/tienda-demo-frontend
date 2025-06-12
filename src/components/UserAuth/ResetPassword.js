@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { useNotification } from '../reusables/NotificationContext';
+import { useLoadingNotifier } from '../../hooks/useLoadingNotifier';
 import { useParams, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../reusables/LoadingSpinner';
 
@@ -18,6 +19,7 @@ const ResetPassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isValid, setIsValid] = useState(null)
 
+  const sendResetPassword = useLoadingNotifier(resetPassword, {successMsg: 'Cambio de contraseña exitoso.', errorMsg: 'Ocurrió un error al intentar cambiar la contraseña, por favor reintente.'})
 
   useEffect(()=>{
     const checkToken = async () => {
@@ -38,9 +40,9 @@ const ResetPassword = () => {
 
   const handlePwd = (e) => setPasswordData(prev => ({...prev, [e.target.name]: e.target.value}))
 
-  const submitResetPassword = (e) => {
+  const submitResetPassword = async (e) => {
       e.preventDefault();
-      resetPassword(passwordData, token);//hacer algo con la info que recibo
+      await sendResetPassword(passwordData, token);//hacer algo con la info que recibo
   }
 
   const isMismatch = passwordData.confirmPassword !== '' && passwordData.confirmPassword !== passwordData.password;

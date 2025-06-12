@@ -1,15 +1,26 @@
 import React, { useState } from 'react'
+import { useNotification } from '../../reusables/NotificationContext';
 
+import LoadingSpinner from '../../reusables/LoadingSpinner';
 import TextField from '@mui/material/TextField'
-import { signup } from '../../../auxiliaries/axios';
+import { createUser } from '../../../auxiliaries/axios';
 
 const NewUser = () => {
-    const [newUser, setNewUser] = useState({username: '', mail: '',})//aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    const notify = useNotification();
+    const [newUser, setNewUser] = useState({username: '', mail: '',})
+    const [loading, setLoading] = useState(false);
 
-    const createUser = (e) => {//hacer async la llamada para que tenga notificaciones
+    const submitNewUser = async (e) => {
         e.preventDefault();
-        signup(newUser);
-        alert("Hacer algo!")//temporal, adicionalmente cuando recibo el sí tengo que limpiar el form y cuando no mostrarlo bien
+        setLoading(true)
+        try {
+            await createUser(newUser);
+            notify('success','Usuario creado con exito, el mismo recibirá en su casilla de correo instrucciones sobre como empezar a utilizar la cuenta.');
+        } catch (error) {
+            notify('error','Error al crear el usuario, reintente.');
+        }finally{
+            setLoading(false);
+        }
     }
     const handleChange = (e) => setNewUser(prev => ({...prev, [e.target.name]: e.target.value}))
 
@@ -18,7 +29,7 @@ const NewUser = () => {
         <div className='newUserTitle'>
             <p>Nuevo usuario</p>
         </div>
-        <form method='post' onSubmit={createUser} className='newUserForm'>
+        <form method='post' onSubmit={submitNewUser} className='newUserForm'>
             <div className='userInfoContainer'>
                 <p className='userInfoFieldName'>Nombre de usuario:</p>
                 <TextField name={'username'} type={'text'} inputProps={{style:{padding:'12px'}}} value={newUser.username} onChange={handleChange} required/>
@@ -31,7 +42,7 @@ const NewUser = () => {
                 <div></div>
                 <p style={{textAlign: 'right', margin:0}}>*La contraseña la podrá establecer el usuario a través de un link provisto al mail dado.</p>
             </div>
-            <button type='submit' className='userInfoBtn updateBtn'>Crear usuario</button>
+            <button type='submit' className='userInfoBtn updateBtn'>{loading ? <LoadingSpinner/> : 'Crear usuario'}</button>
         </form>
     </div>)
 }
