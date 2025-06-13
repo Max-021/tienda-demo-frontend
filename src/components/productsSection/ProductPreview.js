@@ -1,0 +1,35 @@
+import React from 'react'
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { currentViewValue } from '../../redux/searchBarSlice';
+import { authenticateStatus, userRole } from '../../redux/UserSlice';
+import { MdEditSquare } from "react-icons/md";
+import { allowedEditingRole } from '../../data/permissions';
+
+const ProductPreview = ({ind, product, handleOpen}) => {
+    const currentView = useSelector(currentViewValue);
+    const authStatus = useSelector(authenticateStatus);
+    const role = useSelector(userRole);
+
+    return (
+        <div className={`productView ${currentView === 'list' ? 'productList' : 'productGrid'}`} onClick={() => handleOpen(ind)}>
+            <div className='productImgContainer'>
+                <img className='productImg' src={product.img[0].startsWith('https') ? product.img[0] : require(`../../assets/${product.img[0]}`)} alt={`prod${ind}`}/>
+            </div>
+            <div className='productInfo'>
+                <p key={`${ind}-prodName`} title={product.name}>{product.name}</p>
+                <p>{product.quantity > 0 ? 'Unidades disponibles' : 'No disponible temporalmente, consultar por el producto'}</p>
+                <p>$ {product.price}</p>{/*temporal, revisar el $ y pensar alguna manera de hacer esto adaptable por si hay que incluir tipo de moneda  */}
+                <p>{product.colors.length} colores</p>
+            </div>
+            {authStatus && allowedEditingRole.includes(role) ?
+                <Link className='editIconContainer' to={'/editar-producto'} state={product} title='Editar Producto'>
+                <MdEditSquare className='editBtn'/>
+                </Link>
+            : null
+            }
+        </div >
+    )
+}
+
+export default ProductPreview

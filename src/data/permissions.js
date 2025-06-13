@@ -1,4 +1,4 @@
-export const allowedEditingRole = 'admin';
+export const allowedEditingRole = ['admin', 'editor'];
 export const excludedFields = ['role',]
 
 export const FIELD_LABELS = {
