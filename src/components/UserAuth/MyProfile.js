@@ -6,6 +6,7 @@ import UsersList from './userOptionsComponents/UsersList'
 import NewUser from './userOptionsComponents/NewUser'
 
 import { MdMenu } from "react-icons/md";
+import Actions from './userOptionsComponents/Actions'
 
 const MyProfile = () => {
     const [activeOption, setActiveOption] = useState('myProfile')
@@ -19,7 +20,9 @@ const MyProfile = () => {
             case 'listUsers':
                 return <UsersList/>
             case 'newUser':
-                return <NewUser/>                
+                return <NewUser/>
+            case 'actions':
+                return <Actions/>
             default:
                 return <p>No option implemented yet</p>
         }
@@ -32,6 +35,7 @@ const MyProfile = () => {
         {name: 'Mi perfil', action: () => selectSwitchOption('myProfile')},
         {name: 'Listar Usuarios', action: () => selectSwitchOption('listUsers')},
         {name: 'Crear Usuario', action: () => selectSwitchOption('newUser')},
+        {name: 'Acciones', action: () => selectSwitchOption('actions')},
     ]
 
     return (

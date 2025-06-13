@@ -12,13 +12,15 @@ export const createUser = (newUser) => callAPI(() => post(userRoutes.CREATE_USER
 
 export const updateUser = (updatedData) => callAPI(() => update(`${userRoutes.UPDATE_ME}/${updatedData._id}`, updatedData));
 
-export const deleteUser = (userId) => callAPI(() => deleteCall(`${userRoutes.DELETE_USER}/${userId}`));//temporal, funcion no implementada todavía
+export const deleteUser = (userId) => callAPI(() => deleteCall(`${userRoutes.DELETE_USER}/${userId}`));
+
+export const deactivateUser = (userId) => callAPI(() => update(`${userRoutes.DEACTIVATE_USER}/${userId}`, {userId}));
 
 export const updatePassword = (pwdData) => callAPI(() => update(userRoutes.CHANGE_PWD, {password: pwdData.password, newPassword: pwdData.newPassword, newPasswordConfirm: pwdData.confirmNewPassword}));
 
 export const retryPassword = () => callAPI(() => post());//temporal, completar
 
-export const getUserInfo = () => callAPI(() => get(userRoutes.USER_INFO));
+export const getUserInfo = (userId) => callAPI(() => get(`${userRoutes.USER_INFO}/${userId}`));
 
 export const listUsers = () => callAPI(() => get(userRoutes.USERS_LIST));
 

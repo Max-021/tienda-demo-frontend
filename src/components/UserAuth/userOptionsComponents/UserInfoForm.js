@@ -1,4 +1,5 @@
 import React, {useState, useEffect,} from 'react'
+import { useSelector } from 'react-redux';
 import { useLoadingHook } from '../../../hooks/useLoadingHook';
 import { useNotification } from '../../reusables/NotificationContext';
 import PasswordForm from '../userComponents.js/PasswordForm';
@@ -10,9 +11,11 @@ import { FaEdit } from "react-icons/fa";
 
 import { getUserInfo, updateUser } from '../../../auxiliaries/axios'
 import { allowedEditingRole, FIELD_LABELS } from '../../../data/permissions'
+import { userId } from '../../../redux/UserSlice';
 
 const UserInfoForm = () => {
     const notify = useNotification();
+    const userIdData = useSelector(userId)
     const [userInformation, setUserInformation] = useState({});
     const [newuserInfo, setNewUserInfo] = useState({});
     const [isEditingActive, setIsEditingActive] = useState(true);
@@ -20,7 +23,7 @@ const UserInfoForm = () => {
     const [pendingSubmit, setPendingSubmit] = useState(false)
     const [initialLoadDone, setInitialLoadDone] = useState(false);
 
-    const {data: userData, loading, error, refetch} = useLoadingHook(getUserInfo, []);
+    const {data: userData, loading, error, refetch} = useLoadingHook(getUserInfo, [userIdData], {immediate: Boolean(userIdData)});
     useEffect(()=> {
         if(userData){
             if(!initialLoadDone) setInitialLoadDone(true);

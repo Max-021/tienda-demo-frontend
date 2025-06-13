@@ -1050,6 +1050,55 @@ footer{
 .newUserContainer .userInfoContainer {
   display: contents;
 }
+//user actions
+.userActionsContainer{
+    @include center-flex(column, flex-start, flex-start);
+    box-sizing: border-box;
+    width: 100%;
+    gap: 48px;
+}
+.userAction {
+  position: relative;
+  border: 1px solid variables.$secondColor;
+  padding: 24px 12px 12px;
+  box-sizing: border-box;
+  min-width: 400px; // Ajustalo según lo que necesites
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+
+  p {
+    position: absolute;
+    top: -0.6em;
+    left: 12px;
+    background-color: white; // O el fondo de tu app
+    padding: 0 6px;
+    margin: 0;
+    font-size: 0.9em;
+    color: variables.$secondColor;
+    white-space: nowrap; // <- esto evita el salto de línea
+    max-width: calc(100% - 24px); // por si querés evitar overflow
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: bold;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1em;
+    cursor: pointer;
+    border: 2px solid variables.$cancelColor;
+    border-radius: 8px;
+    background-color: variables.$cancelColorOpacity;
+    font-weight: bold;
+    transition: 0.7s all;
+    &:hover{
+        transform: scale(1.03);
+    }
+  }
+}
 
 //----------------------------------------------------------------------------------NOT FOUND
 .notFoundPageContainer{
@@ -1280,6 +1329,14 @@ footer{
     }
     .relatedData{
         padding: 0 calc(variables.$lateralPadding / 5);
+        padding-top: 12px;
+    }
+    .userActionsContainer{
+        padding-top: 12px;
+    }
+    .userAction{
+        min-width: 0;
+        width: 100%;
     }
 }
 

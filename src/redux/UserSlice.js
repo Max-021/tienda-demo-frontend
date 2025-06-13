@@ -30,10 +30,11 @@ export const logoutUser = createAsyncThunk(
 
 const initialState = {
     isAuthenticated: false,
-    loading: false,
+    loading: false,//temporal, revisar el loading por si lo puedo borrar
     error: null,
     userRole: null,
     username: null,
+    id: null,
     //ir completando
 }
 
@@ -55,6 +56,7 @@ export const userSlice = createSlice({
         state.isAuthenticated = action.payload.message === 'logged' ? true : false;
         state.userRole = action.payload.userInfo.role || 'none';
         state.username = action.payload.userInfo.username || null;
+        state.id = action.payload.userInfo.id || null;
       })
       .addCase(checkLogin.rejected, (state,action) => {
         console.log("rejected in thunk")
@@ -62,6 +64,7 @@ export const userSlice = createSlice({
         state.isAuthenticated = false;
         state.userRole = null;
         state.username = null;
+        state.id = null;
         state.error = action.payload || 'unknown error'
       })
       .addCase(logoutUser.pending , (state) => {
@@ -73,6 +76,7 @@ export const userSlice = createSlice({
         state.isAuthenticated = false;
         state.userRole = null;
         state.username = null;
+        state.id = null;
       })
       .addCase(logoutUser.rejected , (state, action) => {
         state.loading = false;
@@ -84,5 +88,6 @@ export const userSlice = createSlice({
 export const authenticateStatus = (state) => state.user.isAuthenticated;
 export const userRole = (state) => state.user.userRole;
 export const username = (state) => state.user.username;
+export const userId   = (state) => state.user.id;
 
 export default userSlice.reducer;
