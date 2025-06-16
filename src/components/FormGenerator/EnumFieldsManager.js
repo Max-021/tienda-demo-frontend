@@ -19,8 +19,8 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, }) => {
   const [fieldVal, setFieldVal] = useState('');
   const [autoCompVal, setAutoCompVal] = useState('')
   const [activeFieldToUpdate, setActiveFieldToUpdate] = useState(null);
-  const [open, setOpen] = useState(false)
-  const [pairedUpdateInfo, setPairedUpdateInfo] = useState({oldInfo: '', newInfo:'',fieldName:''});
+  const [open, setOpen] = useState(false);
+  const [confirmMsgComp, setConfirmMsgComp] = useState({text: '', fc: () => {}});
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => setFieldVal(e.target.value)
@@ -42,7 +42,7 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, }) => {
       }else if(mode === 'update'){
         const oldVal = dataField[activeFieldToUpdate].toLowerCase()
         enumList.splice(activeFieldToUpdate, 1, fieldVal);
-        setPairedUpdateInfo(prevState => ({...prevState, oldInfo: oldVal, newInfo: fieldVal.toLowerCase()}))
+        setConfirmMsgComp(prev => ({...prev, fc:() => updateToNewFieldContent(oldVal, fieldVal.toLowerCase()), text:'Desea actualizar los productos de esta categoría para que pertenezcan a la nueva categoría actualizada o prefiere que los productos permanezcan en la categoría en que están actualmente. Sí para actualizar, No para mantener.'}));
         msg = 'Elemento actualizado correctamente!';
       }else{
         notify('error', 'Ocurrió un error realizando esta acción, reintente.');
@@ -60,34 +60,37 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, }) => {
       setLoading(false);
     }
   }
+  const prepareDeleteAction = () => {
+    setConfirmMsgComp(prev => ({...prev, fc: deleteEnumField, text: 'Desea eliminar este elemento de la lista? Al confirmar su eliminación también se eliminara de todos los productos que lo tengan asignado.'}));
+    setOpen(true);
+  }
 
   const deleteEnumField = async () => {
     setLoading(true);
     try {
       var updatedEnumList = dataField;
       updatedEnumList.splice(activeFieldToUpdate,1);
-      const fieldsUpdated = { [enumName]: updatedEnumList, }
-      await uploadEnumField(fieldsUpdated)
+      const fieldsUpdated = { [enumName]: updatedEnumList, };
+      await uploadEnumField(fieldsUpdated);
       refetchEnums();
       setBtnType();
       notify('success','Elemento eliminado con exito!');
     } catch (error) {
       notify('error','Ocurrió un error al eliminar este elemento, reintente.');
-    }finally{
-      setLoading(false);
     }
+    await updateToNewFieldContent(fieldVal.toLowerCase(), '');
   }
   
-  const updateToNewFieldContent = async () => {//esta funcion toma condiciones para cada uno de los enumFields que hayan, y asigno el nombre del campo donde se va a hacer el reemplazo
+  const updateToNewFieldContent = async (oldInfo, newInfo) => {//esta funcion toma condiciones para cada uno de los enumFields que hayan, y asigno el nombre del campo donde se va a hacer el reemplazo
     setOpen(false)
     setLoading(true);
     try {
       switch (enumName) {
         case 'category':
-          await updateProductsToNewSimpleField({...pairedUpdateInfo, fieldName: enumName})
+          await updateProductsToNewSimpleField({oldInfo, newInfo, fieldName: enumName})
           break;
         case 'colors':
-          await updateProductsToNewArray({...pairedUpdateInfo, fieldName: enumName})
+          await updateProductsToNewArray({oldInfo, newInfo, fieldName: enumName})
           break;
         default:
           notify('warning', 'No functionality implemented for this field yet.');
@@ -98,7 +101,6 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, }) => {
       notify('error', 'Ocurrió un error al intentar actualizar los productos con el nuevo valor, reintente la modificación o cambie manualmente los productos que desea actualizar para mayor seguridad.');
     }finally{
       setLoading(false);
-      setPairedUpdateInfo({oldInfo:'',newInfo:'',fieldName:''})//después de ejecutar la actualizacion siempre limpio este objeto, sea exitoso o no
     }
   }
   const setChangedField = (newVal) => {
@@ -137,12 +139,12 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, }) => {
             <>
               <Autocomplete value={autoCompVal} renderInput={(params) => <TextField variant='filled' sx={{minWidth:220, paddingTop:'6px'}} {...params} label={enumName}/>} 
               options={dataField} disablePortal onChange={(event, newValue) => setChangedField(newValue)}/>
-              {activeFieldToUpdate !== null && <button className='deleteEnumFieldBtn' onClick={() => deleteEnumField()} disabled={loading}>Eliminar elemento</button>}
+              {activeFieldToUpdate !== null && <button className='deleteEnumFieldBtn' onClick={() => prepareDeleteAction()} disabled={loading}>Eliminar elemento</button>}
             </>
           }
         </FormControl>
       </div>
-      <ConfirmMessage windowStatus={open} confirmFc={updateToNewFieldContent} cancelFc={setOpen} textMsg={"Desea actualizar los productos de esta categoría para que pertenezcan a la nueva categoría actualizada o desea que los productos permanezcan en la categoría en que están?temporal, revisar texto"}/>
+      <ConfirmMessage windowStatus={open} confirmFc={confirmMsgComp.fc} cancelFc={setOpen} textMsg={confirmMsgComp.text}/>
     </div>
   </div>
 }
