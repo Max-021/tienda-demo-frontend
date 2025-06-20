@@ -1,3 +1,3 @@
-export const GET_CATS_LIST      = 'filterData';
+export const GET_FILTER_DATA    = 'filterData';
 
 // export const = '';

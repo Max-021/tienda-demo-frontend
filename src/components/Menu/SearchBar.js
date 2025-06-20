@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { changeView } from '../../redux/searchBarSlice';
-import { searchProduct, activeFilters, filterProducts, cleanArrayFilter, cleanTextFilter } from '../../redux/ProductsSlice';
+import { activeFilters, filterProducts, cleanArrayFilter, cleanTextFilter } from '../../redux/ProductsSlice';
+import { searchAndFilter } from '../../redux/thunks/productThunks';
 
 import InputBase from '@mui/material/InputBase';
 import Popover from '@mui/material/Popover';
@@ -26,15 +27,16 @@ const SearchBar = () => {
     const [displayFilters, setDisplayFilters] = useState(storeFilters);
 
     useEffect(() => {
-        const hayFiltros = storeFilters.minPrice || storeFilters.maxPrice || storeFilters.colorFilter.length > 0;
+        const hayFiltrosArray = Object.values(storeFilters).some(val => Array.isArray(val) ? val.length > 0 : false);
+        const hayFiltrosTexto = storeFilters.minPrice != null || storeFilters.maxPrice != null;
 
-        if (hayFiltros) {
+        if (hayFiltrosArray || hayFiltrosTexto) {
             setDisplayFilters(storeFilters);
             setShowAnimation(true);
         } else {
             setShowAnimation(false);
             const timeout = setTimeout(() => {
-                setDisplayFilters({ minPrice: 0, maxPrice: 0, colorFilter: [] });
+                setDisplayFilters({ minPrice: 0, maxPrice: 0, colors: [] });
             }, 500);
 
             return () => clearTimeout(timeout);
@@ -53,7 +55,7 @@ const SearchBar = () => {
 
     const submitSearch = (e) => {
         e.preventDefault();
-        dispatch(searchProduct(searchBarText));
+        dispatch(searchAndFilter(searchBarText));
     };
 
     return (
@@ -77,8 +79,8 @@ const SearchBar = () => {
                 </div>
             </div>
             <div className={`searchBarFilterInfo ${showAnimation ? 'active' : ''}`}>
-                {(displayFilters.minPrice || displayFilters.maxPrice || displayFilters.colorFilter.length > 0) &&
-                    <p style={{ margin: 0, padding: 0 }}>Filtros activos:</p>
+                {(displayFilters.minPrice || displayFilters.maxPrice || displayFilters.colors.length > 0 || Object.values(displayFilters).some(val => Array.isArray(val) && val.length > 0)) 
+                    && <p style={{ margin: 0, padding: 0 }}>Filtros activos:</p>
                 }
                 {displayFilters.minPrice && displayFilters.minPrice > 0 && (
                     <p className='activeFilter'>
@@ -96,16 +98,17 @@ const SearchBar = () => {
                         </button>
                     </p>
                 )}
-                {displayFilters.colorFilter.length > 0 &&
-                    displayFilters.colorFilter.map((col, index) => (
-                        <p className='activeFilter' key={index}>
-                            {col}
-                            <button type='button' onClick={() => cleanFilter([col, 'color'])}>
+                {Object.entries(displayFilters).map(([key,val]) => {
+                    if(!Array.isArray(val) || val.length === 0) return null;
+                    return val.map((item,index) => (
+                        <p className='activeFilter' key={`${key}-${index}`}>
+                            {item}
+                            <button type='button' onClick={() => cleanFilter([item, key])}>
                                 <IoMdClose />
                             </button>
                         </p>
                     ))
-                }
+                })}
             </div>
         </>
     );

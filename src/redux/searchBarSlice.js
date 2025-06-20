@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit"
 
+const catName = 'categories'
+
 export const searchBarSlice = createSlice({
-    name:'searchBar',
+    name:'searchBar',//acá manejo manualmente las categorias, pero las 
     initialState: {
         view: 'list',
         categories: [],
-        colors:[],
+        filterData: {},
     },
     reducers: {
         changeView: state => {
@@ -17,10 +19,16 @@ export const searchBarSlice = createSlice({
         setFilterInfo: (state,action) => {
             console.log("holaaaaa")
             console.log(action.payload)
-            state.categories = action.payload.category
-            state.colors = action.payload.colors
-        }
 
+            const cats = action.payload.find(el => el.name === catName);
+            state.categories = cats.values;
+            state.filterData = action.payload.reduce((opts, el) => {
+                if(el.name !== catName){
+                    opts[el.name] = el.values;
+                }
+                return opts;
+            }, {});
+        },
     }
 })
 
@@ -28,6 +36,6 @@ export const {changeView, showCurrentState, setFilterInfo} = searchBarSlice.acti
 
 export const currentViewValue = (state) => state.searchBar.view
 export const currentCategories = (state) => state.searchBar.categories
-export const colorsList = (state) => state.searchBar.colors
+export const filterData = (state) => state.searchBar.filterData
 
 export default searchBarSlice.reducer;

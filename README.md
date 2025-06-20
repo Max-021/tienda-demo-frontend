@@ -16,6 +16,12 @@ Los productos aparecen en un componente productView que está creado dentro de p
 
 Este componente llama a productCard que contiene un detalle de cada producto, algunas acciones solo aparecen disponibles para quien administre el sitio
 
+##Redux
+
+###searchBarSlice: en este componente aparecen las opciones que aparecen en los filtros con una excepción, categorias, esta va en un array propio, el resto de los documentos obtenidos van en un objeto filterOptions que sigue este formato: { nombreEnum: [...valores del enum]}
+Esto se usa despues para alterar el objeto filters de productSlice, que tiene los elementos que se usan para filtrar el catalogo, las categorias tambien afectan productslice pero de una manera independiente, de modo que ambos filtros pueden convivir
+
+###ProductSlice: este slice va conectado a searchbarslice, y tiene hardcodeado los casos y valores de los filtros, esto para tener un control especifico y que lo que no tengo creado todavia no se pueda aplicar.
 
 #####Revisar
 

@@ -8,7 +8,8 @@ import Popover from '@mui/material/Popover';
 import Links from '../reusables/Links';
 import { sessionBtns } from '../../data/iconsArray';
 
-import { onCategorySelected, activeCategory } from '../../redux/ProductsSlice';
+import { activeCategory } from '../../redux/ProductsSlice';
+import { selectCategoryAndFilter } from '../../redux/thunks/productThunks';
 import { totalProducts } from '../../redux/CartSlice';
 
 import Categories from './Categories';
@@ -35,7 +36,7 @@ const Menu = ({ showCats, authSt }) => {
   return (
     showCats === '/' && (
       <div className='menu' style={{ justifyContent: showCats === '/cart' ? 'flex-end' : undefined }}>
-        <Categories setHiddenCats={setHiddenCats} activeCat={activeCat} onCategorySelected={onCategorySelected}/>
+        <Categories setHiddenCats={setHiddenCats} activeCat={activeCat} selectCategoryAndFilter={selectCategoryAndFilter}/>
         <div className='rightSide'>
           {hiddenCats.length > 0 && (
             <>
@@ -52,7 +53,7 @@ const Menu = ({ showCats, authSt }) => {
                 {hiddenCats.map(cat => (
                   <li key={cat} className={`popoverCategory ${activeCat === cat ? 'activeCategory' : ''}`}
                     onClick={() => {
-                      dispatch(onCategorySelected(cat));
+                      dispatch(selectCategoryAndFilter(cat));
                       closePopover();
                     }}
                   >

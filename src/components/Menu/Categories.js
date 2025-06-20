@@ -2,9 +2,9 @@ import React, {useState,useEffect,useRef,useLayoutEffect} from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 
 import { currentCategories, setFilterInfo } from '../../redux/searchBarSlice';
-import { getCategoriesList } from '../../auxiliaries/axios';
+import { getFilterData } from '../../auxiliaries/axios';
 
-const Categories = ({setHiddenCats, activeCat, onCategorySelected}) => {
+const Categories = ({setHiddenCats, activeCat, selectCategoryAndFilter}) => {
     const dispatch = useDispatch();
     const currentCats = useSelector(currentCategories);
     const measureRef = useRef(null);
@@ -15,7 +15,7 @@ const Categories = ({setHiddenCats, activeCat, onCategorySelected}) => {
 
       useEffect(() => {
         const getCategories = async () => {
-          const filterInfo = await getCategoriesList();
+          const filterInfo = await getFilterData();
           console.log(filterInfo.data)
           if (currentCats.length === 0) dispatch(setFilterInfo(filterInfo.data));
         };
@@ -80,7 +80,7 @@ const Categories = ({setHiddenCats, activeCat, onCategorySelected}) => {
         </ul>
         <ul className='categories' ref={ulRef}>
             {visibleCats.map(cat => (
-                <li key={cat} className={`category-item ${activeCat === cat ? 'activeCategory' : ''}`} onClick={() => dispatch(onCategorySelected(cat))}>
+                <li key={cat} className={`category-item ${activeCat === cat ? 'activeCategory' : ''}`} onClick={() => dispatch(selectCategoryAndFilter(cat))}>
                     {cat}
                 </li>
             ))}

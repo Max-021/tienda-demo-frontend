@@ -3,12 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     activeCat: '',
     searchText: '',
-    colorFilter: [],
-    priceFilter:{min:null, max:null},
     filters: {//aca agregar los filtros segun corresponda
-        colorFilter: [],
         minPrice: null,
         maxPrice: null,
+        colors: [],
     },
     products: [],
     filteredProducts: [],
@@ -25,23 +23,11 @@ export const productsSlice = createSlice({
             state.filteredProducts = state.products;
         },
         onCategorySelected: (state, action) => {
-            state.noSearchRes = false
-            if(state.activeCat === action.payload){
-                state.activeCat = '';
-                state.filteredProducts = state.products;
-            }else{
-                state.activeCat = action.payload;
-                state.filteredProducts = state.products.filter((product) => product.category === action.payload)
-
-                if(state.filteredProducts.length === 0) state.filteredProducts = state.products
-            }
+            state.activeCat = state.activeCat === action.payload ? '' : action.payload;
+            state.noSearchResults = false
         },
         searchProduct: (state,action) => {
-            if(action.payload !== '') {
                 state.searchText = action.payload;
-                //temporal, revisar que si se hacen dos busquedas seguidas se busca sobre el filtro de la anterior busqueda
-                //es importante que cuando se haga la busqueda se tenga en cuenta volver a productos en general pero respetando los otros filtros
-                state.filteredProducts = state.filteredProducts.filter((product) => product.name.toLowerCase() === action.payload.toLowerCase());
                 // LLEVAR A OTRO LADO ESTA FUNCION QUE ES MAS POTENTE. temporal
                 // state.filteredProducts = state.filteredProducts.filter((product) => {
                 //     for(const prop in product) {
@@ -49,13 +35,6 @@ export const productsSlice = createSlice({
                 //             return product
                 //     }
                 // })
-                console.log(state.filteredProducts)
-                state.filteredProducts.length > 0 ? state.noSearchResults = false : state.noSearchResults = true
-            } else {
-                //temporal, hacer que si no se carga nada en la barra de busqueda siga respetando los otros valores de filtro
-                state.noSearchResults = false
-                state.filteredProducts = state.products
-            }
         },
         cleanTextFilter: (state, action) => {
             switch (action.payload) {
@@ -71,24 +50,17 @@ export const productsSlice = createSlice({
         },
         cleanArrayFilter: (state, action) => {
             const [val, arrayType] = [...action.payload];
-            switch (arrayType) {
-                case 'color':
-                    const updatedArr = state.filters.colorFilter.filter(col => col !== val);
-                    state.filters.colorFilter = [...updatedArr]
-                    break;
-                default:
-                    break;
-            }
+            if(Array.isArray(state.filters[arrayType])) state.filters[arrayType] = state.filters[arrayType].filter(item => item !== val);
         },
         empyFilters: (state) => {
-            state.filters.colorFilter = [];
+            state.filters.colors = [];
             state.filters.maxPrice = null;
             state.filters.minPrice = null;
             state.filteredProducts = state.products
         },
         setFilters: (state, action) => {
-            let priceMin = Number(action.payload.priceMin);
-            let priceMax = Number(action.payload.priceMax);
+            let priceMin = Number(action.payload.priceMin) || null;
+            let priceMax = Number(action.payload.priceMax) || null;
             if(isNaN(priceMin)) priceMin = null;
             if(isNaN(priceMax)) priceMax = null;
             if(priceMax === 0) priceMax = null;//condicion extra porque number(action.payload.priceMax) lo pone a 0 y puede saltear el isNan
@@ -104,21 +76,35 @@ export const productsSlice = createSlice({
             // Asignar a los filtros del estado
             state.filters.minPrice = priceMin;
             state.filters.maxPrice = priceMax;
-            state.filters.colorFilter = action.payload.colors || [];
+            Object.entries(action.payload).forEach(([key, val]) => {
+                if(key === 'priceMin' || key === 'priceMax') return;
+                state.filters[key] = Array.isArray(val) ? val: state.filters[key];
+            });
 
             state.filteredProducts = state.products;
         },
         filterProducts : (state) => {
+            let result = state.products;
+            if(state.activeCat)     result = result.filter(p => p.category === state.activeCat);
+            if(state.searchText)    result = result.filter(p => p.name.toLowerCase().includes(state.searchText.toLocaleLowerCase()));
 
-            const result = state.products.filter(prod => {
+            result = result.filter(prod => {
                 const cumpleMax = state.filters.maxPrice !== null ? prod.price <= state.filters.maxPrice : true;
                 const cumpleMin = state.filters.minPrice !== null ? prod.price >= state.filters.minPrice : true;
-                const cumpleColores = state.filters.colorFilter.length > 0 ? prod.colors.some(color => state.filters.colorFilter.includes(color)) : true;
-                return cumpleMax && cumpleMin && cumpleColores;
+
+                const cumpleArrays = Object.entries(state.filters).every(([k, val]) => {
+                    if(k === 'minPrice' || k === 'maxPrice') return true;
+                    if(!Array.isArray(val) || val.length === 0) return true;
+
+                    return Array.isArray(prod[k]) ? prod[k].some(item => val.includes(item)) : val.includes(prod[k]);
+                });
+
+                return cumpleMax && cumpleMin && cumpleArrays;
             });
             state.filteredProducts = result;
+            state.noSearchResults = result.length === 0;
         },
-    }
+    },
 })
 
 export const {getProductsList, onCategorySelected, searchProduct, setFilters, filterProducts, empyFilters, cleanArrayFilter, cleanTextFilter} = productsSlice.actions

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNotification } from '../reusables/NotificationContext';
-import { uploadEnumField, updateProductsToNewSimpleField, updateProductsToNewArray } from '../../auxiliaries/axios';
+import { updateEnumList, updateProductsToNewSimpleField, updateProductsToNewArray } from '../../auxiliaries/axios';
 
 import TextField from '@mui/material/TextField'
 import FormControl from '@mui/material/FormControl';
@@ -13,7 +13,7 @@ import LoadingSpinner from '../reusables/LoadingSpinner';
 /*este componente devuelve un input para agregar o editar los campos que sean enums en la creacion de productos
 por ej: categorias, aca aparecerian para editar todas las categorias existentes y se podrian agregar nuevas categorias
 sirve para todos los campos del modelo (ej. producto) que sean enums*/
-const EnumFieldsManager = ({dataField, enumName, refetchEnums, }) => {
+const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
   const notify = useNotification();
   const [addFieldText, setAddFieldText] = useState(true)
   const [fieldVal, setFieldVal] = useState('');
@@ -26,30 +26,29 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, }) => {
   const handleChange = (e) => setFieldVal(e.target.value)
   const setBtnType = () => {
     setAddFieldText(true);
-    setActiveFieldToUpdate(null)
-    setFieldVal('')
+    setActiveFieldToUpdate(null);
+    setFieldVal('');
     setAutoCompVal('');
   }
 
   const submitEnum = async (mode) => {
     setLoading(true);
+    let enumList = [];
+    let msg = '';
+    if(mode === 'upload'){
+      enumList = [...dataField, fieldVal.trim()];
+      msg = 'Elemento agregado a la lista correctamente!';
+    }else if(mode === 'update'){
+      const oldVal = dataField[activeFieldToUpdate].toLowerCase();
+      enumList = dataField.map((v,i) => i === activeFieldToUpdate ? fieldVal.trim() : v);
+      setConfirmMsgComp({fc:() => updateToNewFieldContent(oldVal, fieldVal.toLowerCase()), text:`Desea actualizar los productos que usen ${oldVal} por ${fieldVal}?.`});
+      msg = 'Elemento actualizado correctamente!';
+    }else{
+      notify('error', 'Ocurrió un error realizando esta acción, reintente.');
+      return;
+    }
     try {
-      let enumList = [...dataField];
-      let msg = '';
-      if(mode === 'upload'){
-        enumList.push(fieldVal);
-        msg = 'Elemento agregado a la lista correctamente!';
-      }else if(mode === 'update'){
-        const oldVal = dataField[activeFieldToUpdate].toLowerCase()
-        enumList.splice(activeFieldToUpdate, 1, fieldVal);
-        setConfirmMsgComp(prev => ({...prev, fc:() => updateToNewFieldContent(oldVal, fieldVal.toLowerCase()), text:'Desea actualizar los productos de esta categoría para que pertenezcan a la nueva categoría actualizada o prefiere que los productos permanezcan en la categoría en que están actualmente. Sí para actualizar, No para mantener.'}));
-        msg = 'Elemento actualizado correctamente!';
-      }else{
-        notify('error', 'Ocurrió un error realizando esta acción, reintente.');
-        return;
-      }
-      const fieldsUpdated = { [enumName]: enumList}
-      await uploadEnumField(fieldsUpdated);
+      await updateEnumList({enumId, values: enumList});
       refetchEnums();
       setBtnType();
       if(mode === 'update') setOpen(true)//para edicion solo
@@ -61,17 +60,15 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, }) => {
     }
   }
   const prepareDeleteAction = () => {
-    setConfirmMsgComp(prev => ({...prev, fc: deleteEnumField, text: 'Desea eliminar este elemento de la lista? Al confirmar su eliminación también se eliminara de todos los productos que lo tengan asignado.'}));
+    setConfirmMsgComp({fc: deleteEnumField, text: 'Desea eliminar este elemento de la lista? Al confirmar su eliminación también se eliminara de todos los productos que lo tengan asignado.'});
     setOpen(true);
   }
 
   const deleteEnumField = async () => {
     setLoading(true);
     try {
-      var updatedEnumList = dataField;
-      updatedEnumList.splice(activeFieldToUpdate,1);
-      const fieldsUpdated = { [enumName]: updatedEnumList, };
-      await uploadEnumField(fieldsUpdated);
+      const updatedEnumList = dataField.filter((_,i) => i !== activeFieldToUpdate)
+      await updateEnumList({enumId, values: updatedEnumList});
       refetchEnums();
       setBtnType();
       notify('success','Elemento eliminado con exito!');
@@ -138,7 +135,10 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, }) => {
             :
             <>
               <Autocomplete value={autoCompVal} renderInput={(params) => <TextField variant='filled' sx={{minWidth:220, paddingTop:'6px'}} {...params} label={enumName}/>} 
-              options={dataField} disablePortal onChange={(event, newValue) => setChangedField(newValue)}/>
+              options={dataField} disablePortal onChange={(event, newValue) => {
+                                                  setChangedField(newValue);
+                                                  setAutoCompVal(newValue);
+                                                }}/>
               {activeFieldToUpdate !== null && <button className='deleteEnumFieldBtn' onClick={() => prepareDeleteAction()} disabled={loading}>Eliminar elemento</button>}
             </>
           }
