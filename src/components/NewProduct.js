@@ -23,6 +23,7 @@ const NewProduct = () => {
     const [newProduct,setNewProduct] = useState({});
     const [productLoading, setProductLoading] = useState(false);
     const [open, setOpen] = useState(false);
+    const [removedImages, setRemovedImages] = useState([]);
     // const [existingImages, setExistingImages] = useState(null)
 
     useEffect(()=> {
@@ -57,8 +58,10 @@ const NewProduct = () => {
         try {
             setProductLoading(true);
             if(location.pathname === '/editar-producto'){
-                await updateProduct(newProduct);
+                const res = await updateProduct({...newProduct, removedImages});
                 notify('success', 'Producto editado con exito!');
+                setNewProduct(res.data)
+                console.log(res)
             }
             else{
                 await uploadProduct(newProduct);
@@ -100,7 +103,7 @@ const NewProduct = () => {
     const deleteFromArray = (fieldName, idx) => setNewProduct(p => ({...p, [fieldName]: p[fieldName].filter((_, i) => i !== idx)}));
 
 
-    const getEnumValues = (fieldName) => {
+    const getEnumValues = (fieldName) => {//temporal, revisar acá, no es tan importante pero hay algo raro
         const doc = enumFields.find(f => f.name === fieldName);
         return doc ? doc.values : null
     }
@@ -117,9 +120,10 @@ const NewProduct = () => {
                     : Object.keys(productModel).map((el,index) => {
                         return (
                             <div key={index} style={{width: '100%'}}>
-                                <FormGenerator modelKey={el} enumValues={getEnumValues(el)}
+                                {console.log(el+' '+productModel[el].type)}
+                                <FormGenerator modelKey={el} enumValues={getEnumValues(el)} currentNewProdField={newProduct[el]}
                                     handleChange={Array.isArray(productModel[el].type)?el==='img'?handleImgOnChange:handleChangeOnArray:handleChange}
-                                    currentNewProdField={newProduct[el]}/>
+                                    setRemovedImages={el === 'img' ? setRemovedImages : null} removedImages={el === 'img' ? removedImages : null}/>
                                     {/* currentNewProdField={newProduct[el]}  {...(el === 'img' && { existingImages })}/> */}
                                 {Array.isArray(productModel[el].type) && el !== 'img'&&<div className='fieldsContainer'>
                                     {(newProduct[el] || []).map((arrayEl, index) => {

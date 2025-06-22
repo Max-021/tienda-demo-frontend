@@ -28,7 +28,6 @@ export const uploadProduct = (productData) => callAPI(() => {
     return axiosClient.post(`${PRODUCTS_ROUTE}`, formData, {headers: {'Content-Type':'multipart/form-data'}})
 });
 export const updateProduct = (productData) => callAPI(() => {
-    console.log(productData)
     const formData = new FormData();
     formData.append('name', productData.name);
     formData.append('descr', productData.descr);
@@ -37,24 +36,27 @@ export const updateProduct = (productData) => callAPI(() => {
     formData.append('quantity', productData.quantity);
     formData.append('colors', JSON.stringify(productData.colors));
 
-    productData.img.forEach((item) => {
-        if (typeof item === 'string') {// Es una imagen existente (URL)
-            formData.append('img', item);
-        } else {// Es una imagen nueva (File)
-            formData.append('img', item, item.name);
-        }
-        });
-    for (var pair of formData.entries()) {
-        console.log(pair[0]+ ', ')
-        console.log(pair[1]); 
+    if(productData.removedImages.length > 0){
+        formData.append('removedImages', JSON.stringify(productData.removedImages));
     }
-    console.log(productData._id)
+
+    const imgOrder = productData.img.map(item =>
+        typeof item === 'string' ? item : item.name
+    );
+    formData.append('imgOrder', JSON.stringify(imgOrder));
+
+    productData.img
+        .filter(i => typeof i !== 'string')
+        .forEach(file => {
+        formData.append('newImages', file, file.name);
+        });
+    console.log(formData)
     console.log(productData)
-    return axiosClient.patch(`${PRODUCTS_ROUTE}/${productData._id}`, formData, {headers: {'Content-Type':'multipart/form-data',}})//temporal revisar formdata/productdata
+    return axiosClient.patch(`${PRODUCTS_ROUTE}${productData._id}`, formData, {headers: {'Content-Type':'multipart/form-data',}})//temporal revisar formdata/productdata
 });
 
 export const updateProductsToNewSimpleField = (oldNewField) => callAPI(() => update(productRoutes.CHANGE_SIMPLE_FIELD, oldNewField));
 
 export const updateProductsToNewArray = (oldNewArr) => callAPI(() => update(productRoutes.CHANGE_ARRAY_FIELD, oldNewArr));
 
-export const deleteProduct = (productData) => callAPI(() => deleteCall(`/${productData._id}`));
+export const deleteProduct = (productData) => callAPI(() => deleteCall(`${productData._id}`));

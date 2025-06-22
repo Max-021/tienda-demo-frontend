@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-const catName = 'categories'
+const catName = 'category'
 
 export const searchBarSlice = createSlice({
     name:'searchBar',//acá manejo manualmente las categorias, pero las 

@@ -5,7 +5,7 @@ import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } 
 import { CSS } from "@dnd-kit/utilities";
 import { MdDelete } from "react-icons/md";
 
-const SortableImage = ({ file, index, onDelete }) => {
+const SortableImage = ({ file, index, onDelete, }) => {
   const id = typeof file === "string" ? file : `${file.name}-${file.lastModified}`;
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   const [objectUrl, setObjectUrl] = useState(typeof file === "string" ? file : "");
@@ -28,7 +28,7 @@ const SortableImage = ({ file, index, onDelete }) => {
   );
 };
 
-const ImageUploader = ({ images = [], onImgChange, name }) => {
+const ImageUploader = ({ images = [], onImgChange, name, setRemovedImages }) => {
   const validImages = Array.isArray(images) ? images : [];
 
   const onDrop = useCallback(
@@ -39,7 +39,10 @@ const ImageUploader = ({ images = [], onImgChange, name }) => {
   );
 
   const handleDelete = (id) => {
+    if(typeof id === 'string') setRemovedImages(prev => [...prev, id]);
+
     const newImages = validImages.filter((file) => (typeof file === "string" ? file !== id : `${file.name}-${file.lastModified}` !== id));
+
     onImgChange(newImages);
   };
 

@@ -1,5 +1,6 @@
 import React from 'react'
 
+import RemovedImagesViewer from './RemovedImagesViewer';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField'
 import FormControl from '@mui/material/FormControl';
@@ -11,7 +12,7 @@ import ImageUploader from '../reusables/ImageUploader';
 //hacer que categorias sea un select en el que solo puedas ponerle un valor
 //que colores sea un select con multiples valores posibles
 
-const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProdField, existingImages = null}) => {
+const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProdField, existingImages = null, setRemovedImages = null, removedImages = []}) => {
 
   const handleAutocompleteChange = (event, newValue) => handleChange({ target: { name: modelKey,value: newValue, }});
 
@@ -72,7 +73,12 @@ const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProd
             InputProps={{ startAdornment: <MdOutlineImage/>, inputProps:{accept: 'image/*'}}}
           /> */}
           {console.log(currentNewProdField)}
-          <ImageUploader name={`${keyModel}`} onImgChange={handleChange} images={currentNewProdField}/>
+          <ImageUploader name={`${keyModel}`} onImgChange={handleChange} images={currentNewProdField} setRemovedImages={setRemovedImages}/>
+          {removedImages.length > 0 && <RemovedImagesViewer removedImages={removedImages} onRestore={(url) => {
+            setRemovedImages(prev => prev.filter(u => u !== url));
+            const nuevaLista = [...(currentNewProdField || []), url];
+            handleChange(nuevaLista);                        
+          }}/>}
           {/* <ImageUploader name={`${keyModel}`} onImgChange={handleChange} images={currentNewProdField} existingImages={existingImages}/> */}
         </>)
       break;
