@@ -12,6 +12,9 @@ import { remakeObj } from '../auxiliaries/functions';
 
 import Box  from '@mui/material/Box'
 import Button from '@mui/material/Button';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 import { MdDeleteOutline, MdOutlineClear } from "react-icons/md";
 
 const NewProduct = () => {
@@ -24,6 +27,7 @@ const NewProduct = () => {
     const [productLoading, setProductLoading] = useState(false);
     const [open, setOpen] = useState(false);
     const [removedImages, setRemovedImages] = useState([]);
+    const [isActive, setIsActive] = useState(true);
     // const [existingImages, setExistingImages] = useState(null)
 
     useEffect(()=> {
@@ -58,13 +62,13 @@ const NewProduct = () => {
         try {
             setProductLoading(true);
             if(location.pathname === '/editar-producto'){
-                const res = await updateProduct({...newProduct, removedImages});
+                const res = await updateProduct({...newProduct, removedImages , status: isActive});
                 notify('success', 'Producto editado con exito!');
                 setNewProduct(res.data)
                 console.log(res)
             }
             else{
-                await uploadProduct(newProduct);
+                await uploadProduct({...newProduct, status: isActive});
                 notify('success', 'Producto creado con exito!');
                 setNewProduct(remakeObj(productModel));
             }
@@ -88,7 +92,8 @@ const NewProduct = () => {
             setProductLoading(false);
         }
     }
-    const handleChange = (e) => setNewProduct({ ...newProduct,[e.target.name]: e.target.value })
+    const handleChange  = (e) => setNewProduct({ ...newProduct,[e.target.name]: e.target.value });
+    const handleChecked = (e) => setIsActive(e.target.checked);
 
     const handleChangeOnArray = (e) => {
         if(!newProduct[e.target.name].includes(e.target.value)){
@@ -134,7 +139,12 @@ const NewProduct = () => {
                         )
                     })
                 }
-                <Button className='submitBtn' type='submit' variant='contained' sx={{alignSelf: 'flex-end'}}>Subir</Button>
+                <div style={{display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between'}}>
+                    <FormGroup>
+                        <FormControlLabel control={<Checkbox checked={isActive} onChange={handleChecked}/>} label="Producto activo"/>
+                    </FormGroup>
+                    <Button className='submitBtn' type='submit' variant='contained' sx={{alignSelf: 'flex-end'}}>Subir</Button>
+                </div>
             </Box>
             <Box className='enumFieldsWrapper'>
                 <p className='formTitle'>Campos con valores predeterminados</p>
