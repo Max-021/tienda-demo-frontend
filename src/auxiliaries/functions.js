@@ -1,17 +1,16 @@
 //Este archivo tiene funciones que pueden servir para varias cosas
 
-export const remakeObj = (toBeConverted) => {
-    const convertArr = Object.keys(toBeConverted)
-    const newObj = {}
-    for(const val in convertArr) {
-        if(Array.isArray(toBeConverted[convertArr[val]].type)) {
-            newObj[convertArr[val]] = []
-        }else {
-            newObj[convertArr[val]] = ''
-        }
+export const remakeObj = (modelDesc) => {
+  const newObj = {}
+  for (const key of Object.keys(modelDesc)) {
+    if (modelDesc[key].type === 'Array') {
+      newObj[key] = []
+    } else {
+      newObj[key] = ''
     }
-    return newObj;
-}//check if the value of the key is an array and then declare it as an empty array []
+  }
+  return newObj
+}
 
 export const catchErrorMsgHandler = (err) => {
     if (err.response) {
@@ -40,3 +39,23 @@ export const callAPI = async (func) => {
         throw error;
     }
 }
+
+export const makeFormData = (obj) => {
+  const formData = new FormData();
+
+  Object.entries(obj).forEach(([key, value]) => {
+    if (key === 'img' && Array.isArray(value)) {
+      value.forEach(file => {
+        if (file instanceof File) {
+          formData.append('newImages', file, file.name);
+        }
+      });
+    } else if (Array.isArray(value) || (value && typeof value === 'object')) {
+      formData.append(key, JSON.stringify(value));
+    } else if (value !== undefined && value !== null) {
+      formData.append(key, String(value));
+    }
+  });
+
+  return formData;
+};

@@ -15,42 +15,39 @@ import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import { MdDeleteOutline, MdOutlineClear } from "react-icons/md";
+import { MdDeleteOutline } from "react-icons/md";
 
 const NewProduct = () => {
     const notify = useNotification();
     const location = useLocation();
-    const [productModel,setProductModel] = useState({});
-    const [locRoute, setLocRoute] = useState('');
-    const [enumFields,setEnumFields] = useState([]);
-    const [newProduct,setNewProduct] = useState({});
     const [productLoading, setProductLoading] = useState(false);
     const [open, setOpen] = useState(false);
+    const [productModel,setProductModel] = useState({});
+    const [newProduct,setNewProduct] = useState({});
     const [removedImages, setRemovedImages] = useState([]);
     const [isActive, setIsActive] = useState(true);
-    // const [existingImages, setExistingImages] = useState(null)
+    const [enumFields,setEnumFields] = useState([]);
+    const [locRoute, setLocRoute] = useState('');
 
     useEffect(()=> {
         const fetchSingleData = async () => {
             const modelValue = await getProductModel();
             const enumList = await getEnumList();
+            const productFormModel = remakeObj(modelValue.data);
+            console.log(modelValue.data)
             setProductModel(modelValue.data)
             setEnumFields(enumList.data);
-            if(location.pathname === '/editar-producto'){//aca agregar que si viene por /editar-producto el set newProduct lo haga con el producto ya puesto, temporal
+            if(location.pathname === '/editar-producto'){
                 const productData = {...location.state};
-                // const productData = {...location.state, img: []};
-                // setExistingImages(location.state.img);
                 setNewProduct(productData)
-            }else setNewProduct(remakeObj(modelValue.data));
+            }else setNewProduct(productFormModel);
         }
         fetchSingleData();
     }, [location.pathname, location.state])
 
     const {data: enumList, loading: loadingEnums, error: errorEnums, refetch: refetchEnums} = useLoadingHook(getEnumList, []);
     useEffect(()=> {
-        if(enumList){
-            setEnumFields(enumList)
-        }
+        if(enumList) setEnumFields(enumList);
     }, [enumList]);
 
     useEffect(() => {
@@ -59,16 +56,16 @@ const NewProduct = () => {
 
     const submitProduct = async (e) => {
         e.preventDefault();
+        const productData = {...newProduct, isActive: isActive}
         try {
             setProductLoading(true);
             if(location.pathname === '/editar-producto'){
-                const res = await updateProduct({...newProduct, removedImages , status: isActive});
+                const res = await updateProduct({...productData, removedImages});
                 notify('success', 'Producto editado con exito!');
                 setNewProduct(res.data)
-                console.log(res)
             }
             else{
-                await uploadProduct({...newProduct, status: isActive});
+                await uploadProduct(productData);
                 notify('success', 'Producto creado con exito!');
                 setNewProduct(remakeObj(productModel));
             }
@@ -85,6 +82,7 @@ const NewProduct = () => {
             setProductLoading(true);
             await deleteProduct(newProduct);
             notify('success', 'Producto eliminado correctamente.');
+            setNewProduct(remakeObj(productModel));
         } catch (error) {
             notify('error', 'Error al eliminar el producto, reintente');
         }finally{
@@ -92,26 +90,7 @@ const NewProduct = () => {
             setProductLoading(false);
         }
     }
-    const handleChange  = (e) => setNewProduct({ ...newProduct,[e.target.name]: e.target.value });
     const handleChecked = (e) => setIsActive(e.target.checked);
-
-    const handleChangeOnArray = (e) => {
-        if(!newProduct[e.target.name].includes(e.target.value)){
-            const newColors = [...newProduct[e.target.name],e.target.value]
-            setNewProduct({...newProduct,[e.target.name]: newColors})
-        }
-    }
-    const handleImgOnChange = (files) => {
-        if (!files || files.length === 0) setNewProduct({...newProduct, img: []})
-        else setNewProduct({...newProduct, img: files})
-    };
-    const deleteFromArray = (fieldName, idx) => setNewProduct(p => ({...p, [fieldName]: p[fieldName].filter((_, i) => i !== idx)}));
-
-
-    const getEnumValues = (fieldName) => {//temporal, revisar acá, no es tan importante pero hay algo raro
-        const doc = enumFields.find(f => f.name === fieldName);
-        return doc ? doc.values : null
-    }
 
     return (
         <div className='newProductContainer'>
@@ -120,24 +99,9 @@ const NewProduct = () => {
                     <p className='formTitle'>{locRoute === '/nuevo-producto' ? 'Nuevo' : 'Editar'} producto</p>
                     {locRoute === '/editar-producto' && <button className='deleteProdBtn' type='button' title='Eliminar producto' onClick={() => setOpen(true)}><MdDeleteOutline/></button>}
                 </div>
-                { (productLoading || loadingEnums) ?
-                    <LoadingSpinner/>
-                    : Object.keys(productModel).map((el,index) => {
-                        return (
-                            <div key={index} style={{width: '100%'}}>
-                                {console.log(el+' '+productModel[el].type)}
-                                <FormGenerator modelKey={el} enumValues={getEnumValues(el)} currentNewProdField={newProduct[el]}
-                                    handleChange={Array.isArray(productModel[el].type)?el==='img'?handleImgOnChange:handleChangeOnArray:handleChange}
-                                    setRemovedImages={el === 'img' ? setRemovedImages : null} removedImages={el === 'img' ? removedImages : null}/>
-                                    {/* currentNewProdField={newProduct[el]}  {...(el === 'img' && { existingImages })}/> */}
-                                {Array.isArray(productModel[el].type) && el !== 'img'&&<div className='fieldsContainer'>
-                                    {(newProduct[el] || []).map((arrayEl, index) => {
-                                        return <p key={index}>{arrayEl}<MdOutlineClear onClick={() => deleteFromArray(el, index)}/></p>
-                                    })}
-                                </div>}
-                            </div>
-                        )
-                    })
+                {productLoading || loadingEnums
+                    ? <LoadingSpinner/>
+                    : <FormGenerator productModel={productModel} productObject={newProduct} setProductObject={setNewProduct} removedImages={removedImages} setRemovedImages={setRemovedImages} enumFields={enumFields}/>
                 }
                 <div style={{display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between'}}>
                     <FormGroup>

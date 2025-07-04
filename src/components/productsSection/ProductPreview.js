@@ -11,6 +11,8 @@ const ProductPreview = ({ind, product, handleOpen}) => {
     const authStatus = useSelector(authenticateStatus);
     const role = useSelector(userRole);
 
+    const hasStock = product.stock.some(prod => prod.quantity > 0);
+
     return (
         <div className={`productView ${currentView === 'list' ? 'productList' : 'productGrid'}`} onClick={() => handleOpen(ind)}>
             <div className='productImgContainer'>
@@ -18,9 +20,9 @@ const ProductPreview = ({ind, product, handleOpen}) => {
             </div>
             <div className='productInfo'>
                 <p key={`${ind}-prodName`} title={product.name}>{product.name}</p>
-                <p>{product.quantity > 0 ? 'Unidades disponibles' : 'No disponible temporalmente, consultar por el producto'}</p>
+                <p>{hasStock ? 'Unidades disponibles' : 'No disponible temporalmente, consultar por el producto'}</p>
                 <p>$ {product.price}</p>{/*temporal, revisar el $ y pensar alguna manera de hacer esto adaptable por si hay que incluir tipo de moneda  */}
-                <p>{product.colors.length} colores</p>
+                <p>{product.stock.length} colores</p>
             </div>
             {authStatus && allowedEditingRole.includes(role) ?
                 <Link className='editIconContainer' to={'/editar-producto'} state={product} title='Editar Producto'>

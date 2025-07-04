@@ -45,9 +45,10 @@ const Products = () => {
 
   return (
     <div className='productsLayout'>
-      {selectorData.map((product,index) => {//Esta seria la tarjeta de cada producto, se puede sacar a otro archivo
+      {selectorData.length > 0 ? selectorData.map((product,index) => {//Esta seria la tarjeta de cada producto, se puede sacar a otro archivo
           return <ProductPreview key={index} ind={index} product={product} handleOpen={handleOpen}/>
-      })}
+      }) : 
+      <div>No hay articulos por el momento, temporal, cambiar esto</div>}
     <Dialog PaperProps={{
       sx:{
         boxSizing: 'border-box',

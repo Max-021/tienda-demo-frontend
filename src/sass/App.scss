@@ -513,6 +513,7 @@ li{
 
 .addToCartBtn{
     margin-top: 24px;
+    margin-bottom: 4px;
     border:0;
     background-color: variables.$secondColor;
     color: variables.$lightColor;
@@ -669,6 +670,28 @@ li{
     padding: variables.$lateralPadding;
     gap: 12px;
     width: 30vw;
+}
+.formColorContainer{
+    width: 100%;
+    @include center-flex(row, flex-start, center);
+    gap: 8px;
+}
+.formColorName{
+    @include center-flex(row, flex-start, center);
+    gap: 6px;
+    p{
+        margin: 0;
+    }
+    button{
+        position: absolute;
+        border: none;
+        background-color: transparent;
+        font-size: 120%;
+        margin-left: -28px;
+        &:hover{
+            color: variables.$cancelColor;
+        }
+    }
 }
 .enumTitle{
     font-size: 120%;

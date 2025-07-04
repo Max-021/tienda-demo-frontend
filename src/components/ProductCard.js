@@ -1,68 +1,63 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import FormHelperText from '@mui/material/FormHelperText'
 import {Swiper, SwiperSlide} from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-
 import { addNewProductToCart } from '../redux/CartSlice';
-//revisar que sirve y que no para construir la tarjeta expandida
 
-const cardSx = {
-    width:'100%',
-    height: 'auto',
-  }
-  const linkCard = {
-    textDecoration: 'underline',
-    color: 'black',
-    transition: 'all 0.6s',
-    "&:hover": {
-      color: '#EEF0EB !important',
-    }
-  }
-
-// const ProductCard = ({productInfo}) => {
 const ProductCard = (props) => {
 
-  const {name,descr,img,category,colors,price,quantity} = {...props}
-  const [amountChosen,setAmountChosen] = useState('');
+  const {name,descr,img,category,price,stock} = props;
+  const [errorQty ,setErrorQty] = useState('');
   const [activeColor, setActiveColor] = useState(0);
   const [prodToCart,setProdToCart] = useState({
     name,
     price,
-    quantity: 1,
-    color: colors[0],
+    color: stock[0]?.color || '',
+    quantity: stock[0]?.quantity > 0 ? 1 : 0,
   })
   const dispatch = useDispatch();
 
   const setColorsData = (color,index) => {
-    setProdToCart({...prodToCart, color})
-    setActiveColor(index)
+    setProdToCart(prev =>({...prev, color, quantity: stock[index].quantity < 1 ? 0 : 1}));
+    setActiveColor(index);
+    setErrorQty('');
   }
   const addToCart = () => {
     console.log(prodToCart)
     dispatch(addNewProductToCart(prodToCart))
+  }
+  const validateAmount = (e) => {
+    const max = stock[activeColor].quantity;
+    const val = Number(e.target.value);
+    if(val>max){
+      setErrorQty(`Solo hay ${max} unidad${max > 1 && 's'} disponible${max > 1 && 's'}`)
+    }else if(val < 1){
+      setErrorQty('Mínimo una unidad poder agregar el producto al carrito')
+    }else{
+      setErrorQty('');
+      setProdToCart(prev =>({...prev, quantity: Number(e.target.value)}))
+    }
   }
 
     return (
       <div className='productCard'>
         {img.length === 1 ?
           <div>
-            <img className='productDetailImg' src={img[0].startsWith('https') ? img[0] : require(`../assets/${img}`)} alt={`${img}`}/>
+            <img className='productDetailImg' src={img[0].startsWith('https') ? img[0] : require(`../assets/${img[0]}`)} alt={`${name}-${category}`}/>
           </div>
         :
         <div className='swiperContainer'>
           <Swiper navigation={true} modules={[Navigation]} className='mySwiper' loop={true}>
             {img.map((image, index) => {
-              return <SwiperSlide>
-                <img className='productDetailImg' src={image.startsWith('https') ? image : require(`../assets/${image}`)} alt={`${image}`}/>
+              return <SwiperSlide key={index}>
+                <img className='productDetailImg' src={image.startsWith('https') ? image : require(`../assets/${image}`)} alt={`${name}-${index}`}/>
               </SwiperSlide>
             })}
           </Swiper>
@@ -75,26 +70,33 @@ const ProductCard = (props) => {
               {name}
             </h2>
           </div>
-          <div className='productDetailColors'>
-            <p>Colores</p>
-            {colors.map((color,index) => {
-              return <button key={index} className={`colorBtn ${activeColor === index ? 'activeColorBtn':null}`}  onClick={() => setColorsData(color,index)}>
-                {color}
-              </button>
-            })}
-          </div>
+          {stock.length > 0 && 
+            <>
+              <div className='productDetailColors'>
+                <p>Colores</p>
+                {stock.map((color,index) => {
+                  return <button key={`${index}-${color.color}`} className={`colorBtn ${activeColor === index ? 'activeColorBtn':null}`}  onClick={() => setColorsData(color.color,index)}>
+                            {color.color}
+                  </button>
+                })}
+              </div>
+              <div className='productDetailAvailableUnits'>
+                <p>{stock[activeColor].quantity > 0 ? `${stock[activeColor].quantity} unidad${stock[activeColor].quantity > 1 && 'es'} disponible${stock[activeColor].quantity > 1 && 's'}` : 'No hay unidades disponibles'}</p>
+              </div>
+            </>
+          }
           <div className='productDetailAmount'>
-            <InputLabel id={`quantity-select`} />
             <p>Cantidad</p>
             <TextField
-              value={prodToCart.quantity} onChange={(e) => setProdToCart({...prodToCart, quantity: Number(e.target.value)})} 
-              name={`prod-quantity`} id={`prod-quantity`} type='number' inputProps={{style:{padding:5}}}/>
+              value={prodToCart.quantity} onChange={(e) => validateAmount(e)} 
+              name={`prod-quantity`} id={`prod-quantity`} type='number' inputProps={{min: 1, max: stock[activeColor]?.quantity, style:{padding:5}}}/>
+            {errorQty && <FormHelperText error>{errorQty}</FormHelperText>}
           </div>
           <div className='productDetailDescr'>
             <p>Descripción</p>
             <p>{descr}</p>
           </div>
-          <button className='addToCartBtn' onClick={() => addToCart()}> Agregar al carrito</button>
+          <button className='addToCartBtn' onClick={() => addToCart()} disabled={stock[activeColor]?.quantity < 1 || errorQty !== ''}> Agregar al carrito</button>
         </div>
       </div>
 
