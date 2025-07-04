@@ -14,7 +14,7 @@ const FormGenerator = ({productModel, productObject, setProductObject, removedIm
 
   const handleAutocompleteChange = (field, newVal) => setProductObject(prev => ({...prev, [field]: newVal}));
 
-  const renderSwitch = (productField) => {//esto se podria factorizar para que el textfield solo aparezca una vez y antes del return le cargo lo que corresponda
+  const renderSwitch = (productField, idx) => {//esto se podria factorizar para que el textfield solo aparezca una vez y antes del return le cargo lo que corresponda
     const modelInputInfo = {
       isRequired: false,dataType: 'text',isMultiline: false, isDisabled: false,labelName:'', onChangeFc: handleChange,
     }
@@ -46,7 +46,7 @@ const FormGenerator = ({productModel, productObject, setProductObject, removedIm
       break;
       case 'category':
         return (
-          <FormControl>
+          <FormControl key={`${productField}-${idx}`}>
             <Autocomplete renderInput={(params) => <TextField variant='filled' name={productField} {...params} label={'Categoría'}/>} 
               options={enumValues} disablePortal value={productObject[productField]} onChange={(_, val) => handleAutocompleteChange(productField, val)}/>
           </FormControl>
@@ -55,11 +55,11 @@ const FormGenerator = ({productModel, productObject, setProductObject, removedIm
         console.log(productObject);
         console.log(productObject[productField])
         return(
-          <StockManager stock={productObject[productField]} onStockChange={setProductObject} values={enumValues} colorModel={productModel[productField].subFields}/>
+          <StockManager key={`${productField}-${idx}`} stock={productObject[productField]} onStockChange={setProductObject} values={enumValues} colorModel={productModel[productField].subFields}/>
         );
       case 'img':
         return (<>
-          <ImageUploader name={`${productField}`} onImgChange={handleImgOnChange} images={productObject[productField]} setRemovedImages={setRemovedImages}/>
+          <ImageUploader key={`${productField}-${idx}`} name={`${productField}`} onImgChange={handleImgOnChange} images={productObject[productField]} setRemovedImages={setRemovedImages}/>
           {removedImages.length > 0 && <RemovedImagesViewer removedImages={removedImages} onRestore={(url) => {
             setRemovedImages(prev => prev.filter(u => u !== url));
             const nuevaLista = [...(productObject[productField] || []), url];
@@ -70,7 +70,7 @@ const FormGenerator = ({productModel, productObject, setProductObject, removedIm
         return <div>No field yet for: {productField}</div>
     }
 
-    return <FormControl>
+    return <FormControl key={`${productField}-${idx}`}>
       <TextField
             required={modelInputInfo.isRequired} label={`${modelInputInfo.labelName}`} value={productObject[productField]} onChange={modelInputInfo.onChangeFc} 
             name={`${productField}`} id={`${productField}-input`}type={modelInputInfo.dataType}//valores basicos
@@ -96,9 +96,8 @@ const FormGenerator = ({productModel, productObject, setProductObject, removedIm
 
   return (
     <>{Object.keys(productModel).map((item, index) => {
-      return renderSwitch(item);
+      return renderSwitch(item, index);
     })}</>
-    // <>{renderSwitch(modelKey)}</>
   )
 }
 

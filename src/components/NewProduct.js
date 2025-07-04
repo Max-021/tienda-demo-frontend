@@ -7,7 +7,7 @@ import EnumFieldsManager from './FormGenerator/EnumFieldsManager';
 import LoadingSpinner from './reusables/LoadingSpinner';
 import ConfirmMessage from './reusables/ConfirmMessage';
 
-import {getEnumList, getProductModel, uploadProduct, updateProduct, deleteProduct} from '../auxiliaries/axios'
+import {getEnumList, getProductModel, uploadProduct, updateProduct, deleteProduct, getProductById} from '../auxiliaries/axios'
 import { remakeObj } from '../auxiliaries/functions';
 
 import Box  from '@mui/material/Box'
@@ -34,12 +34,11 @@ const NewProduct = () => {
             const modelValue = await getProductModel();
             const enumList = await getEnumList();
             const productFormModel = remakeObj(modelValue.data);
-            console.log(modelValue.data)
             setProductModel(modelValue.data)
             setEnumFields(enumList.data);
             if(location.pathname === '/editar-producto'){
-                const productData = {...location.state};
-                setNewProduct(productData)
+                const prod = await getProductById({...location.state}._id)
+                setNewProduct(prod.data)
             }else setNewProduct(productFormModel);
         }
         fetchSingleData();
