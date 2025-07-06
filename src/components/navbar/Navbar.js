@@ -10,6 +10,7 @@ import Slide from '@mui/material/Slide';
 
 import Menu from '../Menu/Menu'
 import SearchBar from '../Menu/SearchBar';
+import ConfirmMessage from '../reusables/ConfirmMessage';
 
 const Transition = React.forwardRef(function Transition(props,ref) {
   return <Slide direction='up' ref={ref} {...props}/>
@@ -55,11 +56,18 @@ const Navbar = () => {
         authSt && <button type='button' title='Cerrar sesión' className='icon-btn logout-btn' onClick={() => setOpen(true)}><MdLogout /></button>
       }
       <Menu showCats={showCats} authSt={authSt}/>
-      <Dialog fullWidth maxWidth='90%' open={open} onClose={() => setOpen(false)} TransitionComponent={Transition}>
+      <ConfirmMessage 
+        windowStatus={open}
+        confirmFc={cerrarSesion} cancelFc={setOpen} 
+        titleMsg={"¿Desea cerrar sesion?"}
+        yesTitle='Confirmar cierre de sesión' yesTxt='Confirmar'
+        noTitle='Cancelar' noTxt='Cancelar'
+      />
+      {/* <Dialog fullWidth maxWidth='90%' open={open} onClose={() => setOpen(false)} TransitionComponent={Transition}>
         Desea cerrar sesion?
         <button type='button' title='confirmar cierre de sesión' onClick={() => cerrarSesion()}> Sí </button>
         <button type='button' title='No' onClick={() => setOpen(false)}> No </button>
-      </Dialog>
+      </Dialog> */}
       {/* {showCats !== '/'  ? null : <SearchBar/> } */}
     </div>
   )

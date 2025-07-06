@@ -65,6 +65,64 @@ svg:hover{
 .spinnerCenter{
     align-self: center;
 }
+//confirmMessage
+//la clase closeBtn esta con las clases del dialog de producto
+.confirmMsg{
+    width: 400px;
+    height: 150px;
+    box-sizing: border-box;
+    padding: 8px;
+    @include center-flex(column, space-between, flex-start);
+    p{
+        margin: 0;
+        margin-top: 4px;
+    }
+    .closeBtn{
+        right: 2px;
+        top: 2px;
+    }
+}
+.confirmBtns{
+    width: 100%;
+    @include center-flex(row, space-evenly, flex-start);
+    gap: 12px;
+    button{
+        cursor: pointer;
+        border-radius: 8px;
+        border: 1px solid black;
+        width: 100%;
+        padding: 10px 6px;
+        font-weight: bold;
+        background-color: transparent;
+        .confirmBtnLabel{
+            display: inline-block;
+            transition: transform 0.4s ease-in-out;
+        }
+        &:hover .confirmBtnLabel{
+            transform: scale(1.25);
+        }
+    }
+    button:first-of-type{
+        background-color: variables.$secondColorShade;
+        color: variables.$lightColorShade;
+    }
+}
+.enumProdDialog{
+    width: 600px;
+    height: 180px;
+}
+.deleteProdDialog{
+    width: 600px;
+    height: 180px;
+    button:first-of-type{
+        background-color: variables.$cancelColor;
+        color: variables.$darkColor;
+    }
+}
+.actionsDialog{
+    width:750px;
+    height: 180px;
+}
 //carousel
 .swiper-slide{
     height: auto !important;

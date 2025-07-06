@@ -48,4 +48,6 @@ export const updateProductsToNewSimpleField = (oldNewField) => callAPI(() => upd
 
 export const updateProductsToNewArray = (oldNewArr) => callAPI(() => update(productRoutes.CHANGE_ARRAY_FIELD, oldNewArr));
 
+export const updateProductsToNewSubDoc = (oldNewArr) => callAPI(() => update(productRoutes.CHANGE_SUBDOC_FIELD, oldNewArr))
+
 export const deleteProduct = (productData) => callAPI(() => deleteCall(`${productRoutes.EXISTING}/${productData._id}`));

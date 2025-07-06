@@ -11,7 +11,7 @@ const Actions = () => {
     const notify = useNotification();
     const userIdData = useSelector(userId);
     const [open, setOpen] = useState(false);
-    const [dialogInfo, setDialogInfo] = useState({msg: '', fc: () => {}})
+    const [dialogInfo, setDialogInfo] = useState({title: '', msg: '', fc: () => {}})
 
     const deleteMe = useLoadingNotifier(deleteUser, {successMsg: 'Usuario borrado con éxito. Redirigiendo...'});
     const deactivateMe = useLoadingNotifier(deactivateUser, {successMsg: 'Usuario desactivado con éxito. Redirigiendo...'});
@@ -45,10 +45,10 @@ const Actions = () => {
     const setActiveAction = (action) => {
         switch(action){
             case 'deactivate':
-                setDialogInfo(prev => ({...prev, fc: () => submitAction(action), msg: 'El usuario va a ser desactivado y la sesión se cerrará, mientras permanezca en este estado no se podrá realizar ninguna acción. Se le enviará un correo informando sobre este cambio, para revertirlo con iniciar sesión nuevamente es suficiente. Al terminar la sesión se cerrará.'}))
+                setDialogInfo(prev => ({...prev, fc: () => submitAction(action), title:'Desactivación', msg: 'El usuario va a ser desactivado y la sesión se cerrará, mientras permanezca en este estado no se podrá realizar ninguna acción. Se le enviará un correo informando sobre este cambio, para revertirlo con iniciar sesión nuevamente es suficiente. Al terminar la sesión se cerrará.'}))
             break;
             case 'eliminate':
-                setDialogInfo(prev => ({...prev, fc: () => submitAction(action), msg: 'IMPORTANTE: Esta acción es permanente. La sesión se cerrará y la cuenta se eliminará, los datos no se van a poder recuperar. Al terminar la sesión se cerrará.'}))
+                setDialogInfo(prev => ({...prev, fc: () => submitAction(action), title:'Eliminación', msg: 'IMPORTANTE: Esta acción es permanente. La sesión se cerrará y la cuenta se eliminará, los datos no se van a poder recuperar. Al terminar la sesión se cerrará.'}))
             break;
             default:
                 notify('error', 'Ocurrió un error intentando ejecutar la acción, reintente1');
@@ -70,7 +70,7 @@ const Actions = () => {
                     <button type='button' onClick={() => setActiveAction(el.action)}>{el.btnText}</button>
                 </div>
             })}
-            <ConfirmMessage windowStatus={open} cancelFc={setOpen} confirmFc={dialogInfo.fc} textMsg={dialogInfo.msg}/>
+            <ConfirmMessage dialogClass='actionsDialog' windowStatus={open} cancelFc={setOpen} confirmFc={dialogInfo.fc} titleMsg={dialogInfo.title} textContent={dialogInfo.msg}/>
         </div>
     )
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNotification } from '../reusables/NotificationContext';
-import { updateEnumList, updateProductsToNewSimpleField, updateProductsToNewArray } from '../../auxiliaries/axios';
+import { updateEnumList, updateProductsToNewSimpleField, updateProductsToNewArray, updateProductsToNewSubDoc } from '../../auxiliaries/axios';
 
 import TextField from '@mui/material/TextField'
 import FormControl from '@mui/material/FormControl';
@@ -48,7 +48,8 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
       return;
     }
     try {
-      await updateEnumList({enumId, values: enumList});
+      console.log(enumId)
+      await updateEnumList(enumId,enumList);
       refetchEnums();
       setBtnType();
       if(mode === 'update') setOpen(true)//para edicion solo
@@ -87,7 +88,7 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
           await updateProductsToNewSimpleField({oldInfo, newInfo, fieldName: enumName})
           break;
         case 'colors':
-          await updateProductsToNewArray({oldInfo, newInfo, fieldName: enumName})
+          await updateProductsToNewSubDoc({oldInfo, newInfo, fieldName: 'stock'})
           break;
         default:
           notify('warning', 'No functionality implemented for this field yet.');
@@ -144,7 +145,7 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
           }
         </FormControl>
       </div>
-      <ConfirmMessage windowStatus={open} confirmFc={confirmMsgComp.fc} cancelFc={setOpen} textMsg={confirmMsgComp.text}/>
+      <ConfirmMessage dialogClass='enumProdDialog' windowStatus={open} confirmFc={confirmMsgComp.fc} cancelFc={setOpen} titleMsg={'Actualización'} textContent={confirmMsgComp.text}/>
     </div>
   </div>
 }

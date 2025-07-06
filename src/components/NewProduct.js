@@ -113,7 +113,12 @@ const NewProduct = () => {
                 <p className='formTitle'>Campos con valores predeterminados</p>
                 {enumFields.map((el, index) => <EnumFieldsManager key={index} enumId={el._id} dataField={el.values} enumName={el.name} refetchEnums={refetchEnums}/>)}
             </Box>
-            <ConfirmMessage windowStatus={open} confirmFc={confirmDelete} cancelFc={setOpen} textMsg={'¿Desea eliminar este producto? Esta acción es permanente.'}/>
+            <ConfirmMessage 
+                dialogClass='deleteProdDialog' windowStatus={open} 
+                confirmFc={confirmDelete} cancelFc={setOpen}
+                titleMsg={"¿Desea eliminar este producto?"}
+                textContent='Esta acción es permanente, si desea sacar el producto del catalogo también puede desactivarlo haciendo click en la casilla de producto activo.'
+            />
         </div>
     )
 }

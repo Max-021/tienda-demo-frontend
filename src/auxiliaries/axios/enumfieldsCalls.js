@@ -13,4 +13,5 @@ export const getEnumList = () => callAPI(() => get());
 
 export const uploadEnumField = (enumData) => callAPI(() => post("",enumData));
 
-export const updateEnumList = ({id, values}) => callAPI(() => patch(`/${id}`,{values}));
+//tiene que ser values
+export const updateEnumList = (enumId, enumList) => callAPI(() => patch(`${enumId}`,{values: enumList}));
