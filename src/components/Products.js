@@ -37,7 +37,7 @@ const Products = () => {
     };
   }, [products, dispatch])
 
-  if(loading) return <LoadingSpinner containerClass='productsLayout'/>
+  if(loading) return <LoadingSpinner containerClass='productsLayout' spinnerInfo='bigSpinner'/>
   if(error)   return <LoadingError containerClass='productsLayout'/>
   if(noRes)   return <div className='productsLayout'>
                         <div>La búsqueda no arrojó resultados. CAMBIAR ESTO! temporal</div>

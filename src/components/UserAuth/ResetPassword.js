@@ -4,8 +4,8 @@ import { useLoadingNotifier } from '../../hooks/useLoadingNotifier';
 import { useParams, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../reusables/LoadingSpinner';
 
-import TextField from '@mui/material/TextField'
-import { IconButton, InputAdornment } from '@mui/material'
+import TextField from '@mui/material/TextField';
+import { IconButton, InputAdornment } from '@mui/material';
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 
 import { resetPassword, validateResetToken } from '../../auxiliaries/axios';
@@ -15,9 +15,10 @@ const ResetPassword = () => {
   const {token} = useParams();
   const navigate = useNavigate();
   const [passwordData, setPasswordData] = useState({password: '', confirmPassword: ''});
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isValid, setIsValid] = useState(null)
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isValid, setIsValid] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const sendResetPassword = useLoadingNotifier(resetPassword, {successMsg: 'Cambio de contraseña exitoso.', errorMsg: 'Ocurrió un error al intentar cambiar la contraseña, por favor reintente.'})
 
@@ -30,8 +31,6 @@ const ResetPassword = () => {
       } catch (error) {
         setIsValid(false);
         navigate('/notfound');
-      } finally {
-
       }
     }
     checkToken();
@@ -42,7 +41,15 @@ const ResetPassword = () => {
 
   const submitResetPassword = async (e) => {
       e.preventDefault();
-      await sendResetPassword(passwordData, token);//hacer algo con la info que recibo
+      setLoading(true);
+      try {
+        const res = await sendResetPassword(passwordData, token);//hacer algo con la info que recibo, temporal
+        notify('success', 'Contraseña actualizada con éxito!');
+      } catch (error) {
+        notify('error', 'Error reiniciando la contraseña, por favor reintente.')
+      }finally{
+        setLoading(false);
+      }
   }
 
   const isMismatch = passwordData.confirmPassword !== '' && passwordData.confirmPassword !== passwordData.password;
@@ -91,7 +98,7 @@ const ResetPassword = () => {
               )}}
             />
           </div>
-            <button className='userInfoBtn updatePwdBtn' type='submit'>Actualizar contraseña</button>
+            <button className='userInfoBtn updatePwdBtn' type='submit'>{loading ? <LoadingSpinner containerClass='smallSpinner lightColorSpinner'/> : 'Actualizar contraseña'}</button>
         </form>
         :
         <div className='pwdResetContainer'>

@@ -99,15 +99,17 @@ const NewProduct = () => {
                     {locRoute === '/editar-producto' && <button className='deleteProdBtn' type='button' title='Eliminar producto' onClick={() => setOpen(true)}><MdDeleteOutline/></button>}
                 </div>
                 {productLoading || loadingEnums
-                    ? <LoadingSpinner/>
-                    : <FormGenerator productModel={productModel} productObject={newProduct} setProductObject={setNewProduct} removedImages={removedImages} setRemovedImages={setRemovedImages} enumFields={enumFields}/>
+                    ? <LoadingSpinner spinnerInfo='formSpinner' containerClass='spinnerContainerCenter'/>
+                    : <>
+                        <FormGenerator productModel={productModel} productObject={newProduct} setProductObject={setNewProduct} removedImages={removedImages} setRemovedImages={setRemovedImages} enumFields={enumFields}/>
+                        <div style={{display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between'}}>
+                            <FormGroup>
+                                <FormControlLabel control={<Checkbox checked={isActive} onChange={handleChecked}/>} label="Producto activo"/>
+                            </FormGroup>
+                            <Button className='submitBtn' type='submit' variant='contained' sx={{alignSelf: 'flex-end'}}>Subir</Button>
+                        </div>
+                    </>
                 }
-                <div style={{display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between'}}>
-                    <FormGroup>
-                        <FormControlLabel control={<Checkbox checked={isActive} onChange={handleChecked}/>} label="Producto activo"/>
-                    </FormGroup>
-                    <Button className='submitBtn' type='submit' variant='contained' sx={{alignSelf: 'flex-end'}}>Subir</Button>
-                </div>
             </Box>
             <Box className='enumFieldsWrapper'>
                 <p className='formTitle'>Campos con valores predeterminados</p>

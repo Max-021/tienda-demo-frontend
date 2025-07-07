@@ -86,7 +86,7 @@ const UsersList = () => {
                 return '';
         }
     }
-    if(loading || auxLoading) return <LoadingSpinner containerClass={'spinnerCenter'}/>
+    if(loading || auxLoading) return <LoadingSpinner containerClass={'spinnerStart'} spinnerInfo='formSpinner'/>
     if(error)   return <LoadingError containerClass='spinnerStart' fn={refetch} error={error}/>
 
     return <>

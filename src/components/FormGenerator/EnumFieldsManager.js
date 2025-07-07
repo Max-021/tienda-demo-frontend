@@ -48,10 +48,9 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
       return;
     }
     try {
-      console.log(enumId)
+      setBtnType();
       await updateEnumList(enumId,enumList);
       refetchEnums();
-      setBtnType();
       if(mode === 'update') setOpen(true)//para edicion solo
       notify('success', msg);
     } catch (error) {
@@ -124,27 +123,23 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
           <TextField size='small' type='text' required value={fieldVal} onChange={handleChange} sx={{'& .MuiOutlinedInput-input': {padding: '16.5px 8px',}, paddingRight:'12px',paddingTop:'6px'}}/>
           {!addFieldText && <><span onClick={setBtnType} className='editSpanWarning'>Para anular la edición, hacer click aquí <IoMdClose/></span></>}
         </FormControl>
-        {!loading &&
-          <Button sx={{padding: '15.09px 8px', marginTop:'6px', alignSelf:'flex-start'}} variant='outlined' type='submit' onClick={() => submitEnum(addFieldText ? 'upload' : 'update')} disabled={loading || !fieldVal.trim()}>
-            {addFieldText ? 'Agregar':'Editar'}
-          </Button>
-        }
+        <Button sx={{padding: '15.09px 8px', marginTop:'6px', alignSelf:'flex-start', opacity:`${loading?0:1}`}} variant='outlined' type='submit' onClick={() => submitEnum(addFieldText ? 'upload' : 'update')} disabled={loading || !fieldVal.trim()}>
+          {addFieldText ? 'Agregar':'Editar'}
+        </Button>
       </div>
-      <div className='enumFieldsAutocomp'>
-        <FormControl>
-          {loading ? <LoadingSpinner/> 
-            :
-            <>
+      {loading ? <LoadingSpinner spinnerInfo='smallSpinner' containerClass='smallSpinner'/>
+        :
+          <div className='enumFieldsAutocomp'>
+            <FormControl>
               <Autocomplete value={autoCompVal} renderInput={(params) => <TextField variant='filled' sx={{minWidth:220, paddingTop:'6px'}} {...params} label={enumName}/>} 
               options={dataField} disablePortal onChange={(event, newValue) => {
                                                   setChangedField(newValue);
                                                   setAutoCompVal(newValue);
                                                 }}/>
               {activeFieldToUpdate !== null && <button className='deleteEnumFieldBtn' onClick={() => prepareDeleteAction()} disabled={loading}>Eliminar elemento</button>}
-            </>
-          }
-        </FormControl>
-      </div>
+            </FormControl>
+          </div>
+      }
       <ConfirmMessage dialogClass='enumProdDialog' windowStatus={open} confirmFc={confirmMsgComp.fc} cancelFc={setOpen} titleMsg={'Actualización'} textContent={confirmMsgComp.text}/>
     </div>
   </div>

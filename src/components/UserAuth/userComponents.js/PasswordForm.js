@@ -22,10 +22,10 @@ const PasswordForm = ({isChangePasswordActive}) => {
         e.preventDefault();
         try {
             setLoadingStatus(true);
+            await new Promise(resolve => setTimeout(resolve, 30000));
             //dejar que esto pase solo cuando las validaciones del formulario son correctas
             await updatePassword(userPwd)
             notify('success', 'Actualización de contraseña exitosa');
-            await new Promise(resolve => setTimeout(resolve, 3000));
         } catch (error) {
             notify('error', 'Ocurrio un error al intentar actualizar la contraseña, reintente.');
         }finally{
@@ -78,7 +78,9 @@ const PasswordForm = ({isChangePasswordActive}) => {
                     )}}
                 />
             </div>
-            <button className='userInfoBtn updatePwdBtn' type='submit'>{!loadingStatus ? 'Actualizar contraseña': <LoadingSpinner/>}</button>
+            <button className='userInfoBtn updatePwdBtn' type='submit'>
+                {!loadingStatus ? 'Actualizar contraseña': <LoadingSpinner spinnerInfo='lightColorSpinner smallSpinner' containerClass='spinnerCenter'/>}
+            </button>
         </form>
     )
 }

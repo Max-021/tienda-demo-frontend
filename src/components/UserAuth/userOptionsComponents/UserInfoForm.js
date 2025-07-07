@@ -56,7 +56,7 @@ const UserInfoForm = () => {
     }
 
     if(!initialLoadDone && loading){
-        return <LoadingSpinner containerClass='spinnerCenter'/>
+        return <LoadingSpinner containerClass='spinnerStart' spinnerInfo='formSpinner'/>
     }
     if(error){
         return <LoadingError containerClass='userInfoForm' fn={refetch} error={error}/>
@@ -78,7 +78,7 @@ const UserInfoForm = () => {
                     })}
                 </div>
                 {!isEditingActive && <>
-                    <button className='userInfoBtn updateBtn' type='submit'>{initialLoadDone && (pendingSubmit || loading) ? <LoadingSpinner/> :'Guardar Cambios'}</button>
+                    <button className='userInfoBtn updateBtn' type='submit'>{initialLoadDone && (pendingSubmit || loading) ? <LoadingSpinner spinnerInfo='lightColorSpinner'/> :'Guardar Cambios'}</button>
                 </>}
             </form>
             <div className='userPwdInfo'>

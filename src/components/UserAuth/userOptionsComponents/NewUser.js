@@ -23,6 +23,7 @@ const NewUser = () => {
     }, [listRoles, rolesList])
 
     const submitNewUser = async (e) => {
+        if(loading) return;//otra traba a mandar lo mismo 2 veces, aunque con el disabled del boton debería bastar, lo dejo igual
         e.preventDefault();
         setLoading(true)
         try {
@@ -65,7 +66,9 @@ const NewUser = () => {
                 <p style={{textAlign: 'right', margin:0}}>*La contraseña la podrá establecer el usuario a través de un link provisto al mail dado.</p>
             </div>
             </div>
-            <button type='submit' className='userInfoBtn updateBtn'>{loading ? <LoadingSpinner/> : 'Crear usuario'}</button>
+            <button type='submit' className='userInfoBtn updateBtn' disabled={loading}>
+                {loading ? <LoadingSpinner spinnerInfo='lightColorSpinner'/> : 'Crear usuario'}
+            </button>
         </form>
     </div>)
 }

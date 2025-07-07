@@ -65,6 +65,15 @@ svg:hover{
 .spinnerCenter{
     align-self: center;
 }
+.spinnerContainerCenter{
+    margin-top: 12px;
+    align-self: center;
+}
+.smallSpinner {
+    margin-top: 22px;
+    align-self: flex-start;
+}
+
 //confirmMessage
 //la clase closeBtn esta con las clases del dialog de producto
 .confirmMsg{
@@ -793,7 +802,7 @@ li{
     width: 100%;
 }
 .enumFieldsList{
-    @include center-flex(row, center, flex-start);
+    @include center-flex(row, flex-start, flex-start);
     box-sizing: border-box;
     // overflow: auto;
     // padding: 0 variables.$lateralPadding;

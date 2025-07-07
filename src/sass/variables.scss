@@ -40,5 +40,11 @@ $lg: 1536px;
 
 //exports
 :export {
-    navbarHeight: $navBarHeight;    
+    mainColor: $mainColor;
+    secondColor: $secondColor;
+    secondColorShade: $secondColorShade;
+    thirdColor: $thirdColor;
+    lightColor: $lightColor;
+    darkColor: $darkColor;
+    navbarHeight: $navBarHeight;
 }
