@@ -7,6 +7,8 @@ import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField'
 
+
+//TEMPORAL, COMPONENTE SIN TERMINAR
 const SignUp = () => {
 
     const [userData, setUserData] = useState({//IMPORTANTE EN ALGUN lugar agregar algun tipo de encriptado o ver como se hace para cuidar la contraseña cuando se ingresa en el front

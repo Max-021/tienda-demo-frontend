@@ -1,24 +1,16 @@
 import React,{useState,useEffect} from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useSelector, useDispatch} from 'react-redux';
-import { authenticateStatus, checkLogin } from '../../redux/UserSlice';
+import { useSelector} from 'react-redux';
+import { authenticateStatus } from '../../redux/UserSlice';
 import { logout } from '../../auxiliaries/axios';
 import { MdLogout } from "react-icons/md";
-
-import Dialog from '@mui/material/Dialog';
-import Slide from '@mui/material/Slide';
 
 import Menu from '../Menu/Menu'
 import SearchBar from '../Menu/SearchBar';
 import ConfirmMessage from '../reusables/ConfirmMessage';
 
-const Transition = React.forwardRef(function Transition(props,ref) {
-  return <Slide direction='up' ref={ref} {...props}/>
-})
-
 const Navbar = () => {
 
-  // const dispatch = useDispatch();
   const location = useLocation();
   
   const [showCats,setShowCats] = useState('')
@@ -31,6 +23,7 @@ const Navbar = () => {
 
   const cerrarSesion = () => {
     setOpen(false);
+    alert('aca')
     logout();
   }
   const titleText = () => {//Agregar dependiendo del contenido que quiera al texto del titulo
@@ -63,11 +56,6 @@ const Navbar = () => {
         yesTitle='Confirmar cierre de sesión' yesTxt='Confirmar'
         noTitle='Cancelar' noTxt='Cancelar'
       />
-      {/* <Dialog fullWidth maxWidth='90%' open={open} onClose={() => setOpen(false)} TransitionComponent={Transition}>
-        Desea cerrar sesion?
-        <button type='button' title='confirmar cierre de sesión' onClick={() => cerrarSesion()}> Sí </button>
-        <button type='button' title='No' onClick={() => setOpen(false)}> No </button>
-      </Dialog> */}
       {/* {showCats !== '/'  ? null : <SearchBar/> } */}
     </div>
   )
