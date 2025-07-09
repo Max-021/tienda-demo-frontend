@@ -11,6 +11,8 @@ const deleteCall = (path = "", config) => axiosClient.delete(`${PRODUCTS_ROUTE}$
 
 export const getAllProducts = () => callAPI(() => get("", {withCredentials: false}));
 
+export const getProductsByEditorFilter = (filterOps) => callAPI(() => get(``, {withCredentials: false, params: filterOps}));
+
 export const getProductModel = () => callAPI(() => get(productRoutes.PROD_MODEL));
 
 export const getProductById = (id) => callAPI(() => get(`${productRoutes.EXISTING}/${id}`, {withCredentials: false}));

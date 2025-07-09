@@ -328,6 +328,23 @@ li{
     margin-bottom: 0;
     font-weight: bold;
 }
+.editorOptions{
+    box-sizing: border-box;
+    @include center-flex(row, flex-start, center);
+    width: 100%;
+    padding: 0 variables.$lateralPadding;
+    form{
+        width: 100%;
+        @include center-flex(row, flex-start, center);
+    }
+}
+.editorFilterTitle{
+    p{
+        width: max-content;
+        margin: 0;
+        margin-right: 12px;
+    }
+}
 //signup and login section
 .logSection,
 .resetPwdSection{

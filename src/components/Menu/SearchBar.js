@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { changeView } from '../../redux/searchBarSlice';
 import { activeFilters, filterProducts, cleanArrayFilter, cleanTextFilter } from '../../redux/ProductsSlice';
+import { authenticateStatus, userRole } from '../../redux/UserSlice';
 import { searchAndFilter } from '../../redux/thunks/productThunks';
+import { allowedEditingRole } from '../../data/permissions';
 
 import InputBase from '@mui/material/InputBase';
 import Popover from '@mui/material/Popover';
@@ -13,11 +15,14 @@ import { IoMdClose } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 
 import FilterOptions from './FilterOptions';
+import EditorOptions from './EditorOptions';
 const vertAlign = { verticalAlign: 'middle', marginLeft: '16px' }
 
 const SearchBar = () => {
     const dispatch = useDispatch();
-    const storeFilters = useSelector(activeFilters)
+    const storeFilters = useSelector(activeFilters);
+    const authSt = useSelector(authenticateStatus);
+    const userRl = useSelector(userRole);
     const [searchBarText, setSearchBarText] = useState('');
     const [anchorEl, setAnchorEl] = useState(null);
     const isPopoverOpen = Boolean(anchorEl);
@@ -110,6 +115,7 @@ const SearchBar = () => {
                     ))
                 })}
             </div>
+            {(authSt &&  allowedEditingRole.includes(userRl)) && <EditorOptions/>}
         </>
     );
 }

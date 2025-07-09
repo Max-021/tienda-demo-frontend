@@ -1,4 +1,31 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getAllProducts, getProductsByEditorFilter } from "../auxiliaries/axios";
+
+export const fetchActiveProducts = createAsyncThunk(
+    "products/fetchActive",
+    async (_, { rejectWithValue }) => {
+        try {
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            const res = await getAllProducts();
+            console.log(res)
+            return res.data;
+        } catch (error) {
+            return rejectWithValue(error);
+        }
+    }
+)
+export const fetchEditorProducts = createAsyncThunk(
+    "products/fetchEditor",
+    async (editorFilters, { rejectWithValue }) => {
+        try {
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            const res = await getProductsByEditorFilter(editorFilters);
+            return res.data;
+        } catch (error) {
+            return rejectWithValue(error);
+        }
+    }
+)
 
 const initialState = {
     activeCat: '',
@@ -11,17 +38,14 @@ const initialState = {
     products: [],
     filteredProducts: [],
     noSearchResults: true,
+    loading: "idle",
+    error: null,
 }
 
 export const productsSlice = createSlice({
     name:'products',
     initialState,
     reducers: {
-        getProductsList: (state,action) => {
-            state.noSearchResults=false;
-            state.products = action.payload;
-            state.filteredProducts = state.products;
-        },
         onCategorySelected: (state, action) => {
             state.activeCat = state.activeCat === action.payload ? '' : action.payload;
             state.noSearchResults = false
@@ -52,7 +76,7 @@ export const productsSlice = createSlice({
             const [val, arrayType] = [...action.payload];
             if(Array.isArray(state.filters[arrayType])) state.filters[arrayType] = state.filters[arrayType].filter(item => item !== val);
         },
-        empyFilters: (state) => {
+        emptyFilters: (state) => {
             state.filters.colors = [];
             state.filters.maxPrice = null;
             state.filters.minPrice = null;
@@ -105,6 +129,39 @@ export const productsSlice = createSlice({
             state.noSearchResults = result.length === 0;
         },
     },
+    extraReducers: (builder) => {
+        //para fetchActiveProds
+        builder
+            .addCase(fetchActiveProducts.pending, (state) => {
+                state.error = null;
+                state.loading = "pending";
+            })
+            .addCase(fetchActiveProducts.fulfilled, (state, action) => {
+                state.loading = "success";
+                state.products = action.payload;
+                state.filteredProducts = action.payload;
+                state.noSearchResults = action.payload.length === 0;
+            })
+            .addCase(fetchActiveProducts.rejected, (state, action) => {
+                state.loading = "failed";
+                state.error = action.payload;
+            })
+        builder
+            .addCase(fetchEditorProducts.pending, (state) => {
+                state.loading = "pending";
+                state.error = null;
+            })
+            .addCase(fetchEditorProducts.fulfilled, (state, action) => {
+                state.loading = "success";
+                state.filteredProducts = action.payload;
+                state.products = action.payload;
+                state.noSearchResults = action.payload.length === 0;
+            })
+            .addCase(fetchEditorProducts.rejected, (state, action) => {
+                state.loading = "failed";
+                state.error = action.payload;
+            })
+    }
 })
 
 export const {getProductsList, onCategorySelected, searchProduct, setFilters, filterProducts, empyFilters, cleanArrayFilter, cleanTextFilter} = productsSlice.actions

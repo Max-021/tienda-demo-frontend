@@ -44,10 +44,7 @@ const Navbar = () => {
         {/* temporal, ver como refactorizar rutas para que sean de comodo acceso a toda la app y sensibles al idioma */}
         {titleText()}
       </h1>
-      {console.log(authSt)}
-      {
-        authSt && <button type='button' title='Cerrar sesión' className='icon-btn logout-btn' onClick={() => setOpen(true)}><MdLogout /></button>
-      }
+      { authSt && <button type='button' title='Cerrar sesión' className='icon-btn logout-btn' onClick={() => setOpen(true)}><MdLogout /></button> }
       <Menu showCats={showCats} authSt={authSt}/>
       <ConfirmMessage 
         windowStatus={open}
@@ -56,7 +53,6 @@ const Navbar = () => {
         yesTitle='Confirmar cierre de sesión' yesTxt='Confirmar'
         noTitle='Cancelar' noTxt='Cancelar'
       />
-      {/* {showCats !== '/'  ? null : <SearchBar/> } */}
     </div>
   )
 }
