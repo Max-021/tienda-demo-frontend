@@ -2,14 +2,13 @@ import React, {useState} from 'react'
 import { useNotification } from '../../reusables/NotificationContext';
 import LoadingSpinner from '../../reusables/LoadingSpinner';
 import PasswordRules from './PasswordRules';
+import IconPopOver from '../../reusables/IconPopOver';
 import { updatePassword } from '../../../auxiliaries/axios';
 import { testPwd } from '../../../auxiliaries/validationFunctions';
 
 import TextField from '@mui/material/TextField';
-import Popover from '@mui/material/Popover';
 import { IconButton, InputAdornment } from '@mui/material';
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
-import { BsQuestionCircle } from "react-icons/bs";
 
 const PasswordForm = ({isChangePasswordActive}) => {
     const notify = useNotification();
@@ -20,10 +19,6 @@ const PasswordForm = ({isChangePasswordActive}) => {
     const [loadingStatus, setLoadingStatus] = useState(false);
     const [newPwdError, setNewPwdError] = useState('');
     const [anchorEl, setAnchorEl] = useState(null);
-
-    const handlePopoverOpen = (e) => setAnchorEl(e.currentTarget) 
-    const handlePopoverClose = () => setAnchorEl(null);
-    const popoverOpen = Boolean(anchorEl);
 
     const handlePwd = (e) => setUserPwd(prev => ({...prev, [e.target.name]: e.target.value}));
 
@@ -65,7 +60,7 @@ const PasswordForm = ({isChangePasswordActive}) => {
             <div className='userInfoContainer pwdUserInfoContainer'>
                 <p title='Nueva contraseña' className='userInfoFieldName pwdField'>
                     Nueva contraseña
-                    <BsQuestionCircle style={{verticalAlign: 'text-top', marginLeft:'3px'}} onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose} onFocus={handlePopoverOpen} onBlur={handlePopoverClose}/>
+                    <IconPopOver setAnchorEl={setAnchorEl} anchorEl={anchorEl} shownElement={<PasswordRules oldPwd={userPwd.password} newPwd={userPwd.newPassword}/>}/>
                 </p>
                 <TextField required name={'newPassword'} type={showNewPassword?'text':'password'} disabled={!isChangePasswordActive}
                     value={userPwd.newPassword} 
@@ -108,12 +103,6 @@ const PasswordForm = ({isChangePasswordActive}) => {
                 {!loadingStatus ? 'Actualizar contraseña': <LoadingSpinner spinnerInfo='lightColorSpinner smallSpinner' containerClass='spinnerCenter'/>}
             </button>
         </form>
-        <Popover anchorEl={anchorEl} open={popoverOpen} onClose={handlePopoverClose} disableRestoreFocus sx={{ pointerEvents: 'none' }}
-            anchorOrigin={{vertical:'bottom',horizontal:'left'}} transformOrigin={{vertical:'top',horizontal:'left'}}
-            slotProps={{paper: {onMouseEnter: handlePopoverOpen, onMouseLeave: handlePopoverClose} }}
-        >
-            <PasswordRules oldPwd={userPwd.password} newPwd={userPwd.newPassword}/>
-        </Popover>
     </>)
 }
 

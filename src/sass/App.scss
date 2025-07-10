@@ -777,6 +777,9 @@ li{
         }
     }
 }
+.imgFormCover {
+    border: 10px solid variables.$coverBackground;
+}
 .enumTitle{
     font-size: 120%;
     margin-bottom: 6px;
