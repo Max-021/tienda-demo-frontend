@@ -15,5 +15,6 @@ export const USERS_LIST             = 'usersList';
 export const TOGGLE_SUSPENSION      = 'toggleSuspension';
 export const CHANGE_ROLE            = 'changeRole';
 export const ROLES_LIST             = 'rolesList';
+export const VALIDATE_PASSWORD      = 'password/validate';
 
 // export const = '';

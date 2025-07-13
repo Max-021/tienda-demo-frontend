@@ -29,3 +29,5 @@ export const toggleSuspension = (user) => callAPI(() => update(userRoutes.TOGGLE
 export const setNewUserRole = (user, newRole) => callAPI(() => update(userRoutes.CHANGE_ROLE, {...user, role: newRole}));
 
 export const getRolesList = () => callAPI(() => get(userRoutes.ROLES_LIST));
+
+export const validatePasswordStatus = (pwd) => callAPI(() => post(userRoutes.VALIDATE_PASSWORD, {...pwd}))

@@ -42,7 +42,7 @@ const Login = () => {
     }
     if(name === 'password'){
       if(!val.trim()) msg = 'La contraseña es obligatoria.'
-      else if(val.length < 8) msg = 'Mínimo 8 caracteres.'
+      else if(val.length < 12) msg = 'Mínimo 12 caracteres.'
     }
     setErrors(prev => ({...prev, [name]: msg}));
   };
