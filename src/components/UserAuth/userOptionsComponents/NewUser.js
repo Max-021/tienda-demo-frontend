@@ -30,7 +30,7 @@ const NewUser = () => {
             await createUser(newUser);
             notify('success','Usuario creado con exito, el mismo recibirá en su casilla de correo instrucciones sobre como empezar a utilizar la cuenta.');
         } catch (error) {
-            notify('error','Error al crear el usuario, reintente.');
+            notify('error', error);
         }finally{
             setLoading(false);
         }

@@ -48,7 +48,7 @@ const UserInfoForm = () => {
             await updateUser(newuserInfo);
             notify('success', 'Datos actualizados!');
         } catch (error) {
-            notify('error', 'Ocurrio un error con la actualización de la información, reintente.');
+            notify('error', error);
         }finally{
             setPendingSubmit(false);
             refetch();

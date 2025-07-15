@@ -38,7 +38,7 @@ const Actions = () => {
                     window.location.href = '/';
                 }, 1500);
         } catch (error) {
-            notify('error', 'Ocurrió un error en el servidor, reintente.');
+            notify('error', error);
         }
     }
 
@@ -51,7 +51,7 @@ const Actions = () => {
                 setDialogInfo(prev => ({...prev, fc: () => submitAction(action), title:'Eliminación', msg: 'IMPORTANTE: Esta acción es permanente. La sesión se cerrará y la cuenta se eliminará, los datos no se van a poder recuperar. Al terminar la sesión se cerrará.'}))
             break;
             default:
-                notify('error', 'Ocurrió un error intentando ejecutar la acción, reintente1');
+                notify('error', 'Ocurrió un error intentando ejecutar la acción, reintente.');
                 return;
         }
         setOpen(true);

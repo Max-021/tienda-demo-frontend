@@ -35,7 +35,7 @@ const PasswordForm = ({isChangePasswordActive}) => {
             await updatePassword(userPwd)
             notify('success', 'Actualización de contraseña exitosa');
         } catch (error) {
-            notify('error', 'Ocurrio un error al intentar actualizar la contraseña, reintente.');
+            notify('error', error);
         }finally{
             setLoadingStatus(false);
         }

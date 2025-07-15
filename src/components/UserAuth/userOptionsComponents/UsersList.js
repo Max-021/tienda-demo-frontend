@@ -64,7 +64,7 @@ const UsersList = () => {
             await fn(...data);
             notify('success', msg);
         } catch (error) {
-            notify('error', 'Error al realizar la acción, reintente');
+            notify('error', error);
         }finally{
             setAuxLoading(false);
             refetch();

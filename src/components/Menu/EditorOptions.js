@@ -19,9 +19,11 @@ const EditorOptions = () => {
   const aplicarFiltrosEditor = async (e) => {
     e.preventDefault();
     try {
+      let fakeerror = editorFilters
+      fakeerror = {...fakeerror, showAll: undefined}
       await dispatch(fetchEditorProducts(editorFilters)).unwrap();
     } catch (error) {
-      notify('error', 'Error al aplicar los filtros, reintente.')
+      notify('error', error);
     }
 
   }

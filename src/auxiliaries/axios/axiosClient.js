@@ -7,9 +7,17 @@ const fallbackUrl = '/'//tengo que poner algo para los casos en los que no haya 
 const axiosClient = axios.create({
     baseURL: API_BASE || fallbackUrl,
     withCredentials: true,
-    headers: { 'Content-Type': 'application/json', },
     timeout: 10000,//revisar como reajustar esto para cuando el servidor está muy lento
+    headers: { 
+        'Content-Type': 'application/json', 
+        'Accept-Language': 'es',
+    },
 })
+
+// axiosClient.interceptors.request.use(config => {//lo dejo comentado porque ya lo pongo en el axiosClient, pero podría servir más adelante
+//   config.headers['Accept-Language'] = 'es';
+//   return config;
+// });
 
 axiosClient.interceptors.response.use(
     (response) => response,

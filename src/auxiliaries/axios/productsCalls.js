@@ -9,9 +9,9 @@ const post = (path = "", data, config) => axiosClient.post(`${PRODUCTS_ROUTE}${p
 const update = (path = "", data, config) => axiosClient.patch(`${PRODUCTS_ROUTE}${path}`, data, config);//tambien ver como usarlo en el updateproduct
 const deleteCall = (path = "", config) => axiosClient.delete(`${PRODUCTS_ROUTE}${path}`, config);
 
-export const getAllProducts = () => callAPI(() => get("", {withCredentials: false}));
+export const getAllProducts = () => callAPI(() => get("", {withCredentials: true}));
 
-export const getProductsByEditorFilter = (filterOps) => callAPI(() => get(``, {withCredentials: false, params: filterOps}));
+export const getProductsByEditorFilter = (filterOps) => callAPI(() => get(``, {withCredentials: true, params: filterOps}));
 
 export const getProductModel = () => callAPI(() => get(productRoutes.PROD_MODEL));
 

@@ -54,7 +54,7 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
       if(mode === 'update') setOpen(true)//para edicion solo
       notify('success', msg);
     } catch (error) {
-      notify('error', 'Error enviando la información, reintente.');
+      notify('error', error);
     }finally{
       setLoading(false);
     }
@@ -73,7 +73,7 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
       setBtnType();
       notify('success','Elemento eliminado con exito!');
     } catch (error) {
-      notify('error','Ocurrió un error al eliminar este elemento, reintente.');
+      notify('error', error);
     }
     await updateToNewFieldContent(fieldVal.toLowerCase(), '');
   }
@@ -94,8 +94,8 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
           break;
       }
       notify('success','Productos modificados correctamente!');
-    } catch (error) {
-      notify('error', 'Ocurrió un error al intentar actualizar los productos con el nuevo valor, reintente la modificación o cambie manualmente los productos que desea actualizar para mayor seguridad.');
+    } catch (err) {
+      notify('error', err);
     }finally{
       setLoading(false);
     }

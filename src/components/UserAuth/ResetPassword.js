@@ -63,7 +63,7 @@ const ResetPassword = () => {
         const res = await sendResetPassword(passwordData, token);//hacer algo con la info que recibo, temporal
         notify('success', 'Contraseña actualizada con éxito!');
       } catch (error) {
-        notify('error', 'Error reiniciando la contraseña, por favor reintente.')
+        notify('error', error);
       }
   }
 
