@@ -330,9 +330,10 @@ li{
 }
 .editorOptions{
     box-sizing: border-box;
+    background-color: variables.$lightColor;
     @include center-flex(row, flex-start, center);
     width: 100%;
-    padding: 0 variables.$lateralPadding;
+    padding: 6px variables.$lateralPadding;
     form{
         width: 100%;
         @include center-flex(row, flex-start, center);
@@ -434,11 +435,34 @@ li{
     background-color: variables.$lightColor;
     box-sizing: border-box;
     padding: variables.$lateralPadding;
-    @include center-flex(row, flex-start, flex-start);
+    overflow-y: auto;
+    // @include center-flex(row, flex-start, flex-start);
+    @include center-flex(column, flex-start, flex-start);
     @include section-height();
     flex: 1;
     flex-wrap: wrap;
     gap: 12px;
+}
+.productsLayoutList{
+    box-sizing: border-box;
+    width: 100%;
+    padding: variables.$lateralPadding;
+    padding-top: 0;
+    min-height: variables.$fullHeight;
+    background-color: variables.$lightColor;
+    @include center-flex(column, flex-start, flex-start);
+    padding-bottom: calc(variables.$footerHeight + 12px);
+}
+.virtItem{
+    padding-bottom: 12px;
+}
+.productsGridList {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+}
+.productsGridItem {
+    width: 100% !important;
 }
 .productView {
     box-sizing: border-box;
@@ -466,8 +490,6 @@ li{
     width: 100%;
 }
 .productGrid{
-    //temporal, revisar lo que pasa cuando son menos de cuatro productos, se ve feo
-    width: 15%;
     height: auto;
     aspect-ratio: 1/1;
     flex-direction: column;
@@ -490,6 +512,16 @@ li{
             margin: 0;
         }
     }
+    .productImgContainer{
+        width: 100%;
+        aspect-ratio: 1/1;
+        overflow: hidden;
+    }
+    .productImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 }
 .productImgContainer{
     height: 100%;
@@ -1244,12 +1276,12 @@ footer{
 //--------------------------------------------------------- LAPTOP
 @media (max-width: variables.$md) {//1200
     .productsLayout{
-        // justify-content: space-between;
         gap: 18px;
     }
     //acá ajustar los de grilla
-    .productGrid{
-        width: 23%;
+    .productsGridList {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
     }
     .swiperContainer{
         width: 400px;
@@ -1293,15 +1325,9 @@ footer{
         padding: 0 calc(variables.$lateralPadding / 2);
         font-size: variables.$titleFontSize;
     }
-    .productGrid{
-        width: 30%;
-        .productImgContainer{
-            height: fit-content;
-            img{
-                width: 100%;
-                aspect-ratio: 1/1;
-            }
-        }
+    .productsGridList {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
     }
     .productCard{
         flex-direction: column;
@@ -1403,9 +1429,6 @@ footer{
         padding: 0 calc(variables.$lateralPadding / 4);
         font-size: calc(variables.$titleFontSize / 1.2);
     }
-    .productGrid{
-        width: 45%;
-    }
     .swiperContainer{
         width: 350px;
     }
@@ -1462,6 +1485,9 @@ footer{
     }
     .productGrid{
         width: 90%;
+    }
+    .productsGridList {
+        grid-template-columns: 1fr;
     }
     .userInfoFieldName{
         text-align: justify;

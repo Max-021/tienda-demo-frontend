@@ -39,6 +39,7 @@ const NewProduct = () => {
             if(location.pathname === '/editar-producto'){
                 const prod = await getProductById({...location.state}._id)
                 setNewProduct(prod.data)
+                setIsActive(prod.data.isActive)//para ajustar esto porque este valor lo manejo por fuera del formulario
             }else setNewProduct(productFormModel);
         }
         fetchSingleData();

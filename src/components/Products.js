@@ -1,6 +1,8 @@
-import React, {useEffect,useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import {  fetchActiveProducts } from '../redux/ProductsSlice';
+import { Virtuoso, VirtuosoGrid } from 'react-virtuoso';
+import { fetchActiveProducts } from '../redux/ProductsSlice';
+import { currentViewValue } from '../redux/searchBarSlice';
 
 import { GrFormClose } from "react-icons/gr";
 import Dialog from '@mui/material/Dialog';
@@ -16,10 +18,11 @@ const Transition = React.forwardRef(function Transition(props,ref) {
 })
 
 const Products = () => {
+  const dispatch = useDispatch();
+  const currentView = useSelector(currentViewValue);
   const [open,setOpen] = useState(false);
   const [productData, setProductData] = useState({});
-  const {filteredProducts, loading, error, noSearchRes, } = useSelector((s) => s.products)
-  const dispatch = useDispatch();
+  const {filteredProducts, totalCount, loading, error, noSearchRes, page, limit} = useSelector((s) => s.products)
 
   const handleOpen = (prodInd) =>{
     setOpen(true)
@@ -27,33 +30,83 @@ const Products = () => {
   }
 
   useEffect(() => {
-    dispatch(fetchActiveProducts());
-  }, [dispatch])
+    dispatch(fetchActiveProducts({page: 1, limit: limit}));
+  }, [dispatch, limit])
 
-  if(loading === 'pending') return <LoadingSpinner containerClass='productsLayout' spinnerInfo='bigSpinner'/>
-  if(error !== null)   return <LoadingError containerClass='productsLayout'/>
-  if(noSearchRes)   return <div className='productsLayout'>
-                        <div>La búsqueda no arrojó resultados. CAMBIAR ESTE TEXTO! temporal</div>
-                      </div>
+  const loadMore = useCallback(() => {
+    if(filteredProducts.length < totalCount && loading !== 'pending'){
+      dispatch(fetchActiveProducts({page: page + 1, limit: limit}))
+    }
+  }, [dispatch, filteredProducts.length, totalCount, page, limit, loading])
+
+  if(loading === 'pending' && page === 0) return <LoadingSpinner containerClass='productsLayout' spinnerInfo='bigSpinner'/>
+  if(error !== null)                      return <LoadingError containerClass='productsLayout'/>
+  if(noSearchRes)                         return <div className='productsLayout'>
+                                            <div>La búsqueda no arrojó resultados. CAMBIAR ESTE TEXTO! temporal</div>
+                                          </div>
 
   return (
-    <div className='productsLayout'>
-      {filteredProducts.length > 0 ? filteredProducts.map((product,index) => {//Esta seria la tarjeta de cada producto, se puede sacar a otro archivo
-          return <ProductPreview key={`${product._id}`} ind={index} product={product} handleOpen={handleOpen}/>
-      }) : 
-      <div>No hay articulos por el momento, temporal, cambiar esto</div>}
-    <Dialog PaperProps={{
-      sx:{
-        boxSizing: 'border-box',
-        transition: '0.7s all',
-        height: {lg:'auto',md: '50vh', },
-        width: {md: '90%',sm: 'fit-content', xs: 'fit-content'},
+    <div className='productsLayoutList'>
+      {currentView === 'list' ? 
+        <Virtuoso
+          useWindowScroll
+          style={{width:'100%',}}
+          totalCount={totalCount}
+          data={filteredProducts}
+          endReached={loadMore}
+          overscan={200}
+          itemContent={(index, product) => (
+            <div className='virtItem'>
+              <ProductPreview ind={index} product={product} handleOpen={handleOpen}/>
+            </div>
+          )}
+          components={{
+            Footer: () => {
+              if(filteredProducts.length < totalCount) return <div style={{marginTop:'12px', textAlign:'center'}}><LoadingSpinner spinnerInfo='mediumSpinner'/></div>
+              return (
+                  <p style={{textAlign:'center', margin: '1rem 0'}}>- No hay más productos -</p>
+              )
+            }
+          }}
+        />
+      :
+        <VirtuosoGrid
+          useWindowScroll
+          style={{width: '100%'}}
+          totalCount={totalCount}
+          data={filteredProducts}
+          endReached={loadMore}
+          overscan={200}
+          listClassName='productsGridList'
+          itemClassName='productsGridItem'
+          itemContent={(index, product) => (
+            <ProductPreview ind={index} product={product} handleOpen={handleOpen}/>
+          )}
+          components={{
+            Footer: () => {
+              if(filteredProducts.length < totalCount) return <div style={{marginTop:'12px', textAlign:'center'}}><LoadingSpinner spinnerInfo='mediumSpinner'/></div>
+              return (
+                <div className='virtGridFooter'>
+                  <p style={{textAlign:'center', margin: '1rem 0'}}>- No hay más productos -</p>
+                </div>
+              )              
+            }
+          }}
+        />
       }
-    }} 
-    fullWidth maxWidth='90%' open={open} onClose={() => setOpen(false)} TransitionComponent={Transition}>
-      <GrFormClose className='closeBtn' onClick={() => setOpen(false)}/>
-      <ProductCard {...productData}/>
-    </Dialog>
+      <Dialog
+        fullWidth maxWidth='90%' open={open} onClose={() => setOpen(false)} TransitionComponent={Transition}
+        PaperProps={{
+          sx:{
+            boxSizing: 'border-box', transition: '0.7s all',
+            height: {lg:'auto',md: '50vh', },
+            width: {md: '90%',sm: 'fit-content', xs: 'fit-content'},
+          }
+        }}
+      >
+        <GrFormClose className='closeBtn' onClick={() => setOpen(false)}/>
+        <ProductCard {...productData}/>
+      </Dialog>
     </div>
   )
 }

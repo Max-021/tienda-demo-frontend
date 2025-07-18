@@ -17,7 +17,7 @@ const LoadingSpinner = ({containerClass = '', spinnerInfo = ''}) => {
   if(spinnerInfo.includes('bigSpinner')){
     spinnerProps = {...spinnerProps, size:'130px', thickness: 1.8}
   }
-  if(spinnerInfo.includes('formSpinner')){
+  if(spinnerInfo.includes('formSpinner') || spinnerInfo.includes('mediumSpinner')){
     spinnerProps = {...spinnerProps, size: '50px'}
   }
   if(spinnerInfo.includes('smallSpinner')){
