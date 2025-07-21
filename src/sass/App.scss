@@ -565,6 +565,7 @@ li{
     right: 8px;
     top: 8px;
     font-size: 300%;
+    z-index: 15;
     &:hover{
         transform: none;
     }
@@ -573,42 +574,60 @@ li{
 .productDetailImg{
     height: 100%;
     width: 100%;
+    // object-fit: contain;
     object-fit: cover;
     aspect-ratio: 1/1;
 }
 .productDetails{
-    margin-left: 12px;
+    @include center-flex(column, flex-start, flex-start);
+    box-sizing: border-box;
+    padding: 0 12px;
     width: 100%;
+    gap: 6px;
+    overflow-y: auto;
+    max-height: 80vh;
     & > * {
+        width: 100%;
         color: variables.$darkColor;
     }
 }
+.productCardFieldTitle{
+    font-size: 1.4rem !important;
+}
 .productDetailCategory{
-    font-size: 100%;
+    font-size: 0.9rem;
 }
 .productDetailName{
     margin: 0;
     font-size: 3rem;
-    margin-bottom: 24px;
     color: variables.$darkColor;
     font-weight: normal;
+    width: 100%;
+    border-bottom: 2px solid rgba(169, 169, 169, 0.297);
+}
+.productDetailPrice{
+    p{
+        font-size: 1.8rem !important;
+    }
 }
 .productDetailColors{
-    p{
-        font-size: 140%;
-        margin-right:12px;
-        margin-bottom: 12px;
-    }
 }
 .productDetailAmount{
-    p{
-        font-size: 140%;
-    }
+}
+.productDetailAvailableUnits{
+    margin-left: 6px;
 }
 .productDetailDescr{
     p:first-of-type{
-        font-size: 140%;
-        margin-bottom: 12px;
+        margin-bottom: 6px;
+    }
+    p:last-of-type{
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0 12px;
+        min-height: 100px;
+        border-radius: 5px;
+        border: 1px solid rgba(169, 169, 169, 0.297);
     }
 }
 .colorBtn{
@@ -628,7 +647,7 @@ li{
 }
 
 .addToCartBtn{
-    margin-top: 24px;
+    margin-top: 12px;
     margin-bottom: 4px;
     border:0;
     background-color: variables.$secondColor;
@@ -1287,13 +1306,18 @@ footer{
         width: 400px;
     }
     .productDetailName{
+        font-size: 2.2rem;
         margin-bottom: 0;
     }
     .searchBar{
         width: 60%;
     }
-     .userInfoContainer {
-        // flex: 0 1 100%;
+    .productDetails{
+        max-height: 400px;
+        gap: 4px;
+    }
+    .productCardFieldTitle{
+        font-size: 1.2rem;
     }
 }
 
@@ -1334,6 +1358,13 @@ footer{
     }
     .productDetails{
         padding-bottom: 12px;
+        max-height: none;
+        box-sizing: border-box;
+        width: 100%;
+    }
+    .productDetailCategory{
+        position: absolute;
+        right: 12px;
     }
     .swiperContainer{
         width: 350px;

@@ -3,6 +3,11 @@ import { useDispatch } from 'react-redux';
 
 import TextField from '@mui/material/TextField';
 import FormHelperText from '@mui/material/FormHelperText'
+import FormControl from '@mui/material/FormControl';
+import InputLabel   from '@mui/material/InputLabel';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import Select       from '@mui/material/Select';
+import MenuItem     from '@mui/material/MenuItem';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 
@@ -29,21 +34,28 @@ const ProductCard = (props) => {
     setActiveColor(index);
     setErrorQty('');
   }
-  const addToCart = () => {
-    console.log(prodToCart)
-    dispatch(addNewProductToCart(prodToCart))
-  }
-  const validateAmount = (e) => {
+  const addToCart = () => dispatch(addNewProductToCart(prodToCart))
+
+  const handleChange = (e) => setProdToCart(prev => ({...prev, [e.target.name]: e.target.value}));
+
+  const validateAmount = () => {
     const max = stock[activeColor].quantity;
-    const val = Number(e.target.value);
-    if(val>max){
-      setErrorQty(`Solo hay ${max} unidad${max > 1 && 's'} disponible${max > 1 && 's'}`)
+    const val = prodToCart.quantity;
+    if(val > max){
+      return `Solo hay ${max} unidad${max > 1 && 'es'} disponible${max > 1 && 's'}`;
     }else if(val < 1){
-      setErrorQty('Mínimo una unidad poder agregar el producto al carrito')
+      return 'Mínimo una unidad poder agregar el producto al carrito';
     }else{
-      setErrorQty('');
-      setProdToCart(prev =>({...prev, quantity: Number(e.target.value)}))
+      return '';
     }
+  }
+  const verifyBeforeAddingToCart = () => {
+    const valRes = validateAmount();
+    if(valRes !== '') {
+      setErrorQty(valRes);
+      return;
+    }
+    addToCart();
   }
 
     return (
@@ -70,33 +82,65 @@ const ProductCard = (props) => {
               {name}
             </h2>
           </div>
+          <div className='productDetailPrice'>
+            <p className=''>${price}</p>
+          </div>
           {stock.length > 0 && 
             <>
-              <div className='productDetailColors'>
-                <p>Colores</p>
-                {stock.map((color,index) => {
-                  return <button key={`${index}-${color.color}`} className={`colorBtn ${activeColor === index ? 'activeColorBtn':null}`}  onClick={() => setColorsData(color.color,index)}>
-                            {color.color}
-                  </button>
-                })}
-              </div>
-              <div className='productDetailAvailableUnits'>
-                <p>{stock[activeColor].quantity > 0 ? `${stock[activeColor].quantity} unidad${stock[activeColor].quantity > 1 && 'es'} disponible${stock[activeColor].quantity > 1 && 's'}` : 'No hay unidades disponibles'}</p>
-              </div>
+              <FormControl variant="outlined" size="small" sx={{display:'flex', flexDirection:{sm: 'column', md:'row'},alignItems:{md:'center', sm: 'flex-start'},mb: 0, width:'auto'}}>
+                <div style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
+                  <InputLabel className='productCardFieldTitle' id="color-select-label" htmlFor="color-select" sx={{mr:1, position:'static', transform: 'none'}} shrink>
+                    Color
+                  </InputLabel>
+                  <Select
+                    labelId="color-select-label"
+                    id="color-select"
+                    value={activeColor}
+                    label=""
+                    sx={{minWidth: 100}}
+                    onChange={(e) => setColorsData(stock[e.target.value].color, e.target.value)}
+                  >
+                    {stock.map((item, index) => (
+                      <MenuItem key={index} value={index}>
+                        {item.color}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </div>
+                <div className='productDetailAvailableUnits'>
+                  <p>
+                    {stock[activeColor].quantity > 0
+                      ? `${stock[activeColor].quantity} unidad${stock[activeColor].quantity > 1 ? 'es' : ''} disponible${stock[activeColor].quantity > 1 ? 's' : ''}`
+                      : 'No hay unidades disponibles'}
+                  </p>
+                </div>
+              </FormControl>
             </>
           }
           <div className='productDetailAmount'>
-            <p>Cantidad</p>
-            <TextField
-              value={prodToCart.quantity} onChange={(e) => validateAmount(e)} 
-              name={`prod-quantity`} id={`prod-quantity`} type='number' inputProps={{min: 1, max: stock[activeColor]?.quantity, style:{padding:5}}}/>
-            {errorQty && <FormHelperText error>{errorQty}</FormHelperText>}
+            <FormControl variant='outlined' size='small' sx={{display:'flex', flexDirection: 'column', alignItems: 'flex-start', mb:1,mt:1, width:'auto'}}>
+              <div style={{display:'flex', flexDirection: 'row', alignItems: 'center', width:'100%'}}>
+                <InputLabel className='productCardFieldTitle' htmlFor="quantity" shrink sx={{position: 'static', transform:'none', mr:1}} id="quantity-label">
+                  Cantidad
+                </InputLabel>
+                <OutlinedInput
+                  id='quantity' type='number' name='quantity'
+                  value={prodToCart.quantity}
+                  onChange={handleChange}
+                  error={!!errorQty} helperText={errorQty || '\u00A0'}
+                  inputProps={{min:1, max: stock[activeColor]?.quantity, style:{padding:5}, 'aria-labelledby': 'quantity-label'}}
+                  label=""
+                  sx={{minWidth:80}}
+                />
+              </div>
+              {errorQty && (<FormHelperText error sx={{ml: 1,fontSize: '0.75rem',lineHeight: 1.2,}}>{errorQty}</FormHelperText>)}
+            </FormControl>
           </div>
           <div className='productDetailDescr'>
-            <p>Descripción</p>
+            <p className='productCardFieldTitle'>Descripción</p>
             <p>{descr}</p>
           </div>
-          <button className='addToCartBtn' onClick={() => addToCart()} disabled={stock[activeColor]?.quantity < 1 || errorQty !== ''}> Agregar al carrito</button>
+          <button className='addToCartBtn' onClick={() => verifyBeforeAddingToCart()}> Agregar al carrito</button>
         </div>
       </div>
 

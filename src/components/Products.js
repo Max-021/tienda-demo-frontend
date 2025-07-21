@@ -42,8 +42,8 @@ const Products = () => {
   if(loading === 'pending' && page === 0) return <LoadingSpinner containerClass='productsLayout' spinnerInfo='bigSpinner'/>
   if(error !== null)                      return <LoadingError containerClass='productsLayout'/>
   if(noSearchRes)                         return <div className='productsLayout'>
-                                            <div>La búsqueda no arrojó resultados. CAMBIAR ESTE TEXTO! temporal</div>
-                                          </div>
+                                                    <div>La búsqueda no arrojó resultados. CAMBIAR ESTE TEXTO! temporal</div>
+                                                  </div>
 
   return (
     <div className='productsLayoutList'>
@@ -99,8 +99,10 @@ const Products = () => {
         PaperProps={{
           sx:{
             boxSizing: 'border-box', transition: '0.7s all',
-            height: {lg:'auto',md: '50vh', },
-            width: {md: '90%',sm: 'fit-content', xs: 'fit-content'},
+            maxHeight:'90vh',
+            height: {lg:'auto',md: 'fit-content', },
+            width: {md: '90%',sm: 'auto', xs: 'fit-content'},
+            // width: {md: '90%',sm: 'fit-content', xs: 'fit-content'},
           }
         }}
       >
