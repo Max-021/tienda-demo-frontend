@@ -22,7 +22,7 @@ const ProductPreview = ({ind, product, handleOpen}) => {
                 <p key={`${ind}-prodName`} title={product.name}>{product.name}</p>
                 <p>{hasStock ? 'Unidades disponibles' : 'No disponible temporalmente, consultar por el producto'}</p>
                 <p>$ {product.price}</p>{/*temporal, revisar el $ y pensar alguna manera de hacer esto adaptable por si hay que incluir tipo de moneda  */}
-                <p>{product.stock.length} colores</p>
+                <p>{product.stock.length} {`color${product.stock.length>1?'es':''}`}</p>
             </div>
             {authStatus && allowedEditingRole.includes(role) ?
                 <Link className='editIconContainer' to={'/editar-producto'} state={product} title='Editar Producto'>

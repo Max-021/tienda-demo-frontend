@@ -59,6 +59,11 @@ svg:hover{
     background-color: transparent;
     border: 0;
 }
+.ellipseText{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .spinnerStart{
     align-self: flex-start;
 }
@@ -237,6 +242,8 @@ li{
     overflow: visible;
     @include center-flex();
     &:hover { color: variables.$thirdColor; background-color: transparent;}
+}
+.more-btn.rotated-btn{
     svg{
         position: absolute;
         width: 28px;
@@ -334,16 +341,34 @@ li{
     @include center-flex(row, flex-start, center);
     width: 100%;
     padding: 6px variables.$lateralPadding;
-    form{
-        width: 100%;
-        @include center-flex(row, flex-start, center);
+}
+.editorFiltersForm{
+    @include center-flex(row, flex-start, center);
+    gap: 8px;
+    flex: 1 1 auto;
+    &.visibleCheckboxes{
+        //ver si agrego el flex acá
     }
 }
 .editorFilterTitle{
+    min-width: 0;
+    overflow: hidden;
+    margin-right: 12px;
+    flex: 0 0 auto;
     p{
-        width: max-content;
         margin: 0;
-        margin-right: 12px;
+        font-size: clamp(1rem, 2.5vw, 1.25rem);
+    }
+    &.allHidden {
+        flex: 1 1 0;
+        overflow: hidden;
+        p{
+            display: block;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
 }
 //signup and login section
@@ -1324,10 +1349,10 @@ footer{
 //--------------------------------------------------------- TABLET
 @media (max-width: variables.$sm) {//900
     .searchBarContainer, .menu,
-    h1, .optionsList, footer{
+    h1, .optionsList, .editorOptions, footer{
         padding: 0 calc(variables.$lateralPadding / 2);
     }
-    .productsLayout, .notFoundPageContainer{
+    .productsLayout, .productsLayoutList, .notFoundPageContainer{
         padding: calc(variables.$lateralPadding / 2);
     }
     .productList {
@@ -1485,10 +1510,10 @@ footer{
         width: 250px;
     }
         .searchBarContainer, .menu,
-    h1, .optionsList, footer{
+    h1, .optionsList, .editorOptions, footer{
         padding: 0 calc(variables.$lateralPadding / 8);
     }
-    .productsLayout, .notFoundPageContainer{
+    .productsLayout, .productsLayoutList, .notFoundPageContainer{
         padding: calc(variables.$lateralPadding / 8);
     }
     .relatedData{

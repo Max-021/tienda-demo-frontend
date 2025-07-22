@@ -40,7 +40,7 @@ const Menu = ({ showCats, authSt }) => {
         <div className='rightSide'>
           {hiddenCats.length > 0 && (
             <>
-              <button className='more-btn' onClick={openPopover} title='Otras categorías'>
+              <button className='more-btn rotated-btn' onClick={openPopover} title='Otras categorías'>
                 <MdDoubleArrow />
               </button>
               <Popover id={popoverId} open={isPopoverOpen} onClose={closePopover}
