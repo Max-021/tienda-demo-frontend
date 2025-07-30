@@ -1,14 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getAllProducts, getProductsByEditorFilter } from "../auxiliaries/axios";
+import { applyFilters, prepareQuery } from "./reduxAux/filterHelper";
 
-const PAGE_SIZE_DEFAULT = 8;
+const PAGE_SIZE_DEFAULT = 8;//temporal, cambiar a 15/20 en produccion
 
 export const fetchActiveProducts = createAsyncThunk(
     "products/fetchActive",
-    async (params = {page: 1, limit: PAGE_SIZE_DEFAULT}, { rejectWithValue }) => {
+    async (params = {page: 1, limit: PAGE_SIZE_DEFAULT, filters: {}}, { rejectWithValue }) => {
         try {
             await new Promise(resolve => setTimeout(resolve, 3000));
-            const res = await getAllProducts(params);
+            const queryObj = prepareQuery(params)
+            console.log('queryobj')
+            console.log(queryObj)
+            const res = await getAllProducts(queryObj);
             console.log(res)
             return {...res.data};
         } catch (error) {
@@ -16,7 +20,7 @@ export const fetchActiveProducts = createAsyncThunk(
         }
     }
 )
-export const fetchEditorProducts = createAsyncThunk(
+export const fetchEditorProducts = createAsyncThunk(    
     "products/fetchEditor",
     async (params = {editorFilters: {}, page: 1, limit: PAGE_SIZE_DEFAULT}, { rejectWithValue }) => {
         try {
@@ -42,6 +46,7 @@ const initialState = {
     products: [],
     filteredProducts: [],
     totalCount: 0,
+    totalFilteredCount: 0,
     page: 0,
     limit: PAGE_SIZE_DEFAULT,
     noSearchResults: true,
@@ -55,7 +60,8 @@ export const productsSlice = createSlice({
     reducers: {
         onCategorySelected: (state, action) => {
             state.activeCat = state.activeCat === action.payload ? '' : action.payload;
-            state.noSearchResults = false
+            state.filteredProducts = applyFilters(state.products, {activeCat: state.activeCat, searchText: state.searchText, filters: state.filters});
+            state.noSearchResults = state.filteredProducts.length === 0;
         },
         searchProduct: (state,action) => {
                 state.searchText = action.payload;
@@ -87,7 +93,8 @@ export const productsSlice = createSlice({
             state.filters.colors = [];
             state.filters.maxPrice = null;
             state.filters.minPrice = null;
-            state.filteredProducts = state.products
+            state.filteredProducts = state.products;
+            state.noSearchResults = state.filteredProducts.length === 0;
         },
         setFilters: (state, action) => {
             let priceMin = Number(action.payload.priceMin) || null;
@@ -115,25 +122,8 @@ export const productsSlice = createSlice({
             state.filteredProducts = state.products;
         },
         filterProducts : (state) => {
-            let result = state.products;
-            if(state.activeCat)     result = result.filter(p => p.category === state.activeCat);
-            if(state.searchText)    result = result.filter(p => p.name.toLowerCase().includes(state.searchText.toLocaleLowerCase()));
-
-            result = result.filter(prod => {
-                const cumpleMax = state.filters.maxPrice !== null ? prod.price <= state.filters.maxPrice : true;
-                const cumpleMin = state.filters.minPrice !== null ? prod.price >= state.filters.minPrice : true;
-
-                const cumpleArrays = Object.entries(state.filters).every(([k, val]) => {
-                    if(k === 'minPrice' || k === 'maxPrice') return true;
-                    if(!Array.isArray(val) || val.length === 0) return true;
-
-                    return Array.isArray(prod[k]) ? prod[k].some(item => val.includes(item)) : val.includes(prod[k]);
-                });
-
-                return cumpleMax && cumpleMin && cumpleArrays;
-            });
-            state.filteredProducts = result;
-            state.noSearchResults = result.length === 0;
+            state.filteredProducts = applyFilters(state.products, {activeCat: state.activeCat, searchText: state.searchText, filters: state.filters});
+            state.noSearchResults = state.filteredProducts.length === 0;
         },
     },
     extraReducers: (builder) => {
@@ -144,41 +134,46 @@ export const productsSlice = createSlice({
                 state.loading = "pending";
             })
             .addCase(fetchActiveProducts.fulfilled, (state, action) => {
-                const {docs, page, limit, totalCount} = action.payload;
+                const {docs, page, limit, totalCount, totalFilteredCount} = action.payload;
+                console.log(totalFilteredCount)
                 state.loading = "success";
                 if(page === 1){
                     state.products = docs;
                 } else {
                     state.products.push(...docs);
                 }
-                state.filteredProducts = state.products;
+                state.filteredProducts = applyFilters(state.products, {activeCat: state.activeCat, searchText: state.searchText, filters: state.filters});
+                state.noSearchResults = state.filteredProducts.length === 0;
                 state.totalCount = totalCount;
+                state.totalFilteredCount = totalFilteredCount;
                 state.page = page;
                 state.limit = limit;
-                state.noSearchResults = state.products.length === 0;
             })
             .addCase(fetchActiveProducts.rejected, (state, action) => {
                 state.loading = "failed";
                 state.error = action.payload;
             })
         builder//para el fetch pero con los editor filters
-            .addCase(fetchEditorProducts.pending, (state) => {
+            .addCase(fetchEditorProducts.pending, (state,action) => {
                 state.loading = "pending";
                 state.error = null;
+                if(action.meta.arg.page === 1) state.products = [];
             })
             .addCase(fetchEditorProducts.fulfilled, (state, action) => {
-                const {docs, page, limit, totalCount} = action.payload;
+                const {docs, page, limit, totalCount, totalFilteredCount} = action.payload;
                 state.loading = "success";
                 if(page === 1) {
                     state.products = docs;
                 } else {
                     state.products.push(...docs);
                 }
-                state.filteredProducts = state.products;
+                state.filteredProducts = applyFilters(state.products, {activeCat: state.activeCat, searchText: state.searchText, filters: state.filters});
+                // state.filteredProducts = state.products;
+                state.noSearchResults = state.filteredProducts.length === 0;
                 state.totalCount = totalCount;
+                state.totalFilteredCount = totalFilteredCount;
                 state.page = page;
                 state.limit = limit;
-                state.noSearchResults = state.products.length === 0;
             })
             .addCase(fetchEditorProducts.rejected, (state, action) => {
                 state.loading = "failed";
@@ -187,7 +182,7 @@ export const productsSlice = createSlice({
     }
 })
 
-export const { onCategorySelected, searchProduct, setFilters, filterProducts, empyFilters, cleanArrayFilter, cleanTextFilter} = productsSlice.actions
+export const { onCategorySelected, searchProduct, setFilters, filterProducts, emptyFilters, cleanArrayFilter, cleanTextFilter} = productsSlice.actions
 
 export const filteredProducts = (state) => state.products.filteredProducts
 export const activeCategory = (state) => state.products.activeCat

@@ -1,12 +1,13 @@
-$mainColor: #230903;
-$secondColor: #2F4858;
-$thirdColor: #FF7D00;
-$lightColor: #DAD7CD;
-$darkColor: #1f1f1f;
+$mainColor: hsl(11, 84%, 7%);//#230903
+$secondColor: hsl(203, 30%, 26%);//#2F4858
+$thirdColor: hsl(29, 100%, 50%);//#FF7D00
+$lightColor: hsl(46, 15%, 83%);//#DAD7CD
+$darkColor: hsl(0, 0%, 12%);//#1f1f1f
 
 
-$cancelColor: rgb(255, 136, 136);
-$cancelColorOpacity: rgba(255, 136, 136, 0.468);
+$cancelColor: hsl(0, 100%, 77%);
+$cancelColorDark: hsl(0, 75%, 48%);
+$cancelColorOpacity: hsla(0, 100%, 77%, 0.468);
 
 
 $thirdColorOpacity: #ff7b0062;

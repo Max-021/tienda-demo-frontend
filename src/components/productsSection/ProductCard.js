@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNotification } from '../reusables/NotificationContext';
 
-import TextField from '@mui/material/TextField';
 import FormHelperText from '@mui/material/FormHelperText'
 import FormControl from '@mui/material/FormControl';
 import InputLabel   from '@mui/material/InputLabel';
@@ -14,14 +14,16 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-import { addNewProductToCart } from '../redux/CartSlice';
+import { addNewProductToCart, cartList } from '../../redux/CartSlice';
 
 const ProductCard = (props) => {
-
-  const {name,descr,img,category,price,stock} = props;
+  const notify = useNotification();
+  const cartItems = useSelector(cartList);
+  const {_id,name,descr,img,category,price,stock} = props;
   const [errorQty ,setErrorQty] = useState('');
   const [activeColor, setActiveColor] = useState(0);
   const [prodToCart,setProdToCart] = useState({
+    _id,
     name,
     price,
     color: stock[0]?.color || '',
@@ -34,7 +36,7 @@ const ProductCard = (props) => {
     setActiveColor(index);
     setErrorQty('');
   }
-  const addToCart = () => dispatch(addNewProductToCart(prodToCart))
+  const addToCart = (prod) => dispatch(addNewProductToCart(prod));
 
   const handleChange = (e) => setProdToCart(prev => ({...prev, [e.target.name]: e.target.value}));
 
@@ -49,27 +51,44 @@ const ProductCard = (props) => {
       return '';
     }
   }
-  const verifyBeforeAddingToCart = () => {
+  const verifyBeforeAddingToCart = async () => {
     const valRes = validateAmount();
     if(valRes !== '') {
       setErrorQty(valRes);
       return;
     }
-    addToCart();
+    const qtyToAdd = parseInt(prodToCart.quantity);
+    if(isNaN(qtyToAdd)){
+      setErrorQty("Cantidad inválida.");
+      return;
+    }
+
+    const itemInCart = cartItems.find(itm => (itm._id === prodToCart._id && prodToCart.color === itm.color));
+    const qtyInCart = itemInCart ? itemInCart.quantity : 0;
+    const maxAvailable = stock[activeColor].quantity;
+
+    if(qtyInCart + qtyToAdd > maxAvailable){
+      const remaining = maxAvailable - qtyInCart;
+      setErrorQty(`Ya tienes ${qtyInCart} en el carrito, solo quedan ${remaining} unidades disponibles.`)
+      notify('error', 'La cantidad agregada al producto ya presente en el carrito excede la cantidad disponible.');
+      return;
+    }
+    setErrorQty('');
+    addToCart({...prodToCart, quantity: qtyToAdd})
   }
 
     return (
       <div className='productCard'>
         {img.length === 1 ?
           <div>
-            <img className='productDetailImg' src={img[0].startsWith('https') ? img[0] : require(`../assets/${img[0]}`)} alt={`${name}-${category}`}/>
+            <img className='productDetailImg' src={img[0].startsWith('https') ? img[0] : require(`../../assets/${img[0]}`)} alt={`${name}-${category}`}/>
           </div>
         :
         <div className='swiperContainer'>
           <Swiper navigation={true} modules={[Navigation]} className='mySwiper' loop={true}>
             {img.map((image, index) => {
               return <SwiperSlide key={index}>
-                <img className='productDetailImg' src={image.startsWith('https') ? image : require(`../assets/${image}`)} alt={`${name}-${index}`}/>
+                <img className='productDetailImg' src={image.startsWith('https') ? image : require(`../../assets/${image}`)} alt={`${name}-${index}`}/>
               </SwiperSlide>
             })}
           </Swiper>

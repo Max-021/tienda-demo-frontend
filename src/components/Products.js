@@ -9,7 +9,7 @@ import Dialog from '@mui/material/Dialog';
 import Slide from '@mui/material/Slide';
 
 import ProductPreview from './productsSection/ProductPreview';
-import ProductCard from './ProductCard';
+import ProductCard from './productsSection/ProductCard';
 import LoadingSpinner from './reusables/LoadingSpinner';
 import LoadingError from './reusables/LoadingError'
 
@@ -22,7 +22,8 @@ const Products = () => {
   const currentView = useSelector(currentViewValue);
   const [open,setOpen] = useState(false);
   const [productData, setProductData] = useState({});
-  const {filteredProducts, totalCount, loading, error, noSearchRes, page, limit} = useSelector((s) => s.products)
+  const {filteredProducts, totalCount, totalFilteredCount, loading, error, noSearchRes, page, limit, filters} = useSelector((s) => s.products)
+  const virtuosoTotal = totalFilteredCount > 0 ? totalFilteredCount : totalCount;
 
   const handleOpen = (prodInd) =>{
     setOpen(true)
@@ -30,17 +31,26 @@ const Products = () => {
   }
 
   useEffect(() => {
-    dispatch(fetchActiveProducts({page: 1, limit: limit}));
-  }, [dispatch, limit])
+    console.log("→ Primer fetch con filtros:", filters);
+    const prodFilters = filters;
+    dispatch(fetchActiveProducts({page: 1, limit: limit, prodFilters}));
+  }, [dispatch, limit, filters])
 
   const loadMore = useCallback(() => {
-    if(filteredProducts.length < totalCount && loading !== 'pending'){
-      dispatch(fetchActiveProducts({page: page + 1, limit: limit}))
+    if(filteredProducts.length < virtuosoTotal && loading !== 'pending'){
+      dispatch(fetchActiveProducts({page: page + 1, limit: limit, filters}))
+      console.log('filtros')
+      console.log(filters)
+      console.log(totalFilteredCount)
+      console.log(totalCount)
+      console.log(virtuosoTotal)
+      console.log("fin")
     }
-  }, [dispatch, filteredProducts.length, totalCount, page, limit, loading])
+  }, [dispatch, filteredProducts.length, virtuosoTotal, page, limit, loading, filters])
 
   if(loading === 'pending' && page === 0) return <LoadingSpinner containerClass='productsLayout' spinnerInfo='bigSpinner'/>
-  if(error !== null)                      return <LoadingError containerClass='productsLayout'/>
+  if(error !== null)                      return <LoadingError containerClass='productsLayout' error={'No se recibieron productos'} fn={() => console.log('temporal')}/>
+  if(filteredProducts.length === 0)       return <div className='productsLayout'>No hay productos, temporal cambiar esto</div>
   if(noSearchRes)                         return <div className='productsLayout'>
                                                     <div>La búsqueda no arrojó resultados. CAMBIAR ESTE TEXTO! temporal</div>
                                                   </div>
@@ -51,7 +61,7 @@ const Products = () => {
         <Virtuoso
           useWindowScroll
           style={{width:'100%',}}
-          totalCount={totalCount}
+          totalCount={virtuosoTotal}
           data={filteredProducts}
           endReached={loadMore}
           overscan={200}
@@ -62,7 +72,7 @@ const Products = () => {
           )}
           components={{
             Footer: () => {
-              if(filteredProducts.length < totalCount) return <div style={{marginTop:'12px', textAlign:'center'}}><LoadingSpinner spinnerInfo='mediumSpinner'/></div>
+              if(filteredProducts.length < virtuosoTotal) return <div style={{marginTop:'12px', textAlign:'center'}}><LoadingSpinner spinnerInfo='mediumSpinner'/></div>
               return (
                   <p style={{textAlign:'center', margin: '1rem 0'}}>- No hay más productos -</p>
               )
@@ -73,7 +83,7 @@ const Products = () => {
         <VirtuosoGrid
           useWindowScroll
           style={{width: '100%'}}
-          totalCount={totalCount}
+          totalCount={virtuosoTotal}
           data={filteredProducts}
           endReached={loadMore}
           overscan={200}
@@ -84,7 +94,7 @@ const Products = () => {
           )}
           components={{
             Footer: () => {
-              if(filteredProducts.length < totalCount) return <div style={{marginTop:'12px', textAlign:'center'}}><LoadingSpinner spinnerInfo='mediumSpinner'/></div>
+              if(filteredProducts.length < virtuosoTotal) return <div style={{marginTop:'12px', textAlign:'center'}}><LoadingSpinner spinnerInfo='mediumSpinner'/></div>
               return (
                 <div className='virtGridFooter'>
                   <p style={{textAlign:'center', margin: '1rem 0'}}>- No hay más productos -</p>

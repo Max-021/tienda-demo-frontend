@@ -59,3 +59,25 @@ export const makeFormData = (obj) => {
 
   return formData;
 };
+
+export const prepareOrderPayload = (cartItems) => {
+  return cartItems.reduce((acc, item) => {
+    const group = acc.find(g => g._id === item._id);
+    if(group) {
+      group.stock.push({
+        color: item.color,
+        quantity: item.quantity,
+      });
+    } else {
+      acc.push({
+        _id: item._id,
+        name: item.name,
+        price: item.price,
+        stock: [
+          {color: item.color, quantity: item.quantity}
+        ]
+      });
+    }
+    return acc;
+  }, []);
+}

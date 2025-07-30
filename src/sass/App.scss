@@ -137,6 +137,11 @@ svg:hover{
     width:750px;
     height: 180px;
 }
+.confirmDeleteProductDialog{
+    width:630px;
+    height: auto;
+    gap:5px
+}
 //carousel
 .swiper-slide{
     height: auto !important;
@@ -725,10 +730,14 @@ li{
     padding: variables.$lateralPadding;
 }
 .cartProducts{
+    box-sizing: border-box;
     @include center-flex(column, flex-start, flex-start);
     width: 70%;
     gap: 12px;
     @include floating-box();
+    p{
+        margin: 10px 0;
+    }
 }
 .cartProdItem{
     box-sizing: border-box;
@@ -743,19 +752,30 @@ li{
     display: flex;
     flex-direction: column;
 }
+.cartResumeDetails,
+.cartResumeTitle{
+    @include center-flex(column, flex-start, flex-start);
+    width: 100%;
+}
+.cartMsgInfoBox {
+    font-size: 0.8em;
+    font-style: italic;
+    margin-top: 6px;
+}
 
-.cartProdAmount{
-    display: flex;
-    height: 50%;
+.cartProdItemDetail{
+    @include center-flex(column, flex-start, flex-start);
     button{
-        padding: 3px 9px;
+        padding: 0px 8px;
         align-self: center;
-        margin: 0 6px;
-        border-radius: 15px;
-        border: 0;
-        background-color: variables.$secondColor;
-        color: variables.$lightColor;
+        margin: 0 12px;
+        border-radius: 10px;
+        border: 1.5px solid variables.$secondColor;
+        vertical-align: middle;
+        background-color: transparent;
+        color: variables.$secondColor;
         font-weight: bold;
+        font-size: 1.5rem;
         cursor: pointer;
         transition: all 0.7s;
         &:hover{
@@ -763,37 +783,95 @@ li{
         }
     }
 }
+.cartProdAmount{
+    @include center-flex(column, flex-start, flex-end);
+    position: relative;
+}
+.cartQuantityControls{
+    @include center-flex(row, flex-start, center);
+}
+.cartProdItemError{
+    margin: 0 !important;
+    font-size: 0.85rem;
+    color: variables.$cancelColorDark;
+    text-wrap: wrap;
+    z-index: 10;
+}
+.cartProdPrice{
+    @include center-flex(row, flex-end, flex-end);
+    width: 100%;
+}
 .cartProdTotalAmount{
     display: flex;
     align-self: flex-end;
 }
 .cartProdItemSeparator{
-    width: 90%;
+    box-sizing: border-box;
+    width: 95%;
     height: 2px;
     align-self: center;
+    justify-self: center;
     margin: 12px 0;
     background-color: variables.$lightColor;
 }
 .cartResume{
+    box-sizing: border-box;
     max-width: 30%;
     @include floating-box();
     flex: 1;
     padding: variables.$lateralPadding;
     align-self: stretch;
     justify-self: flex-end;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    @include center-flex(column, space-between, space-between);
     h4{
         margin: 0;
     }
 }
+.cartResumeInfo,
 .cartResumeTotalProducts,
 .cartResumeFinalAmount {
     width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+.cartBtn{
+    box-sizing: border-box;
+    padding: 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: 0.7s all;
+    &:hover{
+        transform: scale(1.1);
+    }
+}
+.deleteProdItem{
+    background-color: transparent;
+    border: 1.5px solid variables.$secondColor;
+    color: variables.$secondColor;
+}
+.confirmOrder{
+    align-self: flex-end;
+    justify-self: flex-end;
+    background-color: transparent;
+    border: 1.5px solid variables.$secondColor;
+    color: variables.$secondColor;
+    @include center-flex(row, flex-start, center);
+    gap: 6px;
+}
+.sendOrder{
+    align-self: flex-end;
+    justify-self: flex-end;
+    background-color: variables.$secondColor;
+    color: variables.$lightColor;
+}
+.cartBtn.confirmOrder:disabled,
+.cartBtn.sendOrder:disabled{
+    cursor: not-allowed;
+    opacity: 0.7;
+    &:hover{
+        transform: none;
+    }
 }
 
 //----------------------------------------------------------------------------------new product
@@ -1352,7 +1430,7 @@ footer{
     h1, .optionsList, .editorOptions, footer{
         padding: 0 calc(variables.$lateralPadding / 2);
     }
-    .productsLayout, .productsLayoutList, .notFoundPageContainer{
+    .productsLayout, .productsLayoutList, .notFoundPageContainer, .cartContainer{
         padding: calc(variables.$lateralPadding / 2);
     }
     .productList {
@@ -1458,6 +1536,17 @@ footer{
         width: 100%;
         grid-template-columns: auto minmax(0, 1fr);
     }
+    .cartContainer{
+        flex-direction: column;
+        width: 100%;
+    }
+    .cartProducts{
+        width: 100%;
+    }
+    .cartResume{
+        max-width: none;
+        width: 100%;
+    }
 }
 
 //--------------------------------------------------------- MOBILE
@@ -1503,6 +1592,19 @@ footer{
             text-align: left;
         }
     }
+    .cartProdItem{
+        flex-direction: column;
+        gap: 12px;
+    }
+    .cartProdPrice{
+        justify-content: flex-start;
+    }
+    .cartProdTotalAmount{
+        align-self: flex-start;
+    }
+    .cartProdAmount{
+        align-items: flex-start;
+    }
 }
 
 @media (max-width: 400px) {
@@ -1513,7 +1615,7 @@ footer{
     h1, .optionsList, .editorOptions, footer{
         padding: 0 calc(variables.$lateralPadding / 8);
     }
-    .productsLayout, .productsLayoutList, .notFoundPageContainer{
+    .productsLayout, .productsLayoutList, .notFoundPageContainer, .cartContainer{
         padding: calc(variables.$lateralPadding / 8);
     }
     .relatedData{

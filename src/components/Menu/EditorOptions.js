@@ -40,7 +40,7 @@ const EditorOptions = () => {
     e.preventDefault();
     try {
       const filtros = editorFilters.reduce((acc,item) => ({...acc, ...item}), {})
-      await dispatch(fetchEditorProducts(filtros)).unwrap();
+      await dispatch(fetchEditorProducts({editorFilters:filtros, page: 1})).unwrap();
     } catch (error) {
       notify('error', error);
     }
@@ -65,38 +65,27 @@ const EditorOptions = () => {
     if (!measureRef.current || !containerRef.current) return;
 
     const recalc = () => {
-      
       const style = window.getComputedStyle(containerRef.current);
       const GAP = parseFloat(style.gap) || 0;
       const MORE_BTN_WIDTH = btnRef.current ? btnRef.current.getBoundingClientRect().width : 0;
       const FUZZ = 1;
 
       const contWidth = containerRef.current.clientWidth;
-      console.log('recalc fired, contWidth=', contWidth);
-      // Si aún no está bien medido, esperamos al próximo resize
       if (contWidth <= 0) return;
 
-      // 1) Medimos cada filtro oculto
-      const items = Array.from(
-        measureRef.current.querySelectorAll('.editor-item')
-      );
+      const items = Array.from(measureRef.current.querySelectorAll('.editor-item'));
       const widths = items.map(el => el.getBoundingClientRect().width);
-      console.log('[recalc] widths =', widths);
 
-      // 2) *Nuevo bloque*: si todos caben sin reservar espacio para el botón, no hay overflow
       const totalWidth = widths.reduce(
         (sum, w, i) => sum + w + (i > 0 ? GAP : 0),
         0
       );
-      console.log('[recalc] totalWidth =', totalWidth);
       if (totalWidth <= contWidth) {
-        console.log('[recalc] ➔ mostrando TODOS');
         setVisibleOps(editorFilters);
         setHiddenOps([]);
         return;
       }
 
-      // 3) Si no caben todos, calculamos cuántos entran dejando espacio para el botón
       let acc = 0;
       let splitIndex = widths.length;
       for (let i = 0; i < widths.length; i++) {
@@ -108,9 +97,7 @@ const EditorOptions = () => {
           break;
         }
       }
-      console.log('[recalc] ➔ splitIndex =', splitIndex);
 
-      // 4) Partimos los filtros
       setVisibleOps(editorFilters.slice(0, splitIndex));
       setHiddenOps (editorFilters.slice(splitIndex));
       setShouldEllipse(splitIndex === 0)

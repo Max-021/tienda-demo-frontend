@@ -17,12 +17,11 @@ export const searchBarSlice = createSlice({
             console.log(state.view)
         },
         setFilterInfo: (state,action) => {
-            console.log("holaaaaa")
             console.log(action.payload)
 
-            const cats = action.payload.find(el => el.name === catName);
+            const cats = action.payload.docs.find(el => el.name === catName);
             state.categories = cats.values;
-            state.filterData = action.payload.reduce((opts, el) => {
+            state.filterData = action.payload.docs.reduce((opts, el) => {
                 if(el.name !== catName){
                     opts[el.name] = el.values;
                 }

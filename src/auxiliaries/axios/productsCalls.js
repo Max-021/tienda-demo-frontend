@@ -9,7 +9,12 @@ const post = (path = "", data, config) => axiosClient.post(`${PRODUCTS_ROUTE}${p
 const update = (path = "", data, config) => axiosClient.patch(`${PRODUCTS_ROUTE}${path}`, data, config);//tambien ver como usarlo en el updateproduct
 const deleteCall = (path = "", config) => axiosClient.delete(`${PRODUCTS_ROUTE}${path}`, config);
 
-export const getAllProducts = (params) => callAPI(() => get("", {withCredentials: true, params: params}));
+export const getAllProducts = (params) => callAPI(() => {
+    console.log("params del call*********************************************************************************")
+    console.log(params)
+    console.log("params del call*********************************************************************************")
+    return get("", {withCredentials: true, params: params})
+});
 
 export const getProductsByEditorFilter = (filterOps) => callAPI(() => get(``, {withCredentials: true, params: filterOps}));
 
@@ -50,6 +55,8 @@ export const updateProductsToNewSimpleField = (oldNewField) => callAPI(() => upd
 
 export const updateProductsToNewArray = (oldNewArr) => callAPI(() => update(productRoutes.CHANGE_ARRAY_FIELD, oldNewArr));
 
-export const updateProductsToNewSubDoc = (oldNewArr) => callAPI(() => update(productRoutes.CHANGE_SUBDOC_FIELD, oldNewArr))
+export const updateProductsToNewSubDoc = (oldNewArr) => callAPI(() => update(productRoutes.CHANGE_SUBDOC_FIELD, oldNewArr));
 
 export const deleteProduct = (productData) => callAPI(() => deleteCall(`${productRoutes.EXISTING}/${productData._id}`));
+
+export const checkOrder = (cartList) => callAPI(() => post(`${productRoutes.CHECK_ORDER}`, cartList));

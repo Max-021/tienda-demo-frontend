@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 
 import { filterData } from '../../redux/searchBarSlice';
 import { useSelector, useDispatch } from 'react-redux';
-import { setFilters, empyFilters, filterProducts } from '../../redux/ProductsSlice';
+import { setFilters, emptyFilters, filterProducts } from '../../redux/ProductsSlice';
 import { FILTER_LABELS } from '../../data/labels';
 
 import Box from '@mui/material/Box';
@@ -54,7 +54,7 @@ const FilterOptions = () => {
 
         //chequear si los campos estan vacios,
         if(noFilters){
-            dispatch(empyFilters());
+            dispatch(emptyFilters());
         }else{
             dispatch(setFilters(filterOptions));
             dispatch(filterProducts());

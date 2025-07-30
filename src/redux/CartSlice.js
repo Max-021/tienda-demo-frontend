@@ -10,17 +10,15 @@ export const cartSlice = createSlice({
     initialState,
     reducers: {
         addNewProductToCart: (state,action) => {
-            var pos = state.cartList.findIndex((el) => el.name === action.payload.name && el.color === action.payload.color);
+            let prod = action.payload;
+            var pos = state.cartList.findIndex((el) => el._id === prod._id && el.color === prod.color);
+            prod = {...prod, quantity: parseInt(prod.quantity)}
             if(pos >= 0){
-                console.log("Es repetido en pos: "+pos)
-                const updatedList = state.cartList;
-                console.log(updatedList[pos].quantity)
-                updatedList[pos].quantity = updatedList[pos].quantity + action.payload.quantity;
-                state.cartList = updatedList;
+                state.cartList[pos].quantity += prod.quantity;
             }else{
-                state.cartList = [...state.cartList, action.payload];
+                state.cartList.push(prod);
             }
-            state.totalProducts = state.cartList.reduce((accumulator, prod) => accumulator + prod.quantity,0);
+            state.totalProducts = state.cartList.reduce((accumulator, item) => accumulator + item.quantity,0);
         },
         deleteFromCart: (state,action) => {
             const updatedList = state.cartList;
@@ -28,11 +26,11 @@ export const cartSlice = createSlice({
             state.cartList = updatedList;
             state.totalProducts = state.cartList.reduce((accumulator, prod) => accumulator + prod.quantity,0);
         },
-        changeAmount:(state,action) =>{
+        changeAmount:(state,action) => {
             const updatedList = state.cartList;
             switch (action.payload[0]) {
                 case '+':
-                    updatedList[action.payload[1]].quantity++;                    
+                    updatedList[action.payload[1]].quantity++;
                     break;
                 case '-':
                     if(updatedList[action.payload[1]].quantity > 0) {
@@ -47,7 +45,6 @@ export const cartSlice = createSlice({
             cartSlice.caseReducers.updateTotalProducts(state,action);
         },
         updateTotalProducts:(state,action) => {
-            console.log(state.totalProducts);//verificar que no se pase a menos de 0
             state.totalProducts = state.cartList.reduce((accumulator, prod) => accumulator + prod.quantity,0);
         }
     }
