@@ -22,8 +22,7 @@ const axiosClient = axios.create({
 axiosClient.interceptors.response.use(
     (response) => response,
     (error) => {
-        const info = catchErrorMsgHandler(error);
-        return Promise.reject(info.message);
+        return Promise.reject(error.response.data);
     }
 )
 

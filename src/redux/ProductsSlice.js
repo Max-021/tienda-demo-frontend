@@ -10,10 +10,7 @@ export const fetchActiveProducts = createAsyncThunk(
         try {
             await new Promise(resolve => setTimeout(resolve, 3000));
             const queryObj = prepareQuery(params)
-            console.log('queryobj')
-            console.log(queryObj)
             const res = await getAllProducts(queryObj);
-            console.log(res)
             return {...res.data};
         } catch (error) {
             return rejectWithValue(error);
@@ -27,7 +24,6 @@ export const fetchEditorProducts = createAsyncThunk(
             const {editorFilters, page, limit} = params
             await new Promise(resolve => setTimeout(resolve, 3000));
             const res = await getProductsByEditorFilter({...editorFilters, page, limit});
-            console.log(res)
             return {...res.data};
         } catch (error) {
             return rejectWithValue(error);
@@ -135,7 +131,6 @@ export const productsSlice = createSlice({
             })
             .addCase(fetchActiveProducts.fulfilled, (state, action) => {
                 const {docs, page, limit, totalCount, totalFilteredCount} = action.payload;
-                console.log(totalFilteredCount)
                 state.loading = "success";
                 if(page === 1){
                     state.products = docs;

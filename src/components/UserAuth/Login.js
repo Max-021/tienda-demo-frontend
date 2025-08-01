@@ -10,6 +10,7 @@ import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField'
 import { IconButton, InputAdornment } from '@mui/material'
+import TurnstileCaptcha from '../../auxiliaries/captcha/TurnstileCaptcha';
 
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 
@@ -21,8 +22,14 @@ const Login = () => {
   const [isForgotten, setIsForgotten] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ mail: '', password: '' });
+  const [showCaptcha, setShowCaptcha] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState(null);
 
-  const loginUser = useLoadingNotifier(login, {successMsg: 'Inicio de sesión exitoso. redirigiendo...'});
+  const loginUser = useLoadingNotifier(login, {successMsg: 'Inicio de sesión exitoso. redirigiendo...', onError: (err) => {
+    if (err.data?.captchaRequired) {
+      setShowCaptcha(true);
+    }
+  }});
   const recoverPassword = useLoadingNotifier(passwordForgotten, {successMsg: 'Email de recuperación enviado, puede demorar unos minutos en aparecer. Si el correo no aparece por favor reintente el proceso.'});
 
   useEffect(() => {
@@ -51,6 +58,8 @@ const Login = () => {
     setIsForgotten(prev => !prev);
     setErrors({password: '', mail: ''});
     setUserData(prev => ({...prev, password: ''}))
+    setShowCaptcha(false);
+    setCaptchaToken(null);
   }
 
   const submitForm = async (e) => {
@@ -65,17 +74,28 @@ const Login = () => {
       if(isForgotten){
         await recoverPassword(userData.mail);
       }else{
-        const loginStatus = await loginUser(userData);
-        if(loginStatus.data.status === 'success') {//temporal, revisar y poner de buena manera
-          redirectTimeout.current = window.setTimeout(() => {
-            navigate('/');
-            navigate(0);
-          } , 2000);
+        try {
+          const payload = {...userData,  ...(showCaptcha && { 'cf-turnstile-response': captchaToken })}
+          const loginStatus = await loginUser(payload);
+          if(loginStatus?.data?.status === 'success') {
+            redirectTimeout.current = window.setTimeout(() => {
+              navigate('/');
+              navigate(0);
+            } , 2000);
+          }
+        } catch (error) {
+          
         }
       }
   }
-  const handleChange = (e) => setUserData(prev => ({...prev, [e.target.name]: e.target.value }));
-  const isFormValid = userData.mail.trim() && (!errors.mail) && (isForgotten || (userData.password.trim() &&  !errors.password));
+  const handleChange = (e) => {
+    setUserData(prev => ({...prev, [e.target.name]: e.target.value }));
+    if(showCaptcha){
+      setCaptchaToken(null);
+      window.turnstile.reset && window.turnstile.reset();
+    }
+  }
+  const isFormValid = userData.mail.trim() && (!errors.mail) && (isForgotten || (userData.password.trim() && !errors.password)) && (!showCaptcha || !!captchaToken);
 
   return (
     <div className='logSection'>
@@ -110,6 +130,9 @@ const Login = () => {
               {!isForgotten ? 'Olvide mi contraseña' : 'Volver a inicio de sesión'}
             </button>
           </div>
+          { showCaptcha && (
+            <TurnstileCaptcha siteKey={process.env.REACT_APP_TURNSTILE_SITEKEY} onVerify={setCaptchaToken}/>
+          )}
           <Button type='submit' disabled={!isFormValid}>
             {!isForgotten ? 'Iniciar sesión' : 'Recuperar contraseña'}
           </Button>

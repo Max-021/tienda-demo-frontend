@@ -9,12 +9,7 @@ const post = (path = "", data, config) => axiosClient.post(`${PRODUCTS_ROUTE}${p
 const update = (path = "", data, config) => axiosClient.patch(`${PRODUCTS_ROUTE}${path}`, data, config);//tambien ver como usarlo en el updateproduct
 const deleteCall = (path = "", config) => axiosClient.delete(`${PRODUCTS_ROUTE}${path}`, config);
 
-export const getAllProducts = (params) => callAPI(() => {
-    console.log("params del call*********************************************************************************")
-    console.log(params)
-    console.log("params del call*********************************************************************************")
-    return get("", {withCredentials: true, params: params})
-});
+export const getAllProducts = (params) => callAPI(() => get("", {withCredentials: true, params: params}));
 
 export const getProductsByEditorFilter = (filterOps) => callAPI(() => get(``, {withCredentials: true, params: filterOps}));
 
@@ -23,7 +18,6 @@ export const getProductModel = () => callAPI(() => get(productRoutes.PROD_MODEL)
 export const getProductById = (id) => callAPI(() => get(`${productRoutes.EXISTING}/${id}`, {withCredentials: false}));
 
 export const uploadProduct = (productData) => callAPI(() => {
-    console.log(productData)
     const formData = makeFormData(productData);
 
     return axiosClient.post(`${PRODUCTS_ROUTE}`, formData, {headers: {'Content-Type':'multipart/form-data'}})

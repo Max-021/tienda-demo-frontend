@@ -24,15 +24,10 @@ export function applyFilters(products, {activeCat, searchText, filters}) {
 
 export function prepareQuery({page, limit, filters = {}}) {
     let queryObj = {page, limit};
-    console.log('dentro de prepare query.................................................');
-    console.log(filters);
     
     if(filters.minPrice != null) queryObj['price[gte]'] = filters.minPrice;
     if(filters.maxPrice != null) queryObj['price[lte]'] = filters.maxPrice;
     if(Array.isArray(filters.colors) && filters.colors.length > 0) queryObj['stock[color]'] = filters.colors;
     
-    
-    console.log(queryObj)
-    console.log('fin de prepare query.................................................');
     return queryObj;
 }

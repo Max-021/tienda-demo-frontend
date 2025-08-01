@@ -29,7 +29,9 @@ export function useLoadingNotifier(fn, {successMsg, errorMsg = 'Ha ocurrido un e
             onSuccess?.(result);
             return result;
         } catch (error) {
-            notify('error', error || errorMsg);
+            onError?.(error);
+            notify('error', error.message || errorMsg);
+            throw error
         } finally {
             finish();
         }

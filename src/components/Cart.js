@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNotification } from './reusables/NotificationContext';
 import { checkOrder } from '../auxiliaries/axios/productsCalls';
 import { prepareOrderPayload } from '../auxiliaries/functions';
+import { verifyCaptcha } from '../auxiliaries/axios/captchaCalls';
 
 import { cartList, totalProducts, deleteFromCart,changeAmount } from '../redux/CartSlice'
 
@@ -11,6 +12,7 @@ import Slide from '@mui/material/Slide';
 import TextField from '@mui/material/TextField';
 import ConfirmMessage from '../components/reusables/ConfirmMessage';
 import LoadingSpinner from './reusables/LoadingSpinner';
+import TurnstileCaptcha from '../auxiliaries/captcha/TurnstileCaptcha';
 
 const Transition = React.forwardRef(function Transition(props,ref) {
   return <Slide direction='up' ref={ref} {...props}/>
@@ -25,6 +27,8 @@ const Cart = () => {
     const [allowOrder, setAllowOrder] = useState(false);
     const [checkLoading, setCheckLoading] = useState(false);
     const [excededList, setExcededList] = useState([]);
+    const [captchaToken, setCaptchaToken] = useState(null);
+    const [captchaError, setCaptchaError] = useState('');
     const prevAllowOrder = useRef(allowOrder);
 
     const prodList = useSelector(cartList);
@@ -40,7 +44,7 @@ const Cart = () => {
 
     const handleChange = (e) => setTelNumber(e.target.value)//tambien tengo que borrar esto fuera de la demo
 
-    const enviarLista = () => {
+    const sendOrder = () => {
         const lista=`Hola! Esta es mi lista de compra:%0a${prodList.map((el,index) => {
             return `Producto: *${el.name}*%0a* Cantidad: ${el.quantity}%0a* Color: ${el.color}%0a* Precio: ${el.price}%0a`;
         })}`;
@@ -49,11 +53,11 @@ const Cart = () => {
         window.open(url,'_blank');
     }
 
-    const verificarCompra = (e) => {
+    const verifyPurchase = (e) => {
         e.preventDefault();
 
         setOpen(false);
-        enviarLista();
+        sendOrder();
     }
 
     const handleProdDelete = (idx) => {
@@ -86,6 +90,20 @@ const Cart = () => {
 
         if(!isExceded) return false;
         return isExceded;
+    }
+
+    const handlePurchase = async () => {
+        setCaptchaError('');
+        try {
+            await verifyCaptcha({ 'cf-turnstile-response': captchaToken });
+            setCaptchaToken(null);
+            window.turnstile.reset && window.turnstile.reset();
+            setOpenTel(true);
+        } catch (err) {
+            setCaptchaError(err);
+            notify('error',err);
+        } finally {
+        }
     }
 
     return <div className='cartContainer'>
@@ -171,12 +189,17 @@ const Cart = () => {
                     </button>
             </div>
             <div className='cartResumeDetails'>
-                <div className='cartProdItemSeparator'></div>
                 <div className='cartResumeFinalAmount'>
                     <p>Precio final:</p>
                     <p>{prodList.reduce((acc, item)=> acc + (item.price * item.quantity), 0)}</p>
                 </div>
-                <button className='cartBtn sendOrder' onClick={()=>setOpenTel(true)} disabled={!allowOrder}>
+                <div className='cartProdItemSeparator'></div>
+                {allowOrder && (
+                    <>
+                        <TurnstileCaptcha siteKey={process.env.REACT_APP_TURNSTILE_SITEKEY} onVerify={setCaptchaToken}/>
+                    </>
+                )}
+                <button className='cartBtn sendOrder' onClick={handlePurchase} disabled={!allowOrder || !captchaToken}>
                     Comprar
                 </button>
                 <div className='cartMsgInfoBox' title='*Se generará un mensaje con el pedido completo para enviar al vendedor.'>
@@ -185,7 +208,7 @@ const Cart = () => {
             </div>
         </div>
         <Dialog open={openTel} onClose={() => setOpenTel(false)} TransitionComponent={Transition}>
-            <form style={{padding: '8px'}} onSubmit={verificarCompra}>
+            <form style={{padding: '8px'}} onSubmit={verifyPurchase}>
                 <p>Ingrese su número de teléfono</p>
                 <TextField name='Teléfono' type='number' value={telNumber} onChange={handleChange} required/>
                 <div style={{display:'flex', flexDirection: 'row', gap:'12px', marginTop:'12px'}}>

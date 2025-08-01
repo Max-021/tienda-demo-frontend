@@ -31,7 +31,6 @@ const Products = () => {
   }
 
   useEffect(() => {
-    console.log("→ Primer fetch con filtros:", filters);
     const prodFilters = filters;
     dispatch(fetchActiveProducts({page: 1, limit: limit, prodFilters}));
   }, [dispatch, limit, filters])
@@ -39,17 +38,11 @@ const Products = () => {
   const loadMore = useCallback(() => {
     if(filteredProducts.length < virtuosoTotal && loading !== 'pending'){
       dispatch(fetchActiveProducts({page: page + 1, limit: limit, filters}))
-      console.log('filtros')
-      console.log(filters)
-      console.log(totalFilteredCount)
-      console.log(totalCount)
-      console.log(virtuosoTotal)
-      console.log("fin")
     }
   }, [dispatch, filteredProducts.length, virtuosoTotal, page, limit, loading, filters])
 
   if(loading === 'pending' && page === 0) return <LoadingSpinner containerClass='productsLayout' spinnerInfo='bigSpinner'/>
-  if(error !== null)                      return <LoadingError containerClass='productsLayout' error={'No se recibieron productos'} fn={() => console.log('temporal')}/>
+  if(error !== null)                      return <LoadingError containerClass='productsLayout' error={'No se recibieron productos'} fn={() => alert('temporal')}/>
   if(filteredProducts.length === 0)       return <div className='productsLayout'>No hay productos, temporal cambiar esto</div>
   if(noSearchRes)                         return <div className='productsLayout'>
                                                     <div>La búsqueda no arrojó resultados. CAMBIAR ESTE TEXTO! temporal</div>

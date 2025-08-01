@@ -49,7 +49,6 @@ const FilterOptions = () => {
 
     const applyFilter = (e) => {
         e.preventDefault();
-        console.log('filterset')
         const noFilters = filterOptions.priceMin === '' && filterOptions.priceMax === '' && Object.keys(filterInfo).every(key => filterOptions[key].length === 0);
 
         //chequear si los campos estan vacios,

@@ -6,3 +6,4 @@ export const USERS_ROUTE = 'user/';
 export const USERBASICS_ROUTE = 'userBasics/';
 export const PRODUCTS_ROUTE = 'products/';
 export const ENUMS_ROUTE = 'enumFields/';
+export const CAPTCHA_ROUTE = 'captcha/'
