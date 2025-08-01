@@ -79,7 +79,7 @@ const Cart = () => {
                 notify('success', 'La orden fue confirmada con éxito!');
             }
         } catch (error) {
-            notify('error', error);
+            notify('error', error.message);
         }finally{
             setCheckLoading(false);
         }
@@ -101,7 +101,7 @@ const Cart = () => {
             setOpenTel(true);
         } catch (err) {
             setCaptchaError(err);
-            notify('error',err);
+            notify('error',err.message);
         } finally {
         }
     }

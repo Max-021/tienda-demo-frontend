@@ -42,7 +42,7 @@ const EditorOptions = () => {
       const filtros = editorFilters.reduce((acc,item) => ({...acc, ...item}), {})
       await dispatch(fetchEditorProducts({editorFilters:filtros, page: 1})).unwrap();
     } catch (error) {
-      notify('error', error);
+      notify('error', error.message);
     }
   }
 

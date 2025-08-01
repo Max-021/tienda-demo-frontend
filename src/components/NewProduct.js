@@ -70,7 +70,7 @@ const NewProduct = () => {
                 setNewProduct(remakeObj(productModel));
             }
         } catch (err) {
-            notify('error', err)
+            notify('error', err.message)
         } finally {
             await new Promise(resolve => setTimeout(resolve, 3000));
             setProductLoading(false);
@@ -84,7 +84,7 @@ const NewProduct = () => {
             notify('success', 'Producto eliminado correctamente.');
             setNewProduct(remakeObj(productModel));
         } catch (error) {
-            notify('error', error);
+            notify('error', error.message);
         }finally{
             await new Promise(resolve => setTimeout(resolve, 3000));
             setProductLoading(false);

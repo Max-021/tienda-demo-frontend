@@ -38,7 +38,7 @@ const Actions = () => {
                     window.location.href = '/';
                 }, 1500);
         } catch (error) {
-            notify('error', error);
+            notify('error', error.message);
         }
     }
 

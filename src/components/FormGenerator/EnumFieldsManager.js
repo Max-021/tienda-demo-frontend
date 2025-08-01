@@ -54,7 +54,7 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
       if(mode === 'update') setOpen(true)//para edicion solo
       notify('success', msg);
     } catch (error) {
-      notify('error', error);
+      notify('error', error.message);
     }finally{
       setLoading(false);
     }
@@ -73,7 +73,7 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
       setBtnType();
       notify('success','Elemento eliminado con exito!');
     } catch (error) {
-      notify('error', error);
+      notify('error', error.message);
     }
     await updateToNewFieldContent(fieldVal.toLowerCase(), '');
   }
@@ -95,7 +95,7 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
       }
       notify('success','Productos modificados correctamente!');
     } catch (err) {
-      notify('error', err);
+      notify('error', err.message);
     }finally{
       setLoading(false);
     }
