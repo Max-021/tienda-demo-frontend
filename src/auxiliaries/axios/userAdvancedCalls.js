@@ -18,7 +18,7 @@ export const deactivateUser = (userId) => callAPI(() => update(`${userRoutes.DEA
 
 export const updatePassword = (pwdData) => callAPI(() => update(userRoutes.CHANGE_PWD, {password: pwdData.password, newPassword: pwdData.newPassword, newPasswordConfirm: pwdData.confirmNewPassword}));
 
-export const retryPassword = () => callAPI(() => post());//temporal, completar
+export const retryPassword = () => callAPI(() => post());
 
 export const getUserInfo = (userId) => callAPI(() => get(`${userRoutes.USER_INFO}/${userId}`));
 
