@@ -20,7 +20,6 @@ const SignUp = () => {
 
     const createUser = async(username, mail, password) => {//ver como la puedo factorizar con la de login
         const signupStatus = await signup(username, mail, password);
-        console.log(signupStatus)
     }
 
     const verifyUserData = () => {

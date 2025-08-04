@@ -16,12 +16,10 @@ const Categories = ({setHiddenCats, activeCat, selectCategoryAndFilter}) => {
       useEffect(() => {
         const getCategories = async () => {
           const filterInfo = await getFilterData();
-          console.log(filterInfo.data)
           if (currentCats.length === 0) dispatch(setFilterInfo(filterInfo.data));
         };
         getCategories();
         setVisibleCats(currentCats);
-        console.log(currentCats)
       }, [currentCats, dispatch]);
 
     useLayoutEffect(() => {

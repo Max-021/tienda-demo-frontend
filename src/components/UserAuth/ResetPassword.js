@@ -60,7 +60,7 @@ const ResetPassword = () => {
         return;
       }
       try {
-        const res = await sendResetPassword(passwordData, token);//hacer algo con la info que recibo, temporal
+        const res = await sendResetPassword(passwordData, token);
         notify('success', 'Contraseña actualizada con éxito!');
       } catch (error) {
         notify('error', error.message);
@@ -89,7 +89,7 @@ const ResetPassword = () => {
               Nueva contraseña
               <BsQuestionCircle style={{verticalAlign: 'text-top', marginLeft:'3px'}} onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose} onFocus={handlePopoverOpen} onBlur={handlePopoverClose}/>
             </p>
-            <TextField name={'password'} type={showPassword?'text':'password'} required
+            <TextField name={'password'} type={showPassword?'text':'password'} required autoComplete='new-password'
               value={passwordData.password} 
               onChange={e => {
                 handlePwd(e);
@@ -113,6 +113,7 @@ const ResetPassword = () => {
             <TextField required sx={{position: 'relative',}}
               name={`confirmPassword`} type={showConfirmPassword?'text':'password'} 
               value={passwordData.confirmPassword} onChange={handlePwd} 
+              autoComplete='confirm-new-password'
               error={isMismatch}
               helperText={isMismatch ? 'Las contraseñas no coinciden' : '\u00A0'}
               FormHelperTextProps={{style:{fontWeight: 'bold',position:'absolute',bottom:0,left:0,transform: 'translateX(-10px) translateY(20px)', fontSize:' 0.75rem', lineHeight:'1rem', flex:'0 !important',}}}

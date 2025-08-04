@@ -40,9 +40,6 @@ const UserInfoForm = () => {
 
     const submitUserChanges = async (e) => {
         e.preventDefault();
-        const updatedUserData = {_id: userInformation._id,...newuserInfo}
-        console.log(userInformation)
-        console.log(updatedUserData)
         try {
             setPendingSubmit(true);
             await updateUser(newuserInfo);
@@ -84,7 +81,7 @@ const UserInfoForm = () => {
             <div className='userPwdInfo'>
                 <button className='userInfoBtn togglePwdForm' type='button' onClick={() => setIsChangePasswordActive(active => !active)}>{isChangePasswordActive ?'Cancelar':'Cambiar contraseña'}</button>
                 {isChangePasswordActive &&
-                    <PasswordForm isChangePasswordActive={isChangePasswordActive}/>
+                    <PasswordForm isChangePasswordActive={isChangePasswordActive} userEmail={userInformation.mail}/>
                 }
             </div>
         </div>

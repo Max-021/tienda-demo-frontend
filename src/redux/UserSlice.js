@@ -6,8 +6,6 @@ export const checkLogin = createAsyncThunk(
   async (_,thunkAPI) => {
     try {
       const data = await checkSession();
-      console.log('del thunk con checkSession')
-      console.log(data)
       return data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message)
@@ -19,8 +17,6 @@ export const logoutUser = createAsyncThunk(
   async(_,thunkAPI) => {
     try {
       const data = await logout();
-      console.log("thunk logout")
-      console.log(data);
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message)
@@ -30,7 +26,7 @@ export const logoutUser = createAsyncThunk(
 
 const initialState = {
     isAuthenticated: false,
-    loading: false,//temporal, revisar el loading por si lo puedo borrar
+    loading: false,
     error: null,
     userRole: null,
     username: null,
@@ -50,8 +46,6 @@ export const userSlice = createSlice({
         state.error = null;
       })
       .addCase(checkLogin.fulfilled, (state, action) => {
-        console.log("action payload")
-        console.log(action.payload)
         state.loading = false;
         state.isAuthenticated = action.payload.message === 'logged' ? true : false;
         state.userRole = action.payload.userInfo.role || 'none';
@@ -59,7 +53,6 @@ export const userSlice = createSlice({
         state.id = action.payload.userInfo.id || null;
       })
       .addCase(checkLogin.rejected, (state,action) => {
-        console.log("rejected in thunk")
         state.loading = false;
         state.isAuthenticated = false;
         state.userRole = null;

@@ -13,12 +13,7 @@ export const searchBarSlice = createSlice({
         changeView: state => {
             state.view = state.view === 'list' ? 'grid' : 'list'
         },
-        showCurrentState: state => {
-            console.log(state.view)
-        },
         setFilterInfo: (state,action) => {
-            console.log(action.payload)
-
             const cats = action.payload.docs.find(el => el.name === catName);
             state.categories = cats.values;
             state.filterData = action.payload.docs.reduce((opts, el) => {
@@ -31,7 +26,7 @@ export const searchBarSlice = createSlice({
     }
 })
 
-export const {changeView, showCurrentState, setFilterInfo} = searchBarSlice.actions
+export const {changeView, setFilterInfo} = searchBarSlice.actions
 
 export const currentViewValue = (state) => state.searchBar.view
 export const currentCategories = (state) => state.searchBar.categories

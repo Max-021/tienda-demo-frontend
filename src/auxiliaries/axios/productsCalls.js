@@ -5,8 +5,8 @@ import * as productRoutes from "./endpoints/productEndpoints";
 import { makeFormData } from "../functions";
 
 const get = (path = "", config) => axiosClient.get(`${PRODUCTS_ROUTE}${path}`, config);
-const post = (path = "", data, config) => axiosClient.post(`${PRODUCTS_ROUTE}${path}`, data, config);//temporal, revisar como usar esto en el upload
-const update = (path = "", data, config) => axiosClient.patch(`${PRODUCTS_ROUTE}${path}`, data, config);//tambien ver como usarlo en el updateproduct
+const post = (path = "", data, config) => axiosClient.post(`${PRODUCTS_ROUTE}${path}`, data, config);
+const update = (path = "", data, config) => axiosClient.patch(`${PRODUCTS_ROUTE}${path}`, data, config);
 const deleteCall = (path = "", config) => axiosClient.delete(`${PRODUCTS_ROUTE}${path}`, config);
 
 export const getAllProducts = (params) => callAPI(() => get("", {withCredentials: true, params: params}));
@@ -39,10 +39,7 @@ export const updateProduct = (productData) => callAPI(() => {
         .forEach(file => {
             formData.append('newImages', file, file.name);
         });
-    
-    console.log(formData)
-    console.log(productData)
-    return axiosClient.patch(`${PRODUCTS_ROUTE}${productRoutes.EXISTING}/${productData._id}`, formData, {headers: {'Content-Type':'multipart/form-data',}})//temporal revisar formdata/productdata
+    return axiosClient.patch(`${PRODUCTS_ROUTE}${productRoutes.EXISTING}/${productData._id}`, formData, {headers: {'Content-Type':'multipart/form-data',}})
 });
 
 export const updateProductsToNewSimpleField = (oldNewField) => callAPI(() => update(productRoutes.CHANGE_SIMPLE_FIELD, oldNewField));

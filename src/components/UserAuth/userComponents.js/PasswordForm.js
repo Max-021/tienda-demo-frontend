@@ -10,7 +10,7 @@ import TextField from '@mui/material/TextField';
 import { IconButton, InputAdornment } from '@mui/material';
 import { MdOutlineVisibility, MdOutlineVisibilityOff } from "react-icons/md";
 
-const PasswordForm = ({isChangePasswordActive}) => {
+const PasswordForm = ({isChangePasswordActive, userEmail}) => {
     const notify = useNotification();
     const [userPwd, setUserPwd] = useState({password:'', newPassword:'',confirmNewPassword:''});
     const [showPassword, setShowPassword] = useState(false);
@@ -30,8 +30,6 @@ const PasswordForm = ({isChangePasswordActive}) => {
         }
         try {
             setLoadingStatus(true);
-            await new Promise(resolve => setTimeout(resolve, 30000));
-            //dejar que esto pase solo cuando las validaciones del formulario son correctas
             await updatePassword(userPwd)
             notify('success', 'Actualización de contraseña exitosa');
         } catch (error) {
@@ -45,9 +43,11 @@ const PasswordForm = ({isChangePasswordActive}) => {
 
     return (<>       
         <form className='pwdChangeContainer' method='post' onSubmit={submitUpdatedPassword}>
+            <input type="email" name="email" autoComplete="username" value={userEmail} readOnly hidden/>
             <div className='userInfoContainer pwdUserInfoContainer'>
                 <p title='Contraseña' className='userInfoFieldName pwdField'>Contraseña</p>
                 <TextField required name={'password'} type={showPassword?'text':'password'} inputProps={{style:{padding:'12px'}}} value={userPwd.password} onChange={handlePwd} disabled={!isChangePasswordActive}
+                    autoComplete='current-password'
                     InputProps={{endAdornment:(
                         <InputAdornment position='end'>
                             <IconButton edge='end' onClick={() => setShowPassword(prev => !prev)}>
@@ -62,8 +62,8 @@ const PasswordForm = ({isChangePasswordActive}) => {
                     Nueva contraseña
                     <IconPopOver setAnchorEl={setAnchorEl} anchorEl={anchorEl} shownElement={<PasswordRules oldPwd={userPwd.password} newPwd={userPwd.newPassword}/>}/>
                 </p>
-                <TextField required name={'newPassword'} type={showNewPassword?'text':'password'} disabled={!isChangePasswordActive}
-                    value={userPwd.newPassword} 
+                <TextField required name={'newPassword'} type={showNewPassword?'text':'password'} disabled={!isChangePasswordActive} autoComplete='new-password'
+                    value={userPwd.newPassword}
                     onChange={e =>{
                         handlePwd(e);
                         setNewPwdError(testPwd(e.target.value));
@@ -85,6 +85,7 @@ const PasswordForm = ({isChangePasswordActive}) => {
                 <p title='Confirmar nueva contraseña' className='userInfoFieldName pwdField'>Confirmar nueva contraseña</p>
                 <TextField required disabled={!isChangePasswordActive} sx={{position: 'relative',marginBottom: '16px'}}
                     name={`confirmNewPassword`} type={showConfirmNewPassword?'text':'password'} 
+                    autoComplete='confirm-new-password'
                     value={userPwd.confirmNewPassword} onChange={handlePwd} 
                     error={isMismatch}
                     helperText={isMismatch ? 'Las contraseñas no coinciden' : '\u00A0'}

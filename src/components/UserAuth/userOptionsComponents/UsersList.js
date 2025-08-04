@@ -101,7 +101,6 @@ const UsersList = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {console.log(usersList)}
                     {Array.isArray(usersList) && usersList.map((user,index) => (
                         <TableRow key={index} className={selectRowStatus(user.status)}>
                             <TableCell component={'th'} scope='row' align='left'>{user.username}</TableCell>

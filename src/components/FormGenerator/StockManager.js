@@ -28,7 +28,6 @@ const StockManager = ({stock, onStockChange, values, colorModel}) => {//temporal
         const newItem = createNewColor(newColor);
         onStockChange(prev => ({...prev, stock: [...prev.stock, newItem]}));
         setNewColor('');
-        console.log(stock)
     }
     const createNewColor = (color) => {
         const item = {};
@@ -45,7 +44,8 @@ const StockManager = ({stock, onStockChange, values, colorModel}) => {//temporal
     return (
         <div style={{width: '100%'}}>
             <FormControl>
-                <Autocomplete name={'Color-autocomp'} options={values} value={newColor} disablePortal onChange={(_, v) => setNewColor(v || '')}
+                <Autocomplete name={'Color-autocomp'} disablePortal onChange={(_, v) => setNewColor(v || '')}
+                    options={values} value={values && values.includes(newColor) ? newColor : null}
                     renderInput={(params) => <TextField variant='filled' {...params} label={`Color`}/>}/>
                 <Button variant='outlined' sx={{marginTop:'7px'}} type='button' onClick={() =>addColor(newColor)}>Agregar</Button>
             </FormControl>

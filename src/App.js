@@ -4,6 +4,8 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { authenticateStatus, checkLogin } from './redux/UserSlice';
 
+//para el html
+import Meta from './Meta';
 //general
 import Navbar from './components/navbar/Navbar';
 import Footer from './components/Footer'
@@ -41,6 +43,7 @@ function App() {
 // /* Para que el signup entre deberia estar logeado otro usuario, solo un usuario existente puede dar de alta otro usuario */
   return (
     <div className="App">
+      <Meta/>
       <Navbar/>
       {showSearch !== '/'  ? null : <SearchBar/> }
       <Routes>

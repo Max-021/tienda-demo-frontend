@@ -66,10 +66,9 @@ const ImageUploader = ({ images = [], onImgChange, name, setRemovedImages }) => 
       setIsCompressing(true);
       try {
         const optimized = await Promise.all(acceptedFiles.map((file) => compressImage(file, { maxWidth: IMG_WIDTH, maxHeight: IMG_HEIGHT, quality: 0.8, mimeType: IMG_TYPE, })));
-        await new Promise(resolve => setTimeout(resolve, 3000));
         onImgChange([...validImages, ...optimized]);
       } catch (err) {
-        console.error("Error comprimiendo imágenes:", err);//temporal, falta hacer algo para notificar y pedir un reintento
+        console.error("Error comprimiendo imágenes:", err);
       } finally {
         setIsCompressing(false);
       }
@@ -113,7 +112,7 @@ const ImageUploader = ({ images = [], onImgChange, name, setRemovedImages }) => 
     onImgChange(updatedImages);
   };
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: "image/*" });
+  const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: {"image/*": []} });
 
   return (
     <div>

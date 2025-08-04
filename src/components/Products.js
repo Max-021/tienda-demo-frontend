@@ -42,7 +42,7 @@ const Products = () => {
   }, [dispatch, filteredProducts.length, virtuosoTotal, page, limit, loading, filters])
 
   if(loading === 'pending' && page === 0) return <LoadingSpinner containerClass='productsLayout' spinnerInfo='bigSpinner'/>
-  if(error !== null)                      return <LoadingError containerClass='productsLayout' error={'No se recibieron productos'} fn={() => alert('temporal')}/>
+  if(error !== null)                      return <LoadingError containerClass='productsLayout' error={'No se recibieron productos'} fn={() => dispatch(fetchActiveProducts({page: 1, limit: limit, filters}))}/>
   if(filteredProducts.length === 0)       return <div className='productsLayout'>No hay productos, temporal cambiar esto</div>
   if(noSearchRes)                         return <div className='productsLayout'>
                                                     <div>La búsqueda no arrojó resultados. CAMBIAR ESTE TEXTO! temporal</div>

@@ -38,7 +38,7 @@ export const cartSlice = createSlice({
                     }
                     break;
                 default:
-                    console.log("Invalid argument");
+                    //no hago nada
                     break;
             }
             state.cartList = updatedList;

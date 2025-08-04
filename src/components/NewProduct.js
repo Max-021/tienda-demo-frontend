@@ -28,6 +28,7 @@ const NewProduct = () => {
     const [isActive, setIsActive] = useState(true);
     const [enumFields,setEnumFields] = useState([]);
     const [locRoute, setLocRoute] = useState('');
+    const [isReady, setIsReady] = useState(false);
 
     useEffect(()=> {
         const fetchSingleData = async () => {
@@ -35,19 +36,20 @@ const NewProduct = () => {
             const enumList = await getEnumList();
             const productFormModel = remakeObj(modelValue.data);
             setProductModel(modelValue.data)
-            setEnumFields(enumList.data);
+            setEnumFields(enumList.data.docs);
             if(location.pathname === '/editar-producto'){
-                const prod = await getProductById({...location.state}._id)
-                setNewProduct(prod.data)
-                setIsActive(prod.data.isActive)//para ajustar esto porque este valor lo manejo por fuera del formulario
+                const prod = await getProductById({...location.state}._id);
+                setNewProduct(prod.data);
+                setIsActive(prod.data.isActive);
             }else setNewProduct(productFormModel);
+            setIsReady(true);
         }
         fetchSingleData();
     }, [location.pathname, location.state])
 
     const {data: enumList, loading: loadingEnums, error: errorEnums, refetch: refetchEnums} = useLoadingHook(getEnumList, []);
     useEffect(()=> {
-        if(enumList) setEnumFields(enumList);
+        if(enumList?.data?.docs) setEnumFields(enumList.data.docs);
     }, [enumList]);
 
     useEffect(() => {
@@ -72,7 +74,6 @@ const NewProduct = () => {
         } catch (err) {
             notify('error', err.message)
         } finally {
-            await new Promise(resolve => setTimeout(resolve, 3000));
             setProductLoading(false);
         }
     }
@@ -86,7 +87,6 @@ const NewProduct = () => {
         } catch (error) {
             notify('error', error.message);
         }finally{
-            await new Promise(resolve => setTimeout(resolve, 3000));
             setProductLoading(false);
         }
     }
@@ -99,7 +99,7 @@ const NewProduct = () => {
                     <p className='formTitle'>{locRoute === '/nuevo-producto' ? 'Nuevo' : 'Editar'} producto</p>
                     {locRoute === '/editar-producto' && <button className='deleteProdBtn' type='button' title='Eliminar producto' onClick={() => setOpen(true)}><MdDeleteOutline/></button>}
                 </div>
-                {productLoading || loadingEnums
+                {(!isReady || productLoading || loadingEnums)
                     ? <LoadingSpinner spinnerInfo='formSpinner' containerClass='spinnerContainerCenter'/>
                     : <>
                         <FormGenerator productModel={productModel} productObject={newProduct} setProductObject={setNewProduct} removedImages={removedImages} setRemovedImages={setRemovedImages} enumFields={enumFields}/>
@@ -114,7 +114,9 @@ const NewProduct = () => {
             </Box>
             <Box className='enumFieldsWrapper'>
                 <p className='formTitle'>Campos con valores predeterminados</p>
-                {enumFields.map((el, index) => <EnumFieldsManager key={index} enumId={el._id} dataField={el.values} enumName={el.name} refetchEnums={refetchEnums}/>)}
+                {(!isReady || productLoading || loadingEnums)
+                    ? <LoadingSpinner spinnerInfo='formSpinner' containerClass='spinnerContainerCenter'/>
+                    : enumFields.map((el, index) => <EnumFieldsManager key={index} enumId={el._id} dataField={el.values} enumName={el.name} refetchEnums={refetchEnums}/>)}
             </Box>
             <ConfirmMessage 
                 dialogClass='deleteProdDialog' windowStatus={open} 

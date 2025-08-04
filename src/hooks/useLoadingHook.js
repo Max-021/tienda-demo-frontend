@@ -18,7 +18,6 @@ export function useLoadingHook(fn, args = [], options = {immediate: true}) {
     // fetchData encapsula la lógica de llamada y delay
     const fetchData = useCallback(async () => {
         setLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 3000));
         try {
             const res = await fn(...args);
             if (mounted.current) {

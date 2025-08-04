@@ -131,8 +131,8 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
         :
           <div className='enumFieldsAutocomp'>
             <FormControl>
-              <Autocomplete value={autoCompVal} renderInput={(params) => <TextField variant='filled' sx={{minWidth:220, paddingTop:'6px'}} {...params} label={enumName}/>} 
-              options={dataField} disablePortal onChange={(event, newValue) => {
+              <Autocomplete value={dataField && dataField.includes(autoCompVal) ? autoCompVal : null} renderInput={(params) => <TextField variant='filled' sx={{minWidth:220, paddingTop:'6px'}} {...params} label={enumName}/>} 
+              options={dataField || []} disablePortal onChange={(event, newValue) => {
                                                   setChangedField(newValue);
                                                   setAutoCompVal(newValue);
                                                 }}/>

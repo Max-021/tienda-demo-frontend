@@ -688,7 +688,7 @@ li{
     cursor: pointer;
     transition: all 0.7s;
     &:hover{
-        transform: scale(1.03);
+        transform: scale(0.97);
     }
 }
 
@@ -714,10 +714,10 @@ li{
     }
 }
 .editBtn{
-    color: variables.$thirdColor;//temporal, revisar color
+    color: variables.$thirdColor;
 }
 .deleteBtn{
-    color: red; //temporal, revisar color
+    color: red;
 }
 
 //cart prod items
@@ -1289,7 +1289,7 @@ footer{
     background-color: variables.$lightColorShade;
 }
 .inactiveUser{
-    background-color: variables.$cancelColor;//temporal, hacerlo pero mas transparente
+    background-color: variables.$cancelColor;
 }
 .lockedUser{
     background-color: rgba(128, 0, 128, 0.208);
@@ -1631,7 +1631,7 @@ footer{
     }
 }
 
-@media (max-width: 320px) {//temporal, pulir un poco más acá en otro momento
+@media (max-width: 320px) {
     .swiperContainer {
         width: 150px;
     }

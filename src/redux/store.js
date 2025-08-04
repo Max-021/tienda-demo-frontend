@@ -1,7 +1,6 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { configureStore, combineReducers,  } from "@reduxjs/toolkit";
 import storage from 'redux-persist/lib/storage';
-import { persistReducer, persistStore, createTransform } from "redux-persist";
-
+import { persistStore, persistReducer, createTransform, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import SearchBarReducer from './searchBarSlice';
 import productsReducer from './ProductsSlice';
 import cartReducer from './CartSlice';
@@ -38,7 +37,12 @@ const rootReducer = combineReducers({
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-    reducer: persistedReducer
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: {
+            ignoreActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        }
+    })
 });
 
 export const persistor = persistStore(store);

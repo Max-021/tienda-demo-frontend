@@ -13,7 +13,6 @@ const MyProfile = () => {
     const [isMenuActive, setIsMenuActive] = useState(false);
 
     const renderSelectedOption = (actOp) => {
-        // setIsMenuActive(false);//temporal, activar para que se cierre en un cambio
         switch (actOp) {
             case 'myProfile':
                 return <UserInfoForm/>

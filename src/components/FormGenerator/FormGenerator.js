@@ -8,8 +8,6 @@ import FormControl from '@mui/material/FormControl';
 import ImageUploader from '../reusables/ImageUploader';
 import StockManager from './StockManager';
 
-
-// const FormGenerator = ({modelKey,enumValues = null, handleChange, currentNewProdField, existingImages = null, setRemovedImages = null, removedImages = []}) => {
 const FormGenerator = ({productModel, productObject, setProductObject, removedImages, setRemovedImages, enumFields}) => {
 
   const handleAutocompleteChange = (field, newVal) => setProductObject(prev => ({...prev, [field]: newVal}));
@@ -48,24 +46,23 @@ const FormGenerator = ({productModel, productObject, setProductObject, removedIm
         return (
           <FormControl key={`${productField}-${idx}`}>
             <Autocomplete renderInput={(params) => <TextField variant='filled' name={productField} {...params} label={'Categoría'}/>} 
-              options={enumValues} disablePortal value={productObject[productField]} onChange={(_, val) => handleAutocompleteChange(productField, val)}/>
+              options={enumValues || []} disablePortal value={enumValues && enumValues.includes(productObject[productField]) ? productObject[productField] : null}
+              onChange={(_, val) => handleAutocompleteChange(productField, val)}/>
           </FormControl>
         )
       case 'stock':
-        console.log(productObject);
-        console.log(productObject[productField])
         return(
           <StockManager key={`${productField}-${idx}`} stock={productObject[productField]} onStockChange={setProductObject} values={enumValues} colorModel={productModel[productField].subFields}/>
         );
       case 'img':
-        return (<>
-          <ImageUploader key={`${productField}-${idx}`} name={`${productField}`} onImgChange={handleImgOnChange} images={productObject[productField]} setRemovedImages={setRemovedImages}/>
+        return (<div key={`${productField}-${idx}`}>
+          <ImageUploader name={`${productField}`} onImgChange={handleImgOnChange} images={productObject[productField]} setRemovedImages={setRemovedImages}/>
           {removedImages.length > 0 && <RemovedImagesViewer removedImages={removedImages} onRestore={(url) => {
             setRemovedImages(prev => prev.filter(u => u !== url));
             const nuevaLista = [...(productObject[productField] || []), url];
             handleChange(nuevaLista);                        
           }}/>}
-        </>)
+        </div>)
       default:
         return <div>No field yet for: {productField}</div>
     }
@@ -84,7 +81,7 @@ const FormGenerator = ({productModel, productObject, setProductObject, removedIm
       if (!files || files.length === 0) setProductObject(prev => ({...prev, img: []}))
       else setProductObject(prev => ({...prev, img: files}))
   };
-  const getEnumValues = (fieldName) => {//temporal, revisar acá, no es tan importante pero hay algo raro
+  const getEnumValues = (fieldName) => {
       let doc = [];
       if(fieldName==='stock'){
           doc = enumFields.find(f => f.name === 'colors');
@@ -95,9 +92,9 @@ const FormGenerator = ({productModel, productObject, setProductObject, removedIm
   }
 
   return (
-    <>{Object.keys(productModel).map((item, index) => {
+    Object.keys(productModel).map((item, index) => {
       return renderSwitch(item, index);
-    })}</>
+    })
   )
 }
 

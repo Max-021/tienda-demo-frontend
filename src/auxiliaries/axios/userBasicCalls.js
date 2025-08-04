@@ -19,6 +19,6 @@ export const checkSession = () => callAPI(() => get(userRoutes.SESSION_CHECK));
 
 export const passwordForgotten = (mail) => callAPI(() => post(userRoutes.PWD_FORGOTTEN, {mail}, noCredentials));
 
-export const resetPassword = (newPwd, token) => callAPI(() => update(`${userRoutes.RESET_PWD}/${token}`, newPwd));//temporal, revisar acá si va o no van las credenciales, testear
+export const resetPassword = (newPwd, token) => callAPI(() => update(`${userRoutes.RESET_PWD}/${token}`, newPwd));
 
 export const validateResetToken = (token) => callAPI(() => get(`${userRoutes.VALIDATE_RESET_TOKEN}/${token}`,noCredentials));

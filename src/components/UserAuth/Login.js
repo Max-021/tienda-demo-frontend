@@ -113,7 +113,7 @@ const Login = () => {
             {!isForgotten &&
               <FormControl>
                 <TextField required={!isForgotten} label={'Contraseña'} value={userData.password} 
-                  name={`password`} id={`password-id`} type={showPassword?'text':'password'}
+                  name={`password`} id={`password-id`} type={showPassword?'text':'password'} autoComplete='current-password'
                   onChange={handleChange} onBlur={e => validateField(e.target.name, e.target.value)}
                   error={!!errors.password} helperText={errors.password}
                   InputProps={{endAdornment:(

@@ -68,7 +68,6 @@ const Cart = () => {
     const validateOrder = async () => {
         try {
             setCheckLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 3000));    
             const payload = prepareOrderPayload(prodList);
             const res = await checkOrder(payload);
 
@@ -113,8 +112,8 @@ const Cart = () => {
         <div className='cartProducts'>
             {prodList.map((prod,index) => {
                 const conflict = checckIfExceded(prod._id, prod.color);
-                return <>
-                    <div key={index} className='cartProdItem'>
+                return <div style={{width:'100%'}} key={`prod-${index}`}>
+                    <div className='cartProdItem'>
                         <div className='cartProdInfoLeft'>
                             <p className='cartProdName'>Producto: {prod.name}</p>
                             <p className='cartProdColor'>Color: {prod.color}</p>
@@ -140,7 +139,7 @@ const Cart = () => {
                                             dispatch(changeAmount(['+',index]))
                                             setAllowOrder(false);
                                             setExcededList(prev => prev.filter(item => !(item._id === prod._id && item.color === prod.color)));
-                                        }} title='Sumar un producto'>
+                                        }} title='Sumar un producto' style={{marginRight:'0'}}>
                                             +
                                         </button>
                                     </div>
@@ -165,8 +164,8 @@ const Cart = () => {
                             </div>
                         </div>
                     </div>
-                    <div key={`${index}-separator`} className='cartProdItemSeparator'></div>
-                </>
+                    <div className='cartProdItemSeparator'></div>
+                </div>
             })} 
         </div>
             : <div>No hay productos en el carrito todavía</div>

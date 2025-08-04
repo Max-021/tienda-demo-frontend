@@ -4,7 +4,6 @@ export default function TurnstileCaptcha({siteKey, onVerify, theme = 'light'}) {
     const widgetId = useRef(null);
 
     useEffect(() => {
-        console.log('siteKey →', siteKey, typeof siteKey);
         if(!window.turnstile || widgetId.current !== null) return;
 
         widgetId.current = window.turnstile.render('#cf-turnstile', {

@@ -2,13 +2,12 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getAllProducts, getProductsByEditorFilter } from "../auxiliaries/axios";
 import { applyFilters, prepareQuery } from "./reduxAux/filterHelper";
 
-const PAGE_SIZE_DEFAULT = 8;//temporal, cambiar a 15/20 en produccion
+const PAGE_SIZE_DEFAULT = 15;
 
 export const fetchActiveProducts = createAsyncThunk(
     "products/fetchActive",
     async (params = {page: 1, limit: PAGE_SIZE_DEFAULT, filters: {}}, { rejectWithValue }) => {
         try {
-            await new Promise(resolve => setTimeout(resolve, 3000));
             const queryObj = prepareQuery(params)
             const res = await getAllProducts(queryObj);
             return {...res.data};
@@ -22,7 +21,6 @@ export const fetchEditorProducts = createAsyncThunk(
     async (params = {editorFilters: {}, page: 1, limit: PAGE_SIZE_DEFAULT}, { rejectWithValue }) => {
         try {
             const {editorFilters, page, limit} = params
-            await new Promise(resolve => setTimeout(resolve, 3000));
             const res = await getProductsByEditorFilter({...editorFilters, page, limit});
             return {...res.data};
         } catch (error) {
@@ -60,14 +58,7 @@ export const productsSlice = createSlice({
             state.noSearchResults = state.filteredProducts.length === 0;
         },
         searchProduct: (state,action) => {
-                state.searchText = action.payload;
-                // LLEVAR A OTRO LADO ESTA FUNCION QUE ES MAS POTENTE. temporal
-                // state.filteredProducts = state.filteredProducts.filter((product) => {
-                //     for(const prop in product) {
-                //         if(product.hasOwnProperty(prop) && product[prop].toLowerCase() === action.payload.toLowerCase())
-                //             return product
-                //     }
-                // })
+            state.searchText = action.payload;
         },
         cleanTextFilter: (state, action) => {
             switch (action.payload) {
