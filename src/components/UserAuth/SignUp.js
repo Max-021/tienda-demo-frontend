@@ -8,7 +8,7 @@ import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField'
 
 
-//TEMPORAL, COMPONENTE SIN TERMINAR
+//COMPONENTE SIN TERMINAR
 const SignUp = () => {
 
     const [userData, setUserData] = useState({//IMPORTANTE EN ALGUN lugar agregar algun tipo de encriptado o ver como se hace para cuidar la contraseña cuando se ingresa en el front
@@ -23,7 +23,7 @@ const SignUp = () => {
     }
 
     const verifyUserData = () => {
-        if(userData.username === '' || userData.mail === '' || userData.password === '') return false;//temporal, seguir completando y ver si la puedo factorizar con la de login
+        if(userData.username === '' || userData.mail === '' || userData.password === '') return false;//seguir completando y ver si la puedo factorizar con la de login
     }
 
     const submitForm = (e) => {

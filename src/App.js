@@ -36,11 +36,6 @@ function App() {
     dispatch(checkLogin());
   },[])
   
-//temporal, trabajar en la redireccion a un "404" si no esta logeado y quiere acceder a las rutas que no corresponden
-//dejar fuera del "404" a la ruta del login que es la que permitiria acceder a las otras
-//tener en cuenta usar desde el redux el islogged para el tema de los "404"
-
-// /* Para que el signup entre deberia estar logeado otro usuario, solo un usuario existente puede dar de alta otro usuario */
   return (
     <div className="App">
       <Meta/>
@@ -49,7 +44,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Products/>}/>
         <Route path='/login' element={<Login/>}/>
-        {/* <Route path='/signup' element={<Signup/>}/> */}{/* desactivado temporalmente, */}
+        {/* <Route path='/signup' element={<Signup/>}/> */}{/* desactivado si no corresponde, */}
         {
           authSt ?
             <>
@@ -60,7 +55,6 @@ function App() {
             </> 
           : null
         }
-        {/* acá termina el if? está logeado */}
         <Route path='/cart' element={<Cart/>}/>
         <Route path='/reset-password/:token' element={<ResetPassword/>}/>
         <Route path='/*' element={<NotFound/>}/>

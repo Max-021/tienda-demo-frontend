@@ -41,7 +41,6 @@ const Navbar = () => {
     <div className={`navBar ${showCats === '/nuevo-producto' || showCats === '/editar-producto' ? 'navBarSimple' : null}`}>
       <h1>
         <Link to='/'>Fly shop</Link>
-        {/* temporal, ver como refactorizar rutas para que sean de comodo acceso a toda la app y sensibles al idioma */}
         {titleText()}
       </h1>
       { authSt && <button type='button' title='Cerrar sesión' className='icon-btn logout-btn' onClick={() => setOpen(true)}><MdLogout /></button> }

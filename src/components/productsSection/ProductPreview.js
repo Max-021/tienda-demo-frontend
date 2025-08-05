@@ -20,7 +20,7 @@ const ProductPreview = ({ind, product, handleOpen}) => {
             </div>
             <div className='productInfo'>
                 <p key={`${ind}-prodName`} title={product.name}>{product.name}</p>
-                <p>{hasStock ? 'Unidades disponibles' : 'No disponible temporalmente, consultar por el producto'}</p>
+                <p>{hasStock ? 'Unidades disponibles' : 'No disponible por el momento, consultar por el producto'}</p>
                 <p>$ {product.price}</p>
                 <p>{product.stock.length} {`color${product.stock.length>1?'es':''}`}</p>
             </div>

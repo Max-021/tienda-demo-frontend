@@ -7,10 +7,9 @@ import FormControl from '@mui/material/FormControl';
 import { MdOutlineDelete } from "react-icons/md";
 
 
-const StockManager = ({stock, onStockChange, values, colorModel}) => {//temporal, cuando reestructure fieldname tendría que poder borrarse
+const StockManager = ({stock, onStockChange, values, colorModel}) => {
     const [newColor, setNewColor] = useState('');
 
-//ver como implemento algo acá para que los colores que aparezcan en el autocomplete sean los que no están ya agregados, para mejorar la visibilidad de la lista, temporal
     const handleStockChange = (e, colorName) => {
         const value = Number(e.target.value) || 0;
         const updatedStock = stock.map(el => el.color === colorName ? {...el, quantity: value} : el);
