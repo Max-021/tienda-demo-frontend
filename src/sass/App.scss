@@ -78,6 +78,12 @@ svg:hover{
     margin-top: 22px;
     align-self: flex-start;
 }
+.retryBtn {
+    box-sizing: border-box;
+    background-color: transparent;
+    border: 1px solid variables.$darkColor;
+    color: variables.$darkColor;
+}
 
 //confirmMessage
 //la clase closeBtn esta con las clases del dialog de producto

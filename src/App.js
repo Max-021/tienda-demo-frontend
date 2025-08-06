@@ -23,7 +23,6 @@ import ResetPassword from './components/UserAuth/ResetPassword';
 import Cart from './components/Cart';
 
 function App() {
-
   const [showSearch,setShowSearch] = useState('');
   const location = useLocation();
   const dispatch = useDispatch();

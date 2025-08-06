@@ -22,7 +22,13 @@ const axiosClient = axios.create({
 axiosClient.interceptors.response.use(
     (response) => response,
     (error) => {
-        return Promise.reject(error.response.data);
+        const payload = {
+            status: false,
+            message: error.response?.data ?? error.message,
+            data: error.response?.data ?? {},
+            statusCode: error.response?.status ?? 500,
+        }
+        return Promise.reject(payload);
     }
 )
 

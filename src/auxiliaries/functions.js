@@ -36,7 +36,12 @@ export const callAPI = async (func) => {
             data: res.data.data,
         }
     } catch (error) {
-        throw error;
+      throw {
+        status: error.status ?? false,
+        message: error.message ?? String(error),
+        data: error.data ?? {},
+        statusCode: error.statusCode ?? 500,
+      }
     }
 }
 
