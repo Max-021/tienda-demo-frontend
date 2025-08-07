@@ -3,6 +3,7 @@ import './sass/App.scss'
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { authenticateStatus, checkLogin } from './redux/UserSlice';
+import { setView } from './redux/searchBarSlice';
 
 //para el html
 import Meta from './Meta';
@@ -33,7 +34,12 @@ function App() {
   },[location])
   useEffect(()=> {
     dispatch(checkLogin());
-  },[])
+
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia ? window.matchMedia('(max-width: 900px)') : { matches: window.innerWidth <= 900 };
+    dispatch(setView(mq.matches ? 'list' : 'grid'));
+
+  },[dispatch])
   
   return (
     <div className="App">

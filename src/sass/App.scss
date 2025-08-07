@@ -1585,7 +1585,7 @@ footer{
         }
     }
     .editIconContainer{
-        padding: 0 calc(variables.$lateralPadding / 4);
+        padding: 0 calc(variables.$lateralPadding / 2);
         font-size: calc(variables.$titleFontSize / 1.2);
     }
     .swiperContainer{
@@ -1627,13 +1627,13 @@ footer{
     }
         .searchBarContainer, .menu,
     h1, .optionsList, .editorOptions, footer{
-        padding: 0 calc(variables.$lateralPadding / 8);
+        padding: 0 calc(variables.$lateralPadding / 2);
     }
     .productsLayout, .productsLayoutList, .notFoundPageContainer, .cartContainer{
-        padding: calc(variables.$lateralPadding / 8);
+        padding: calc(variables.$lateralPadding / 2);
     }
     .relatedData{
-        padding: 0 calc(variables.$lateralPadding / 5);
+        padding: 0 calc(variables.$lateralPadding / 3);
         padding-top: 12px;
     }
     .userActionsContainer{

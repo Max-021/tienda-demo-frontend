@@ -5,13 +5,16 @@ const catName = 'category'
 export const searchBarSlice = createSlice({
     name:'searchBar',//acá manejo manualmente las categorias, pero las 
     initialState: {
-        view: 'list',
+        view: 'grid',
         categories: [],
         filterData: {},
     },
     reducers: {
         changeView: state => {
             state.view = state.view === 'list' ? 'grid' : 'list'
+        },
+        setView: (state, action) => {
+            state.view = action.payload;
         },
         setFilterInfo: (state,action) => {
             const cats = action.payload.docs.find(el => el.name === catName);
@@ -26,7 +29,7 @@ export const searchBarSlice = createSlice({
     }
 })
 
-export const {changeView, setFilterInfo} = searchBarSlice.actions
+export const {changeView, setView, setFilterInfo} = searchBarSlice.actions
 
 export const currentViewValue = (state) => state.searchBar.view
 export const currentCategories = (state) => state.searchBar.categories

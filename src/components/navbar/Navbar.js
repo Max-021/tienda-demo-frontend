@@ -1,16 +1,17 @@
 import React,{useState,useEffect} from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, } from 'react-router-dom'
 import { useSelector} from 'react-redux';
 import { authenticateStatus } from '../../redux/UserSlice';
 import { logout } from '../../auxiliaries/axios';
 import { MdLogout } from "react-icons/md";
+import { useNotification } from '../reusables/NotificationContext';
 
 import Menu from '../Menu/Menu'
 import SearchBar from '../Menu/SearchBar';
 import ConfirmMessage from '../reusables/ConfirmMessage';
 
 const Navbar = () => {
-
+  const notify = useNotification();
   const location = useLocation();
   
   const [showCats,setShowCats] = useState('')
@@ -23,8 +24,12 @@ const Navbar = () => {
 
   const cerrarSesion = () => {
     setOpen(false);
-    alert('aca')
-    logout();
+    try {
+      logout();
+      window.location.replace('/');            
+    } catch (error) {
+      notify('error', error) 
+    }
   }
   const titleText = () => {//Agregar dependiendo del contenido que quiera al texto del titulo
     switch (showCats) {
