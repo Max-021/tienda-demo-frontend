@@ -513,6 +513,9 @@ li{
     p:first-of-type {
         transition: transform 0.4s, color 0.4s;
         transform-origin: left center;
+        &::first-letter{
+            text-transform: uppercase;
+        }
     }
     &:hover {
         cursor: pointer;
@@ -642,6 +645,9 @@ li{
     font-weight: normal;
     width: 100%;
     border-bottom: 2px solid rgba(169, 169, 169, 0.297);
+    &:first-letter{
+        text-transform: uppercase;
+    }
 }
 .productDetailPrice{
     p{
