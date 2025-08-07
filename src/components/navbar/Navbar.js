@@ -40,7 +40,7 @@ const Navbar = () => {
   return (
     <div className={`navBar ${showCats === '/nuevo-producto' || showCats === '/editar-producto' ? 'navBarSimple' : null}`}>
       <h1>
-        <Link to='/'>Fly shop</Link>
+        <Link to='/' reloadDocument>Fly shop</Link>
         {titleText()}
       </h1>
       { authSt && <button type='button' title='Cerrar sesión' className='icon-btn logout-btn' onClick={() => setOpen(true)}><MdLogout /></button> }

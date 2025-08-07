@@ -80,7 +80,9 @@ svg:hover{
 }
 .retryBtn {
     box-sizing: border-box;
-    background-color: transparent;
+    background-color: variables.$lightColor;
+    padding: 3px;
+    border-radius: 5px;
     border: 1px solid variables.$darkColor;
     color: variables.$darkColor;
 }
