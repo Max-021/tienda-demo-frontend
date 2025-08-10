@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { Snackbar, Alert } from '@mui/material';
+import { Snackbar, Alert, Button } from '@mui/material';
 
-const NotificationContext = createContext({ notify: (type, message) => {} });
+const NotificationContext = createContext({ notify: (type, message, opts) => {} });
 
 export const NotificationProvider = ({ children }) => {
   const [queue, setQueue] = useState([]);
@@ -18,12 +18,25 @@ export const NotificationProvider = ({ children }) => {
     processQueue();
   }, [queue, current, processQueue]);
 
-  const notify = useCallback((type, message) => {
-    setQueue(prev => [...prev, { type, message }]);
+  const notify = useCallback((type, message, opts = {}) => {
+    setQueue(prev => [...prev, {
+      type,
+      message,
+      actionText: opts.actionText || null,
+      action: typeof opts.action === 'function' ? opts.action : null,
+      duration: typeof opts.duration === 'number' ? opts.duration : 4000,
+    }]);
   }, []);
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') return;
+    setCurrent(null);
+  };
+
+  const handleAction = () => {
+    if (current && typeof current.action === 'function') {
+      try { current.action(); } catch (err) { console.error('Notification action error', err); }
+    }
     setCurrent(null);
   };
 
@@ -33,11 +46,22 @@ export const NotificationProvider = ({ children }) => {
       {current && (
         <Snackbar
           open
-          autoHideDuration={3000}
+          autoHideDuration={current.duration}
           onClose={handleClose}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         >
-          <Alert onClose={handleClose} severity={current.type} sx={{ width: '100%' }}>
+          <Alert
+            onClose={handleClose}
+            severity={current.type}
+            sx={{ width: '100%' }}
+            action={
+              current.actionText ? (
+                <Button color="inherit" size="small" onClick={handleAction}>
+                  {current.actionText}
+                </Button>
+              ) : null
+            }
+          >
             {current.message}
           </Alert>
         </Snackbar>

@@ -472,7 +472,7 @@ li{
     width:100%;
     background-color: variables.$lightColor;
     box-sizing: border-box;
-    padding: variables.$lateralPadding;
+    padding: 1rem variables.$lateralPadding;
     overflow-y: auto;
     // @include center-flex(row, flex-start, flex-start);
     @include center-flex(column, flex-start, flex-start);
@@ -736,12 +736,12 @@ li{
 
 //cart prod items
 .cartContainer{
-    @include center-flex(row, space-between, flex-start);
+    @include center-flex(row, flex-start, flex-start);
     width: 100%;
     flex: 1;
-    gap: variables.$lateralPadding;
+    gap: variables.$innerPadding;
     box-sizing: border-box;
-    padding: variables.$lateralPadding;
+    padding: 1rem variables.$lateralPadding;
 }
 .cartProducts{
     box-sizing: border-box;
@@ -752,6 +752,20 @@ li{
     p{
         margin: 10px 0;
     }
+}
+.cartProdRow {
+  box-sizing: border-box;
+  width: 100%;
+  overflow: hidden;
+  transition: transform 220ms ease, opacity 220ms ease, height 220ms ease, margin 220ms ease, padding 220ms ease;
+  margin-bottom: 8px;
+}
+.cartProdRow.removed {
+  opacity: 0;
+  transform: translateX(-12px);
+  height: 0 !important;
+  margin: 0;
+  padding: 0;
 }
 .cartProdItem{
     box-sizing: border-box;
@@ -833,7 +847,7 @@ li{
     max-width: 30%;
     @include floating-box();
     flex: 1;
-    padding: variables.$lateralPadding;
+    padding: variables.$innerPadding;
     align-self: stretch;
     justify-self: flex-end;
     @include center-flex(column, space-between, space-between);
@@ -876,6 +890,7 @@ li{
 .sendOrder{
     align-self: flex-end;
     justify-self: flex-end;
+    width: 100%;
     background-color: variables.$secondColor;
     color: variables.$lightColor;
 }
@@ -891,11 +906,13 @@ li{
 //----------------------------------------------------------------------------------new product
 .newProductContainer{
     min-height: variables.$fullHeight;
+    box-sizing: border-box;
+    padding: 24px variables.$lateralPadding;
     height: fit-content;
-    padding: 12px 0;
     width: 100%;
+    @include center-flex(row, flex-start, flex-start);
+    gap: 24px;
     background-color: variables.$lightColorShade;
-    @include center-flex(row, space-evenly, flex-start);
 }
 .formTitleContainer{
     width: 100%;
@@ -919,7 +936,7 @@ li{
     box-sizing: border-box;
     @include center-flex(column, center, flex-start);
     @include floating-box();
-    padding: variables.$lateralPadding;
+    padding: variables.$innerPadding;
     gap: 12px;
     width: 30vw;
 }
@@ -980,7 +997,7 @@ li{
 //-----------------------------------------------------------------------------------------------------enumFields
 .enumFieldsWrapper {
     box-sizing: border-box;
-    padding: variables.$lateralPadding;
+    padding: variables.$innerPadding;
     width: 45vw;
     @include center-flex(column, center, flex-start);
     gap: 36px;
@@ -1079,9 +1096,11 @@ footer{
 }
 
 .optionsList{
+    box-sizing: border-box;
     @include center-flex(column,flex-start,flex-start);
-    padding: 0 32px 0 variables.$lateralPadding;
+    padding: 0 32px 0 variables.$innerPadding;
     background-color: variables.$lightColorShade;
+    width: variables.$lateralPadding;
     transition: all 0.7s;
 }//a partir de aca todas las clases debajo hasta donde indique se encuentran adentro de optionsList
 .optionsList.activeOptionsList{
@@ -1113,20 +1132,20 @@ footer{
     box-sizing: border-box;
     width: 100%;
     flex: 1;
-    padding: variables.$lateralPadding;
+    padding: variables.$innerPadding;
     transition: all 0.3s ease-in-out;
     position: relative;
     overflow: hidden
 }
 .overlay{
-    position: absolute;
+    position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.3);
-    z-index: 15;
+    z-index: 25;
 }
 .relatedData > *:not(.overlay) {
   position: relative;
-  z-index: 10;                  /* contenido por debajo del overlay */
+  z-index: 10;
 }
 //my profile
 .userInfoForm{
@@ -1350,13 +1369,13 @@ footer{
     position: absolute;
     top: -0.6em;
     left: 12px;
-    background-color: white; // O el fondo de tu app
+    background-color: white;
     padding: 0 6px;
     margin: 0;
     font-size: 0.9em;
     color: variables.$secondColor;
-    white-space: nowrap; // <- esto evita el salto de línea
-    max-width: calc(100% - 24px); // por si querés evitar overflow
+    white-space: nowrap;
+    max-width: calc(100% - 24px);
     overflow: hidden;
     text-overflow: ellipsis;
     font-weight: bold;
@@ -1414,6 +1433,13 @@ footer{
     .productsLayout{
         gap: 18px;
     }
+    .searchBarContainer, .menu,
+    h1, .editorOptions, footer{
+        padding: 0 calc(variables.$lateralPadding / 1.2);
+    }
+    .productsLayout, .productsLayoutList, .notFoundPageContainer, .cartContainer, .newProductContainer{
+        padding: 1rem calc(variables.$lateralPadding / 1.2);
+    }
     //acá ajustar los de grilla
     .productsGridList {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1441,11 +1467,11 @@ footer{
 //--------------------------------------------------------- TABLET
 @media (max-width: variables.$sm) {//900
     .searchBarContainer, .menu,
-    h1, .optionsList, .editorOptions, footer{
-        padding: 0 calc(variables.$lateralPadding / 2);
+    h1, .editorOptions, footer{
+        padding: 0 calc(variables.$lateralPadding / 2.8);
     }
-    .productsLayout, .productsLayoutList, .notFoundPageContainer, .cartContainer{
-        padding: calc(variables.$lateralPadding / 2);
+    .productsLayout, .productsLayoutList, .notFoundPageContainer, .cartContainer, .newProductContainer{
+        padding: 1rem calc(variables.$lateralPadding / 2.8);
     }
     .productList {
         height: 150px;
@@ -1463,7 +1489,7 @@ footer{
         }
     }
     .editIconContainer{
-        padding: 0 calc(variables.$lateralPadding / 2);
+        padding: 0 calc(variables.$lateralPadding / 5);
         font-size: variables.$titleFontSize;
     }
     .productsGridList {
@@ -1488,7 +1514,6 @@ footer{
     }
     .newProductContainer{
         flex-direction: column;
-        gap: 24px;
         align-items: center;
     }
     .productForm, .enumFieldsWrapper{
@@ -1501,7 +1526,7 @@ footer{
     .enunmFieldsInput{
         display: flex;
         align-items: center;
-        flex-wrap: nowrap; // Evita que se haga wrap
+        flex-wrap: nowrap;
         width: 100%;
     }
     .enunmFieldsInput > *:first-child {
@@ -1525,7 +1550,7 @@ footer{
         width: 80%;
     }
     .myProfileMenuIcon{
-        z-index: 10;
+        z-index: 70;
         display: flex;
         position: relative;
         position: absolute;
@@ -1538,13 +1563,20 @@ footer{
         width: 100%;
     }
     .optionsList{
-        position: absolute;
+        position: fixed;
         top: variables.$navBarHeight;
-        bottom: variables.$footerHeight;
+        // bottom: variables.$footerHeight;
+        bottom: 0;
         left: 0;
+        width: variables.$lateralPadding;
         transform: translateX(-100%);
-        z-index: 18;
+        z-index: 50;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        transition: transform 0.35s ease, opacity 0.2s ease;
+        box-sizing: border-box;
+        padding: 0 32px 0 variables.$innerPadding;
+        background-color: variables.$lightColorShade;
     }
     .userInfoFields{
         width: 100%;
@@ -1565,6 +1597,17 @@ footer{
 
 //--------------------------------------------------------- MOBILE
 @media (max-width: variables.$xs) {//600
+    .searchBarContainer, .menu,
+    h1, .optionsList, .editorOptions, footer{
+        padding: 0 calc(variables.$lateralPadding / 6);
+    }
+    .productsLayout, .productsLayoutList, .notFoundPageContainer, .cartContainer, .newProductContainer{
+        padding: 1rem calc(variables.$lateralPadding / 6);
+    }
+    .relatedData{
+        padding: 0 calc(variables.$lateralPadding / 6);
+        padding-top: 12px;
+    }
     .productList {
         height: 100px;
     }
@@ -1585,7 +1628,7 @@ footer{
         }
     }
     .editIconContainer{
-        padding: 0 calc(variables.$lateralPadding / 2);
+        padding: 0 calc(variables.$lateralPadding / 8);
         font-size: calc(variables.$titleFontSize / 1.2);
     }
     .swiperContainer{
@@ -1627,13 +1670,13 @@ footer{
     }
         .searchBarContainer, .menu,
     h1, .optionsList, .editorOptions, footer{
-        padding: 0 calc(variables.$lateralPadding / 2);
+        padding: 0 calc(variables.$lateralPadding / 10);
     }
-    .productsLayout, .productsLayoutList, .notFoundPageContainer, .cartContainer{
-        padding: calc(variables.$lateralPadding / 2);
+    .productsLayout, .productsLayoutList, .notFoundPageContainer, .cartContainer, .newProductContainer{
+        padding: 1rem calc(variables.$lateralPadding / 10);
     }
     .relatedData{
-        padding: 0 calc(variables.$lateralPadding / 3);
+        padding: 0 calc(variables.$lateralPadding / 10);
         padding-top: 12px;
     }
     .userActionsContainer{

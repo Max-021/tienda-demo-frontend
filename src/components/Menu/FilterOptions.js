@@ -51,7 +51,6 @@ const FilterOptions = () => {
         e.preventDefault();
         const noFilters = filterOptions.priceMin === '' && filterOptions.priceMax === '' && Object.keys(filterInfo).every(key => filterOptions[key].length === 0);
 
-        //chequear si los campos estan vacios,
         if(noFilters){
             dispatch(emptyFilters());
         }else{

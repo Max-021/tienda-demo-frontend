@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { changeView } from '../../redux/searchBarSlice';
+import { changeView, currentViewValue } from '../../redux/searchBarSlice';
 import { activeFilters, filterProducts, cleanArrayFilter, cleanTextFilter } from '../../redux/ProductsSlice';
 import { authenticateStatus, userRole } from '../../redux/UserSlice';
 import { searchAndFilter } from '../../redux/thunks/productThunks';
@@ -10,7 +10,7 @@ import InputBase from '@mui/material/InputBase';
 import Popover from '@mui/material/Popover';
 
 import { FiFilter } from "react-icons/fi";
-import { MdGridView } from "react-icons/md";
+import { MdGridView, MdViewList } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
 
@@ -21,6 +21,7 @@ const vertAlign = { verticalAlign: 'middle', marginLeft: '16px' }
 const SearchBar = () => {
     const dispatch = useDispatch();
     const storeFilters = useSelector(activeFilters);
+    const curView = useSelector(currentViewValue);
     const authSt = useSelector(authenticateStatus);
     const userRl = useSelector(userRole);
     const [searchBarText, setSearchBarText] = useState('');
@@ -80,7 +81,10 @@ const SearchBar = () => {
                     >
                         <FilterOptions />
                     </Popover>
-                    <MdGridView title='Cambiar vista' onClick={() => dispatch(changeView())} />
+                    {curView === 'list'
+                        ? <MdViewList title='Cambiar vista' onClick={() => dispatch(changeView())}/>
+                        : <MdGridView title='Cambiar vista' onClick={() => dispatch(changeView())}/>
+                    }
                 </div>
             </div>
             <div className={`searchBarFilterInfo ${showAnimation ? 'active' : ''}`}>

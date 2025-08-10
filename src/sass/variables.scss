@@ -24,7 +24,9 @@ $fullHeight: calc(100vh - ($navBarHeight));
 // $fullHeight: calc(100vh - ($navBarHeight + $footerHeight));//opcional, desactivado por ahora
 
 //utilities
-$lateralPadding:24px;
+$innerPadding: 24px;
+$lateralPadding: 10rem;
+$superiorPadding: 2rem;
 $imgWidth: 500px;
 
 //fonts

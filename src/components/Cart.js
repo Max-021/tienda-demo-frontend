@@ -20,6 +20,7 @@ const Transition = React.forwardRef(function Transition(props,ref) {
 
 const Cart = () => {
     const notify = useNotification();
+    const dispatch = useDispatch();
     const [openTel, setOpenTel] = useState(false)//borrar esto en produccion, temporal
     const [telNumber, setTelNumber] = useState(null) //borrar esto en produccion, temporal
     const [open, setOpen] = useState(false);
@@ -29,18 +30,30 @@ const Cart = () => {
     const [excededList, setExcededList] = useState([]);
     const [captchaToken, setCaptchaToken] = useState(null);
     const [captchaError, setCaptchaError] = useState('');
-    const prevAllowOrder = useRef(allowOrder);
+    const [hiddenKeys, setHiddenKeys] = useState(new Set());
+    const [lastDeleted, setLastDeleted] = useState(null);
+    const pendingDeleteRef = useRef({});
 
     const prodList = useSelector(cartList);
     const productsCount = useSelector(totalProducts);
-    const dispatch = useDispatch();
+    const prodListRef = useRef(prodList);
 
+    useEffect(() => { prodListRef.current = prodList }, [prodList]);
+
+    const prevAllowOrder = useRef(allowOrder);
     useEffect(() => {
         if(prevAllowOrder.current === true && allowOrder === false) {
             notify('info', 'La cantidad de productos fue modificada, se necesita volver a confirmar la compra.');
         }
         prevAllowOrder.current = allowOrder;
     }, [allowOrder, notify]);
+
+    useEffect(() => {
+        return () => {
+            Object.values(pendingDeleteRef.current).forEach(id => clearTimeout(id));
+            pendingDeleteRef.current = {};
+        };
+    }, []);
 
     const handleChange = (e) => setTelNumber(e.target.value)//tambien tengo que borrar esto fuera de la demo
 
@@ -61,8 +74,76 @@ const Cart = () => {
     }
 
     const handleProdDelete = (idx) => {
-        dispatch(deleteFromCart(idx));
         setOpen(false);
+
+        const prod = prodList[idx];
+        if(!prod) return;
+
+        const key = `${prod._id}-${prod.color}`;
+        if(pendingDeleteRef.current[key]) return;
+
+        setHiddenKeys(prev => {
+            const s = new Set(prev);
+            s.add(key);
+            return s;
+        });
+
+        setLastDeleted({ key, id: prod._id, color: prod.color, name: prod.name });
+
+        notify('info', `${prod.name} eliminado,`, {
+          actionText: 'Deshacer',
+          action: () => {
+            const timeoutId = pendingDeleteRef.current[key];
+            if (timeoutId) {
+              clearTimeout(timeoutId);
+              delete pendingDeleteRef.current[key];
+            }
+            setHiddenKeys(prev => {
+              const s = new Set(prev);
+              s.delete(key);
+              return s;
+            });
+            setLastDeleted(null);
+            notify('success', 'Acción deshecha.');
+          },
+          duration: 5000
+        });
+
+        const timeoutId = setTimeout(() => {
+            const currentIdx = prodListRef.current.findIndex(p => p._id === prod._id && p.color === prod.color);
+            if (currentIdx !== -1) {
+                dispatch(deleteFromCart(currentIdx));
+            }
+            delete pendingDeleteRef.current[key];
+            setHiddenKeys(prev => {
+                const s = new Set(prev);
+                s.delete(key);
+                return s;
+            });
+            setLastDeleted(null);
+        }, 5000);
+
+        pendingDeleteRef.current[key] = timeoutId;
+    }
+
+    const handleUndo = () => {
+        if(!lastDeleted) return;
+        const {key} = lastDeleted;
+
+        const timeoutId = pendingDeleteRef.current[key];
+        if(timeoutId) {
+            clearTimeout(timeoutId);
+            delete pendingDeleteRef.current[key];
+        }
+
+        setHiddenKeys(prev => {
+            const s = new Set(prev);
+            s.delete(key);
+            return s;
+        })
+
+        setLastDeleted(null);
+        notify('success', 'Acción deshecha.');
     }
 
     const validateOrder = async () => {
@@ -105,19 +186,23 @@ const Cart = () => {
         }
     }
 
+    const formatPrice = (value) => new Intl.NumberFormat('es-AR', {style: 'currency', currency: 'ARS', maximumFractionDigits: 0}).format(value);
+
     return <div className='cartContainer'>
         {
         prodList.length > 0
         ?
         <div className='cartProducts'>
             {prodList.map((prod,index) => {
+                const key = `${prod._id}-${prod.color}`;
+                const isHidden = hiddenKeys.has(key);
                 const conflict = checckIfExceded(prod._id, prod.color);
-                return <div style={{width:'100%'}} key={`prod-${index}`}>
-                    <div className='cartProdItem'>
+                return <div key={key} className={`cartProdRow ${isHidden ? 'removed' : ''}`} role='group' aria-label={`Producto ${prod.name}`}>
+                    <div className={`cartProdItem`}>
                         <div className='cartProdInfoLeft'>
                             <p className='cartProdName'>Producto: {prod.name}</p>
                             <p className='cartProdColor'>Color: {prod.color}</p>
-                            <button className='cartBtn deleteProdItem' onClick={() => {
+                            <button className='cartBtn deleteProdItem' type="button" onClick={() => {
                                 setActiveIndex(index);
                                 setOpen(true);
                             }}>Eliminar producto</button>
@@ -127,7 +212,7 @@ const Cart = () => {
                                 <div className='cartProdAmount'>
                                     <div className='cartQuantityControls'>
                                         <p>Cantidad:&nbsp;</p>
-                                        <button onClick={()=> {
+                                        <button type="button" onClick={()=> {
                                             dispatch(changeAmount(['-',index]))
                                             setAllowOrder(false);
                                             setExcededList(prev => prev.filter(item => !(item._id === prod._id && item.color === prod.color)));
@@ -135,7 +220,7 @@ const Cart = () => {
                                             -
                                         </button>
                                         <p>{prod.quantity}</p>
-                                        <button onClick={()=> {
+                                        <button type="button" onClick={()=> {
                                             dispatch(changeAmount(['+',index]))
                                             setAllowOrder(false);
                                             setExcededList(prev => prev.filter(item => !(item._id === prod._id && item.color === prod.color)));
@@ -144,23 +229,19 @@ const Cart = () => {
                                         </button>
                                     </div>
                                     {conflict && (
-                                        <p className='cartProdItemError'>
-                                            {
-                                                `Solo hay ${conflict.available} unidad${conflict.available > 1 && 'es'} disponibles.`
-                                                ||
-                                                'Las unidades pedidas exceden el límite disponible.'
-                                            }
+                                        <p className='cartProdItemError' role='status' aria-live='polite'>
+                                            {`Solo hay ${conflict.available} unidad${conflict.available > 1 ? 'es' : ''} disponibles.`}
                                         </p>
                                     )}
                                 </div>
                                 <div className='cartProdPrice'>
                                     <p>Precio:&nbsp;</p>
-                                    <p>{prod.price}</p>
+                                    <p>{formatPrice(prod.price)}</p>
                                 </div>
                             </div>
                             <div className='cartProdTotalAmount'>
                                 <p>Final:&nbsp;</p>
-                                <p>{prod.price * prod.quantity}</p>
+                                <p>{formatPrice(prod.price * prod.quantity)}</p>
                             </div>
                         </div>
                     </div>
