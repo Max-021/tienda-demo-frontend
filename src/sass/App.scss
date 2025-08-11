@@ -157,15 +157,16 @@ svg:hover{
 .swiperContainer{
     width: 500px;
 }
+//otroa
 .title{
     font-size: variables.$titleFontSize;
 }
 .separator{
+}
+.menuSeparator{
     height: 2px;
-    background-color: variables.$secondColor;
-    margin-top: 12px;
-    width: 120%;
-    margin-left: -12px;
+    background-color: variables.$lightColor;
+    width: 100%;
 }
 
 //icon classes
@@ -1135,7 +1136,6 @@ footer{
     padding: variables.$innerPadding;
     transition: all 0.3s ease-in-out;
     position: relative;
-    overflow: hidden
 }
 .overlay{
     position: fixed;
@@ -1549,13 +1549,15 @@ footer{
     .searchBar{
         width: 80%;
     }
+    .relatedData{
+        padding: 24px calc(variables.$lateralPadding / 2.8);
+    }
     .myProfileMenuIcon{
-        z-index: 70;
+        z-index: 20;
         display: flex;
-        position: relative;
         position: absolute;
         top: 90px;
-        left: 12px;
+        left: calc(variables.$lateralPadding / 2.8);
         font-size: 150%;
         color: variables.$lightColor;
     }
@@ -1563,9 +1565,9 @@ footer{
         width: 100%;
     }
     .optionsList{
+        padding: 0;
         position: fixed;
-        top: variables.$navBarHeight;
-        // bottom: variables.$footerHeight;
+        top: 0;
         bottom: 0;
         left: 0;
         width: variables.$lateralPadding;
@@ -1575,8 +1577,35 @@ footer{
         -webkit-overflow-scrolling: touch;
         transition: transform 0.35s ease, opacity 0.2s ease;
         box-sizing: border-box;
-        padding: 0 32px 0 variables.$innerPadding;
         background-color: variables.$lightColorShade;
+    }
+    .optionsListUpper{
+        box-sizing: border-box;
+        padding-left: variables.$innerPadding;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        // padding-bottom: 12px;
+        gap: 6px;
+        height: variables.$navBarHeight;
+        p{
+            margin: 0;
+        }
+    }
+    .optionsListTitle{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;    
+    }
+    .optionsListUsername{
+        font-size: 80%;
+        color: gray;
+        margin: 0;
+    }
+    .optionsListBtnContainer{
+        margin-top: 12px;
+        padding-left: variables.$innerPadding;
     }
     .userInfoFields{
         width: 100%;
@@ -1662,6 +1691,9 @@ footer{
     .cartProdAmount{
         align-items: flex-start;
     }
+    .myProfileMenuIcon{
+        left: calc(variables.$lateralPadding / 6);
+    }
 }
 
 @media (max-width: 400px) {
@@ -1685,6 +1717,9 @@ footer{
     .userAction{
         min-width: 0;
         width: 100%;
+    }
+    .myProfileMenuIcon{
+        left: calc(variables.$lateralPadding / 10);
     }
 }
 
