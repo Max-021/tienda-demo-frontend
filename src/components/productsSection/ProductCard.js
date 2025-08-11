@@ -74,7 +74,8 @@ const ProductCard = (props) => {
       return;
     }
     setErrorQty('');
-    addToCart({...prodToCart, quantity: qtyToAdd})
+    addToCart({...prodToCart, quantity: qtyToAdd});
+    notify('success', 'Producto agregado al carrito con éxito!');
   }
 
     return (

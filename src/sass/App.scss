@@ -737,7 +737,7 @@ li{
 
 //cart prod items
 .cartContainer{
-    @include center-flex(row, flex-start, flex-start);
+    @include center-flex(row, space-between, flex-start);
     width: 100%;
     flex: 1;
     gap: variables.$innerPadding;
@@ -885,8 +885,10 @@ li{
     background-color: transparent;
     border: 1.5px solid variables.$secondColor;
     color: variables.$secondColor;
-    @include center-flex(row, flex-start, center);
+    @include center-flex(row, center, center);
     gap: 6px;
+    width: 100%;
+    margin-top: 12px;
 }
 .sendOrder{
     align-self: flex-end;
