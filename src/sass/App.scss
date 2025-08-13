@@ -315,7 +315,6 @@ li{
     max-height: 200px;
     padding: 0 variables.$lateralPadding;
     padding-top: 12px;
-    padding-bottom: 0;
 }
 .activeFilter{
     margin: 0;
@@ -350,40 +349,7 @@ li{
     font-weight: bold;
 }
 .editorOptions{
-    box-sizing: border-box;
-    background-color: variables.$lightColor;
     @include center-flex(row, flex-start, center);
-    width: 100%;
-    padding: 6px variables.$lateralPadding;
-}
-.editorFiltersForm{
-    @include center-flex(row, flex-start, center);
-    gap: 8px;
-    flex: 1 1 auto;
-    &.visibleCheckboxes{
-        //ver si agrego el flex acá
-    }
-}
-.editorFilterTitle{
-    min-width: 0;
-    overflow: hidden;
-    margin-right: 12px;
-    flex: 0 0 auto;
-    p{
-        margin: 0;
-        font-size: clamp(1rem, 2.5vw, 1.25rem);
-    }
-    &.allHidden {
-        flex: 1 1 0;
-        overflow: hidden;
-        p{
-            display: block;
-            width: 100%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    }
 }
 //signup and login section
 .logSection,
@@ -485,8 +451,7 @@ li{
 .productsLayoutList{
     box-sizing: border-box;
     width: 100%;
-    padding: variables.$lateralPadding;
-    padding-top: 0;
+    padding: 1rem variables.$lateralPadding;
     min-height: variables.$fullHeight;
     background-color: variables.$lightColor;
     @include center-flex(column, flex-start, flex-start);
@@ -1097,11 +1062,35 @@ footer{
 .myProfileMenuIcon{
     display: none;
 }
+.optionsListUpper{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 24px 0;
+    padding-left: variables.$innerPadding;
+    p{
+        margin: 0;
+    }
+    svg{
+        display: none;
+    }
+}
+.optionsListTitle{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;    
+}
+.optionsListUsername{
+    font-size: 80%;
+    color: gray;
+    margin: 0;
+}
 
 .optionsList{
     box-sizing: border-box;
     @include center-flex(column,flex-start,flex-start);
-    padding: 0 32px 0 variables.$innerPadding;
+    padding: 0;
     background-color: variables.$lightColorShade;
     width: variables.$lateralPadding;
     transition: all 0.7s;
@@ -1111,6 +1100,8 @@ footer{
 }
 .optionsListBtnContainer{
     @include center-flex(column, flex-start, flex-start);
+    padding-left: variables.$innerPadding;
+    margin-top: 12px;
 }
 .optionsListBtnUnit{
     box-sizing: border-box;
@@ -1436,7 +1427,7 @@ footer{
         gap: 18px;
     }
     .searchBarContainer, .menu,
-    h1, .editorOptions, footer{
+    h1, footer{
         padding: 0 calc(variables.$lateralPadding / 1.2);
     }
     .productsLayout, .productsLayoutList, .notFoundPageContainer, .cartContainer, .newProductContainer{
@@ -1469,7 +1460,7 @@ footer{
 //--------------------------------------------------------- TABLET
 @media (max-width: variables.$sm) {//900
     .searchBarContainer, .menu,
-    h1, .editorOptions, footer{
+    h1, footer{
         padding: 0 calc(variables.$lateralPadding / 2.8);
     }
     .productsLayout, .productsLayoutList, .notFoundPageContainer, .cartContainer, .newProductContainer{
@@ -1583,31 +1574,19 @@ footer{
     }
     .optionsListUpper{
         box-sizing: border-box;
-        padding-left: variables.$innerPadding;
+        padding-top: 0;
+        padding-bottom: 0;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        // padding-bottom: 12px;
         gap: 6px;
         height: variables.$navBarHeight;
+        svg{
+            display: block;
+        }
         p{
             margin: 0;
         }
-    }
-    .optionsListTitle{
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 12px;    
-    }
-    .optionsListUsername{
-        font-size: 80%;
-        color: gray;
-        margin: 0;
-    }
-    .optionsListBtnContainer{
-        margin-top: 12px;
-        padding-left: variables.$innerPadding;
     }
     .userInfoFields{
         width: 100%;
@@ -1629,7 +1608,7 @@ footer{
 //--------------------------------------------------------- MOBILE
 @media (max-width: variables.$xs) {//600
     .searchBarContainer, .menu,
-    h1, .optionsList, .editorOptions, footer{
+    h1, .optionsList, footer{
         padding: 0 calc(variables.$lateralPadding / 6);
     }
     .productsLayout, .productsLayoutList, .notFoundPageContainer, .cartContainer, .newProductContainer{
@@ -1703,7 +1682,7 @@ footer{
         width: 250px;
     }
         .searchBarContainer, .menu,
-    h1, .optionsList, .editorOptions, footer{
+    h1, .optionsList, footer{
         padding: 0 calc(variables.$lateralPadding / 10);
     }
     .productsLayout, .productsLayoutList, .notFoundPageContainer, .cartContainer, .newProductContainer{

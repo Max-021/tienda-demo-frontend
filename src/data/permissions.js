@@ -1,4 +1,5 @@
 export const allowedEditingRole = ['admin', 'editor'];
+export const highLevelRoles = ['admin'];
 export const excludedFields = ['role',]
 
 export const FIELD_LABELS = {

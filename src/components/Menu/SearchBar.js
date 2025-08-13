@@ -74,10 +74,11 @@ const SearchBar = () => {
                     />
                 </form>
                 <div className='searchBarExtras'>
+                    {(authSt && allowedEditingRole.includes(userRl)) ? <EditorOptions/> : null}
                     <FiFilter title='Filtros' onClick={openPopover} />
                     <Popover className='popoverFilter' id={popoverId} open={isPopoverOpen}
                         anchorEl={anchorEl} onClose={closePopover} anchorOrigin={{ vertical: 'center', horizontal: 'left' }}
-                        transformOrigin={{ vertical: 'top', horizontal: 'right' }} disableScrollLock={true}
+                        transformOrigin={{ vertical: 'top', horizontal: 'right' }} disableScrollLock
                     >
                         <FilterOptions />
                     </Popover>
@@ -119,7 +120,6 @@ const SearchBar = () => {
                     ))
                 })}
             </div>
-            {(authSt &&  allowedEditingRole.includes(userRl)) && <EditorOptions/>}
         </>
     );
 }

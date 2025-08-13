@@ -29,6 +29,8 @@ export function useLoadingNotifier(fn, {successMsg, errorMsg = 'Ha ocurrido un e
             onSuccess?.(result);
             return result;
         } catch (error) {
+            console.log('error del hook')
+            console.log(error)
             onError?.(error);
             notify('error', error.message || errorMsg);
             throw error

@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Virtuoso, VirtuosoGrid } from 'react-virtuoso';
-import { fetchActiveProducts } from '../redux/ProductsSlice';
+import { fetchProducts } from '../redux/ProductsSlice';
 import { currentViewValue } from '../redux/searchBarSlice';
 
 import { GrFormClose } from "react-icons/gr";
@@ -32,17 +32,17 @@ const Products = () => {
 
   useEffect(() => {
     const prodFilters = filters;
-    dispatch(fetchActiveProducts({page: 1, limit: limit, prodFilters}));
+    dispatch(fetchProducts({page: 1, limit: limit, prodFilters}));
   }, [dispatch, limit, filters])
 
   const loadMore = useCallback(() => {
     if(filteredProducts.length < virtuosoTotal && loading !== 'pending'){
-      dispatch(fetchActiveProducts({page: page + 1, limit: limit, filters}))
+      dispatch(fetchProducts({page: page + 1, limit: limit, filters}))
     }
   }, [dispatch, filteredProducts.length, virtuosoTotal, page, limit, loading, filters])
 
   if(loading === 'pending' && page === 0) return <LoadingSpinner containerClass='productsLayout' spinnerInfo='bigSpinner'/>
-  if(error !== null)                      return <LoadingError containerClass='productsLayout' error={'No se recibieron productos'} fn={() => dispatch(fetchActiveProducts({page: 1, limit: limit, filters}))}/>
+  if(error !== null)                      return <LoadingError containerClass='productsLayout' error={'No se recibieron productos'} fn={() => dispatch(fetchProducts({page: 1, limit: limit, filters}))}/>
   if(filteredProducts.length === 0)       return <div className='productsLayout'>No hay productos.</div>
   if(noSearchRes)                         return <div className='productsLayout'>
                                                     <div>La búsqueda no arrojó resultados.</div>

@@ -24,8 +24,8 @@ axiosClient.interceptors.response.use(
     (error) => {
         const payload = {
             status: false,
-            message: error.response?.data ?? error.message,
-            data: error.response?.data ?? {},
+            message: error.response?.data.message ?? error.message,
+            data: error.response?.data.message ?? {},
             statusCode: error.response?.status ?? 500,
         }
         return Promise.reject(payload);

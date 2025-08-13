@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react'
 import { Link, useLocation, } from 'react-router-dom'
 import { useSelector} from 'react-redux';
-import { authenticateStatus } from '../../redux/UserSlice';
+import { authenticateStatus, userRole } from '../../redux/UserSlice';
 import { logout } from '../../auxiliaries/axios';
 import { MdLogout } from "react-icons/md";
 import { useNotification } from '../reusables/NotificationContext';
@@ -16,6 +16,7 @@ const Navbar = () => {
   
   const [showCats,setShowCats] = useState('')
   const authSt = useSelector(authenticateStatus);
+  const userRl = useSelector(userRole);
   const [open, setOpen] = useState(false);
 
   useEffect(()=>{
@@ -49,7 +50,7 @@ const Navbar = () => {
         {titleText()}
       </h1>
       { authSt && <button type='button' title='Cerrar sesión' className='icon-btn logout-btn' onClick={() => setOpen(true)}><MdLogout /></button> }
-      <Menu showCats={showCats} authSt={authSt}/>
+      <Menu showCats={showCats} authSt={authSt} role={userRl}/>
       <ConfirmMessage 
         windowStatus={open}
         confirmFc={cerrarSesion} cancelFc={setOpen} 

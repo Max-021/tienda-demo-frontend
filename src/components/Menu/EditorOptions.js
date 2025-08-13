@@ -1,197 +1,109 @@
-import React, {useState, useEffect, useLayoutEffect, useRef} from 'react'
+import React from 'react';
 import { useNotification } from '../reusables/NotificationContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { EDITOR_FILTER_LABELS } from '../../data/labels';
-import { fetchEditorProducts } from '../../redux/ProductsSlice';
-import { BsFilterSquare } from "react-icons/bs";
+import { fetchProducts, updateEditorFilter, resetEditorFilters, resetProductsForNewQuery, editorFiltersSelector, setEditorFilters } from '../../redux/ProductsSlice';
+import { IoIosOptions } from "react-icons/io";
 import Popover from '@mui/material/Popover';
-
 import Button from '@mui/material/Button';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
 
 const EditorOptions = () => {
   const notify = useNotification();
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.products.loading);
-  const [editorFilters, setEditorFilters] = useState([{showInactive: false},{showAll: false,}])
-  const [hiddenOps, setHiddenOps] = useState([]);
-  const [visibleOps, setVisibleOps] = useState(editorFilters)
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [shouldEllipse, setShouldEllipse] = useState(false);
-  const measureRef = useRef(null);
-  const containerRef = useRef(null);
-  const btnRef = useRef(null);
+  const editorFilters = useSelector(editorFiltersSelector);
 
-    const isPopoverOpen = Boolean(anchorEl);
-    const popoverId = isPopoverOpen ? 'editorFilterPopover' : undefined;
-  
-    const openPopover = event => setAnchorEl(event.currentTarget);
-    const closePopover = () => setAnchorEl(null);
-  
-    useEffect(() => {
-      if (hiddenOps.length === 0 && isPopoverOpen) {
-        closePopover();
-      }
-    }, [hiddenOps, isPopoverOpen]);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const openPopover = (e) => setAnchorEl(e.currentTarget);
+  const closePopover = () => setAnchorEl(null);
+  const isOpen = Boolean(anchorEl);
+  const popoverId = isOpen ? 'editor-filter-popover' : undefined;
 
-  const applyEditorFilters = async (e) => {
-    e.preventDefault();
+  const toggleCheckbox = (key) => (e) => {
+    const checked = e.target.checked;
+    dispatch(updateEditorFilter({ key, value: checked }));
+  };
+
+  const applyFilters = async (e) => {
+    e && e.preventDefault();
     try {
-      const filtros = editorFilters.reduce((acc,item) => ({...acc, ...item}), {})
-      await dispatch(fetchEditorProducts({editorFilters:filtros, page: 1})).unwrap();
+      const payloadFilters = {};
+      Object.keys(editorFilters).forEach(k => {
+        if (editorFilters[k]) payloadFilters[k] = true;
+      });
+
+      dispatch(resetProductsForNewQuery());
+      dispatch(setEditorFilters(payloadFilters));
+
+      await dispatch(fetchProducts({ editorFilters: payloadFilters, page: 1 })).unwrap();
+
+      closePopover();
     } catch (error) {
-      notify('error', error.message);
+      notify('error', error.message || 'Error aplicando filtros');
     }
-  }
+  };
 
-  const handleChecked = (e,index) => {
-    const {name, checked} = e.target;
-    setEditorFilters(prev => prev.map((item, i) => {
-      const key = Object.keys(item)[0];
-      if(i===index) return {[key]: checked};
-
-      if(checked){
-        if(name === 'showInactive' && key === 'showAll') return {[key]: false};
-        if(name === 'showAll' && key === 'showInactive') return {[key]: false};
-      }
-
-      return item
-    }));
-  }
-
-  useLayoutEffect(() => {
-    if (!measureRef.current || !containerRef.current) return;
-
-    const recalc = () => {
-      const style = window.getComputedStyle(containerRef.current);
-      const GAP = parseFloat(style.gap) || 0;
-      const MORE_BTN_WIDTH = btnRef.current ? btnRef.current.getBoundingClientRect().width : 0;
-      const FUZZ = 1;
-
-      const contWidth = containerRef.current.clientWidth;
-      if (contWidth <= 0) return;
-
-      const items = Array.from(measureRef.current.querySelectorAll('.editor-item'));
-      const widths = items.map(el => el.getBoundingClientRect().width);
-
-      const totalWidth = widths.reduce(
-        (sum, w, i) => sum + w + (i > 0 ? GAP : 0),
-        0
-      );
-      if (totalWidth <= contWidth) {
-        setVisibleOps(editorFilters);
-        setHiddenOps([]);
-        return;
-      }
-
-      let acc = 0;
-      let splitIndex = widths.length;
-      for (let i = 0; i < widths.length; i++) {
-        const extraGap = i > 0 ? GAP : 0;
-        if (acc + widths[i] + extraGap <= contWidth - MORE_BTN_WIDTH - FUZZ) {
-          acc += widths[i] + extraGap;
-        } else {
-          splitIndex = i;
-          break;
-        }
-      }
-
-      setVisibleOps(editorFilters.slice(0, splitIndex));
-      setHiddenOps (editorFilters.slice(splitIndex));
-      setShouldEllipse(splitIndex === 0)
-    };
-
-    recalc();
-    const ro = new ResizeObserver(recalc);
-    ro.observe(containerRef.current);
-    window.addEventListener('resize', recalc);
-
-    return () => {
-      ro.disconnect();
-      window.removeEventListener('resize', recalc);
-    };
-  }, [editorFilters,]);
-
-
-
-  useEffect(() => {
-    if(hiddenOps.length === 0 && isPopoverOpen) closePopover();
-  }, [hiddenOps, isPopoverOpen]);
+  const resetFilters = () => {
+    dispatch(resetEditorFilters());
+  };
 
   return (
-    <div className='editorOptions'>
-        <div className={`editorFilterTitle ${shouldEllipse ? 'allHidden' : ''}`}>
-          <p title='Filtros para editor'>Filtros para editor:</p>
-        </div>
-        <div ref={measureRef} style={{
-            position: 'absolute',
-            top: 0,
-            left: '-9999px',
-            visibility: 'hidden',
-            height: 'auto'
-        }}>{/*este div es invisible */}
-          {editorFilters.map((item, idx) => {
-            const key = Object.keys(item)[0];
-            const checked = item[key];
-            return (
-              <FormGroup key={key} className='editor-item' style={{ display: 'inline-flex' }}>
+    <div className="editorOptions">
+      <IoIosOptions
+        title="Filtros para editor"
+        aria-controls={popoverId}
+        aria-haspopup="true"
+        aria-expanded={isOpen ? 'true' : undefined}
+        onClick={openPopover}
+        style={{ cursor: 'pointer' }}
+      />
+      <Popover
+        id={popoverId}
+        open={isOpen}
+        anchorEl={anchorEl}
+        onClose={closePopover}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        disableScrollLock
+        PaperProps={{ style: { minWidth: 240, maxWidth: 360, padding: 8 } }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Box sx={{ px: 1, py: 0.5 }}>
+            <strong>Filtros para editor</strong>
+          </Box>
+          <Divider />
+          <Box sx={{ maxHeight: '50vh', overflowY: 'auto', px: 1, py: 0.5 }}>
+            <FormGroup>
+              {Object.keys(EDITOR_FILTER_LABELS).map((key) => (
                 <FormControlLabel
-                  control={<Checkbox name={key} checked={checked} />}
+                  key={key}
+                  control={<Checkbox name={key} checked={!!editorFilters[key]} onChange={toggleCheckbox(key)} />}
                   label={EDITOR_FILTER_LABELS[key]}
                 />
-              </FormGroup>
-            );
-          })}
-        </div>
-        <form onSubmit={applyEditorFilters} className={`editorFiltersForm`}>
-          <div ref={containerRef} className='editor-items-container' style={{ display:'flex',gap:'8px',flexWrap:'nowrap',minWidth:0,width:'100%', alignItems:'center' }}>
-            {visibleOps.map((item, index) => {
-              const key = Object.keys(item)[0];
-              const checked = item[key];
-              return (
-                <FormGroup key={key}>
-                  <FormControlLabel control={<Checkbox name={key} checked={checked} onChange={e => handleChecked(e, index)}/>} label={EDITOR_FILTER_LABELS[key]}/>
-                </FormGroup>
-              );
-            })}
-          </div>
-          <div style={{display:'flex', flexDirection:'row', alignItems: 'center'}}>
-            {hiddenOps.length > 0 && (
-              <>
-                <button ref={btnRef} type='button' className='more-btn' onClick={openPopover} title='Otros filtros' style={{margin:'0 8px', fontSize:'1.5rem',}}>
-                  <BsFilterSquare/>
-                </button>
-                <Popover
-                  id={popoverId}
-                  open={isPopoverOpen}
-                  onClose={closePopover}
-                  anchorEl={anchorEl}
-                  disableScrollLock
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                  transformOrigin={{ vertical: 'top',    horizontal: 'right'  }}
-                  slotProps={{ paper: { className: 'popoverCats' } }}
-                >
-                  <div style={{ padding: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    {hiddenOps.map((item, index) => {
-                      const key = Object.keys(item)[0];
-                      const checked = item[key];
-                      return (
-                        <FormControlLabel key={key} control={<Checkbox name={key} checked={checked} onChange={e => handleChecked(e, visibleOps.length + index)}/>} label={EDITOR_FILTER_LABELS[key]}/>
-                      );
-                    })}
-                  </div>
-                </Popover>
-              </>
-            )}
-            <Button type='submit' variant='outlined' sx={{justifySelf: 'center', marginRight: '6px'}} disabled={loading === 'pending'}>
-              {loading === 'pending' ? 'Cargando...' :'Aplicar'}
-            </Button>
-          </div>
-        </form>
-    </div>
-  )
-}
+              ))}
+            </FormGroup>
+          </Box>
 
-export default EditorOptions
+          <Divider />
+
+          <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', px: 1, py: 1 }}>
+            <Button size="small" onClick={resetFilters} disabled={loading === 'pending'}>
+              Limpiar
+            </Button>
+            <Button size="small" onClick={closePopover}>Cancelar</Button>
+            <Button variant="outlined" onClick={applyFilters} disabled={loading === 'pending'}>
+              {loading === 'pending' ? 'Cargando...' : 'Aplicar'}
+            </Button>
+          </Box>
+        </Box>
+      </Popover>
+    </div>
+  );
+};
+
+export default EditorOptions;

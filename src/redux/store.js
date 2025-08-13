@@ -10,11 +10,13 @@ const productTransform = createTransform(
     (inboundState, key) => ({
         activeCat: inboundState.activeCat,
         filters: inboundState.filters,
+        // editorFilters: inboundState.editorFilters,
     }),
     (outboundState, key) => ({
         ...productsReducer(undefined, {type: '@@INIT'}),
         activeCat: outboundState.activeCat,
         filters: outboundState.filters,
+        // editorFilters: outboundState.editorFilters,
     }),
     {whitelist: ['products']}
 );

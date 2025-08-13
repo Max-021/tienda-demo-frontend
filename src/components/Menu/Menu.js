@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { BsCart2 } from "react-icons/bs";
@@ -14,7 +14,7 @@ import { totalProducts } from '../../redux/CartSlice';
 
 import Categories from './Categories';
 
-const Menu = ({ showCats, authSt }) => {
+const Menu = ({ showCats, authSt, role }) => {
   const dispatch = useDispatch();
   const activeCat = useSelector(activeCategory);
   const prodsInCart = useSelector(totalProducts);
@@ -32,6 +32,27 @@ const Menu = ({ showCats, authSt }) => {
       closePopover();
     }
   }, [hiddenCats, isPopoverOpen]);
+
+  // Filtrar los sessionBtns según el role pasado por props
+  const validSessionBtns = useMemo(() => {
+    if (!Array.isArray(sessionBtns) || sessionBtns.length === 0) return [];
+
+    return sessionBtns.filter(btn => {
+      const lvl = btn.userLevel;
+
+      // si no hay userLevel definido o está vacío -> accesible para todos
+      if (!lvl || (Array.isArray(lvl) && lvl.length === 0)) return true;
+
+      // si userLevel es array -> incluir si role está dentro
+      if (Array.isArray(lvl)) return !!role && lvl.includes(role);
+
+      // si userLevel es string -> comparar igualdad
+      if (typeof lvl === 'string') return !!role && lvl === role;
+
+      // fallback: ocultar
+      return false;
+    });
+  }, [role]);
 
   return (
     showCats === '/' && (
@@ -63,7 +84,12 @@ const Menu = ({ showCats, authSt }) => {
               </Popover>
             </>
           )}
-          {authSt && <Links linkArray={sessionBtns} />}
+
+          {authSt && validSessionBtns.length > 0 && (
+            // Links espera un array con {icon, linkUrl, title} — ya está filtrado
+            <Links linkArray={validSessionBtns} />
+          )}
+
           <Link to='/cart' title='Carrito' style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
             <BsCart2 />
             {prodsInCart}
