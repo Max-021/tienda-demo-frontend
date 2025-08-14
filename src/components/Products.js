@@ -22,7 +22,7 @@ const Products = () => {
   const currentView = useSelector(currentViewValue);
   const [open,setOpen] = useState(false);
   const [productData, setProductData] = useState({});
-  const {filteredProducts, totalCount, totalFilteredCount, loading, error, noSearchRes, page, limit, filters} = useSelector((s) => s.products)
+  const {filteredProducts, totalCount, totalFilteredCount, loading, error, noSearchRes, page, limit, filters, editorFilters} = useSelector((s) => s.products)
   const virtuosoTotal = totalFilteredCount > 0 ? totalFilteredCount : totalCount;
 
   const handleOpen = (prodInd) =>{
@@ -32,12 +32,12 @@ const Products = () => {
 
   useEffect(() => {
     const prodFilters = filters;
-    dispatch(fetchProducts({page: 1, limit: limit, prodFilters}));
+    dispatch(fetchProducts({page: 1, limit: limit, prodFilters, editorFilters}));
   }, [dispatch, limit, filters])
 
   const loadMore = useCallback(() => {
     if(filteredProducts.length < virtuosoTotal && loading !== 'pending'){
-      dispatch(fetchProducts({page: page + 1, limit: limit, filters}))
+      dispatch(fetchProducts({page: page + 1, limit: limit, filters, editorFilters}))
     }
   }, [dispatch, filteredProducts.length, virtuosoTotal, page, limit, loading, filters])
 

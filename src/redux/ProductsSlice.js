@@ -10,14 +10,7 @@ export const fetchProducts = createAsyncThunk(
     try {
       const { page = 1, limit = PAGE_SIZE_DEFAULT, filters = {}, editorFilters = {} } = params;
 
-      const apiEditorFilters = { ...editorFilters };
-      if (apiEditorFilters.showInactive) {
-        apiEditorFilters.isActive = false;
-        delete apiEditorFilters.showInactive;
-      }
-      const combinedFilters = { ...filters, ...apiEditorFilters };
-
-      const queryObj = prepareQuery({ page, limit, filters: combinedFilters });
+      const queryObj = prepareQuery({ page, limit, filters, editorFilters });
 
       const res = await getAllProducts(queryObj);
       return { ...res.data, page, limit };
@@ -152,7 +145,7 @@ export const productsSlice = createSlice({
             .addCase(fetchProducts.pending, (state, action) => {
                 state.error = null;
                 state.loading = 'pending';
-                const pageArg = action.meta?.arg?.page;
+                const pageArg = action.meta?.arg?.page ?? 1;
                 if (pageArg === 1) {
                     state.products = [];
                     state.filteredProducts = [];
@@ -167,7 +160,7 @@ export const productsSlice = createSlice({
                 } else {
                     state.products.push(...docs);
                 }
-                state.filteredProducts = applyFilters(state.products, { activeCat: state.activeCat, searchText: state.searchText, filters: state.filters });
+                state.filteredProducts = applyFilters(state.products, { activeCat: state.activeCat, searchText: state.searchText, filters: state.filters, editorFilters: state.editorFilters });
                 state.noSearchResults = state.filteredProducts.length === 0;
                 state.totalCount = totalCount;
                 state.totalFilteredCount = totalFilteredCount;
