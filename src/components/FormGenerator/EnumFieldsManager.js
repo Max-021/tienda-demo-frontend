@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNotification } from '../reusables/NotificationContext';
 import { updateEnumList, updateProductsToNewSimpleField, updateProductsToNewArray, updateProductsToNewSubDoc } from '../../auxiliaries/axios';
+import { ENUMFIELDS_LABELS } from '../../data/labels';
 
 import TextField from '@mui/material/TextField'
 import FormControl from '@mui/material/FormControl';
@@ -38,27 +39,39 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
     if(mode === 'upload'){
       enumList = [...dataField, fieldVal.trim()];
       msg = 'Elemento agregado a la lista correctamente!';
-    }else if(mode === 'update'){
+    } else if(mode === 'update'){
       const oldVal = dataField[activeFieldToUpdate].toLowerCase();
       enumList = dataField.map((v,i) => i === activeFieldToUpdate ? fieldVal.trim() : v);
-      setConfirmMsgComp({fc:() => updateToNewFieldContent(oldVal, fieldVal.toLowerCase()), text:`Desea actualizar los productos que usen ${oldVal} por ${fieldVal}?.`});
+      setConfirmMsgComp({
+        fc: () => updateToNewFieldContent(oldVal, fieldVal.toLowerCase()),
+        text: `Desea actualizar los productos que usen ${oldVal} por ${fieldVal}?`
+      });
       msg = 'Elemento actualizado correctamente!';
-    }else{
+    } else {
       notify('error', 'Ocurrió un error realizando esta acción, reintente.');
+      setLoading(false);
       return;
     }
+
     try {
       setBtnType();
-      await updateEnumList(enumId,enumList);
-      refetchEnums();
-      if(mode === 'update') setOpen(true)//para edicion solo
+      await updateEnumList(enumId, enumList);
+
+      if (typeof refetchEnums === 'function') {
+        await refetchEnums();
+      }
+
+      if (mode === 'update') setOpen(true);
+
       notify('success', msg);
     } catch (error) {
       notify('error', error.message);
-    }finally{
+    } finally {
       setLoading(false);
     }
   }
+
+
   const prepareDeleteAction = () => {
     setConfirmMsgComp({fc: deleteEnumField, text: 'Desea eliminar este elemento de la lista? Al confirmar su eliminación también se eliminara de todos los productos que lo tengan asignado.'});
     setOpen(true);
@@ -116,7 +129,7 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
   }
 
   return <div className='enumFieldsContainer'>
-    <p className='enumTitle'>{enumName}</p>
+    <p className='enumTitle'>{ENUMFIELDS_LABELS[enumName]}</p>
     <div  className='enumFieldsList'>
       <div className='enunmFieldsInput'>
         <FormControl>
@@ -124,7 +137,7 @@ const EnumFieldsManager = ({dataField, enumName, refetchEnums, enumId}) => {
           {!addFieldText && <><span onClick={setBtnType} className='editSpanWarning'>Para anular la edición, hacer click aquí <IoMdClose/></span></>}
         </FormControl>
         <Button sx={{padding: '15.09px 8px', marginTop:'6px', alignSelf:'flex-start', opacity:`${loading?0:1}`}} variant='outlined' type='submit' onClick={() => submitEnum(addFieldText ? 'upload' : 'update')} disabled={loading || !fieldVal.trim()}>
-          {addFieldText ? 'Agregar':'Editar'}
+          {`${addFieldText ? 'Agregar':'Editar'} ${ENUMFIELDS_LABELS[enumName]}`}
         </Button>
       </div>
       {loading ? <LoadingSpinner spinnerInfo='smallSpinner' containerClass='smallSpinner'/>

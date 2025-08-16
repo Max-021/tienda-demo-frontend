@@ -80,11 +80,17 @@ svg:hover{
 }
 .retryBtn {
     box-sizing: border-box;
-    background-color: variables.$lightColor;
-    padding: 3px;
+    background-color: variables.$secondColor;
+    cursor: pointer;
+    padding: 5px;
     border-radius: 5px;
     border: 1px solid variables.$darkColor;
-    color: variables.$darkColor;
+    color: variables.$lightColor;
+    transition: all 0.25s;
+    &:hover{
+        background-color: rgba(25, 118, 210, 0.14);
+        color: variables.$darkColor;
+    }
 }
 
 //confirmMessage
@@ -179,6 +185,28 @@ svg:hover{
     border: 1px solid variables.$lightColor;
     border-radius: 5px;
 }
+.goUp-icon{
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    color: variables.$secondColor;
+    font-size: 2.3rem;
+    z-index: 50;
+    cursor: pointer;
+    /* animación de entrada/salida */
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+}
+.goUp-icon.visible{
+  opacity: 0.75;
+  transform: translateY(0);
+  pointer-events: auto;
+}
 //navbar
 .navBar{
     @include center-flex(column, space-between, flex-start);
@@ -200,7 +228,7 @@ h1{
     margin-top: 12px;
     padding: 0 variables.$lateralPadding;
 }
-.menu,.searchBarContainer {
+.menu {
     @include center-flex(row, space-between, flex-end);
     width: 100%;
     padding: 0 variables.$lateralPadding;
@@ -209,9 +237,6 @@ h1{
     margin: 0 0 12px 0;
     font-size: 1.4rem;
     color: variables.$lightColor;
-
-}
-.menu{
     position: relative;
     overflow: visible;
 }
@@ -283,13 +308,30 @@ li{
 .popoverCategory{
     // display: block;
 }
-.searchBarContainer {
-    color: variables.$secondColor;
+.isActivePopover{
+    box-sizing: border-box;
+    padding: 12px;
+    width: 320px;
+}
+.searchBarWrapper{
+    width: 100%;
+    position: sticky;
+    top:0;
+    z-index: 50;
     background-color: variables.$lightColor;
+}
+.searchBarContainer {
+    box-sizing: border-box;
+    box-shadow: 0 4px 5px -5px gray;
+    width: 100%;
+    @include center-flex(row, space-between, flex-end);
     margin: 0;
     padding: 6px variables.$lateralPadding;
-    z-index: 1;
-    box-shadow: 0 4px 5px -5px gray;
+    justify-self: flex-end;
+    font-size: 1.4rem;
+    color: variables.$secondColor;
+    background-color: variables.$lightColor;
+    z-index: 5;
 }
 .searchBar{
     transition: all 0.7s;
@@ -933,6 +975,7 @@ li{
 .imgFormCover {
     border: 10px solid variables.$coverBackground;
 }
+
 .enumTitle{
     font-size: 120%;
     margin-bottom: 6px;
@@ -987,10 +1030,16 @@ li{
 }
 .deleteEnumFieldBtn{
     background-color: transparent;
-    padding: 4px 0;
-    border: 1px solid variables.$secondColor;
+    margin-top: 4px;
+    padding: 4px 4px;
+    border: 1px solid #1976d2;
+    color: #1976d2;
+    cursor: pointer;
     border-radius: 5px;
     font-size: variables.$subtitleFontSize;
+    &:hover{
+        background-color: rgba(25, 118, 210, 0.04);
+    }
 }
 .editSpanWarning{
     cursor: pointer;

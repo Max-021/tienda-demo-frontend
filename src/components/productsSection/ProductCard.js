@@ -15,6 +15,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 import { addNewProductToCart, cartList } from '../../redux/CartSlice';
+import { formatPrice } from '../../auxiliaries/format';
 
 const ProductCard = (props) => {
   const notify = useNotification();
@@ -103,7 +104,7 @@ const ProductCard = (props) => {
             </h2>
           </div>
           <div className='productDetailPrice'>
-            <p className=''>${price}</p>
+            <p className=''>{formatPrice(price)}</p>
           </div>
           {stock.length > 0 && 
             <>

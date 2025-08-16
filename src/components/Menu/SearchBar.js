@@ -65,7 +65,7 @@ const SearchBar = () => {
     };
 
     return (
-        <>
+        <div className='searchBarWrapper'>
             <div className='searchBarContainer'>
                 <form className='searchBar' onSubmit={submitSearch}>
                     <InputBase sx={{ width: '100%' }} placeholder="Buscar..."
@@ -120,7 +120,7 @@ const SearchBar = () => {
                     ))
                 })}
             </div>
-        </>
+        </div>
     );
 }
 

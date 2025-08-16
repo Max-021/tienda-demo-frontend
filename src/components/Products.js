@@ -7,6 +7,7 @@ import { currentViewValue } from '../redux/searchBarSlice';
 import { GrFormClose } from "react-icons/gr";
 import Dialog from '@mui/material/Dialog';
 import Slide from '@mui/material/Slide';
+import GoUp from './reusables/GoUp';
 
 import ProductPreview from './productsSection/ProductPreview';
 import ProductCard from './productsSection/ProductCard';
@@ -112,6 +113,7 @@ const Products = () => {
         <GrFormClose className='closeBtn' onClick={() => setOpen(false)}/>
         <ProductCard {...productData}/>
       </Dialog>
+      <GoUp/>
     </div>
   )
 }

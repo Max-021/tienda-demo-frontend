@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { useNotification } from '../reusables/NotificationContext';
 import { useLoadingNotifier } from '../../hooks/useLoadingNotifier';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -24,12 +24,20 @@ const ResetPassword = () => {
   const [isValid, setIsValid] = useState(null);
   const [pwdError, setPwdError] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
+  const navigateTimeoutRef = useRef(null);
 
   const handlePopoverOpen = (e) => setAnchorEl(e.currentTarget) 
   const handlePopoverClose = () => setAnchorEl(null);
   const popoverOpen = Boolean(anchorEl);
 
-  const sendResetPassword = useLoadingNotifier(resetPassword, {successMsg: 'Cambio de contraseña exitoso.', errorMsg: 'Ocurrió un error al intentar cambiar la contraseña, por favor reintente.'})
+  const sendResetPassword = useLoadingNotifier(resetPassword, {})
+
+  useEffect(() => {
+    return () => {
+      if (navigateTimeoutRef.current) clearTimeout(navigateTimeoutRef.current);
+    };
+  }, []);
+
 
   useEffect(()=>{
     const checkToken = async () => {
@@ -61,7 +69,10 @@ const ResetPassword = () => {
       }
       try {
         const res = await sendResetPassword(passwordData, token);
-        notify('success', 'Contraseña actualizada con éxito!');
+        notify('success', 'Contraseña actualizada con éxito, redirigiendo...');
+        navigateTimeoutRef.current = setTimeout(() => {
+          navigate('/', { replace: true });
+        }, 1200);
       } catch (error) {
         notify('error', error.message);
       }
@@ -141,7 +152,7 @@ const ResetPassword = () => {
         anchorOrigin={{vertical:'bottom',horizontal:'left'}} transformOrigin={{vertical:'top',horizontal:'left'}}
         slotProps={{paper: {onMouseEnter: handlePopoverOpen, onMouseLeave: handlePopoverClose} }}
     >
-        <PasswordRules oldPwd={null} newPwd={passwordData.password}/>
+        <PasswordRules oldPwd={null} newPwd={passwordData.password} resetToken={token}/>
     </Popover>
   </>)
 }

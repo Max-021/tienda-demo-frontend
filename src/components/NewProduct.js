@@ -16,6 +16,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { MdDeleteOutline } from "react-icons/md";
+import IconPopOver from './reusables/IconPopOver';
 
 const NewProduct = () => {
     const notify = useNotification();
@@ -29,6 +30,8 @@ const NewProduct = () => {
     const [enumFields,setEnumFields] = useState([]);
     const [locRoute, setLocRoute] = useState('');
     const [isReady, setIsReady] = useState(false);
+    const [anchorElIsActive, setAnchorElIsActive] = useState(null);
+    const [initialEnumsLoaded, setInitialEnumsLoaded] = useState(false);
 
     useEffect(()=> {
         const fetchSingleData = async () => {
@@ -49,7 +52,10 @@ const NewProduct = () => {
 
     const {data: enumList, loading: loadingEnums, error: errorEnums, refetch: refetchEnums} = useLoadingHook(getEnumList, []);
     useEffect(()=> {
-        if(enumList?.data?.docs) setEnumFields(enumList.data.docs);
+        if(enumList?.data?.docs) {
+            setEnumFields(enumList.data.docs);
+            if(!initialEnumsLoaded) setInitialEnumsLoaded(true);
+        } 
     }, [enumList]);
 
     useEffect(() => {
@@ -104,19 +110,27 @@ const NewProduct = () => {
                     : <>
                         <FormGenerator productModel={productModel} productObject={newProduct} setProductObject={setNewProduct} removedImages={removedImages} setRemovedImages={setRemovedImages} enumFields={enumFields}/>
                         <div style={{display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between'}}>
-                            <FormGroup>
-                                <FormControlLabel control={<Checkbox checked={isActive} onChange={handleChecked}/>} label="Producto activo"/>
+                            <FormGroup sx={{display:'flex', flexDirection: 'row'}}>
+                                <FormControlLabel control={<Checkbox checked={isActive} onChange={handleChecked}/>} label="Producto activo" sx={{marginRight: 0}}/>
+                                <IconPopOver setAnchorEl={setAnchorElIsActive} anchorEl={anchorElIsActive}
+                                    shownElement={(<>
+                                        <div className='isActivePopover'>
+                                            <strong>Importante:</strong> 
+                                            Si un producto se guarda/crea sin esta casilla activa el producto no será visible en la pestaña de productos normal. Va a estar inactivo, lo que significa que solo puede aparecer si en los filtros de editor se selecciona Mostrar inactivos, esto es para poder sacar productos del catálogo sin necesidad de eliminarlos.
+                                        </div>
+                                    </>)}
+                                />
                             </FormGroup>
-                            <Button className='submitBtn' type='submit' variant='contained' sx={{alignSelf: 'flex-end'}}>Subir</Button>
+                            <Button className='submitBtn' type='submit' variant='contained' sx={{alignSelf: 'flex-end'}}>{`${locRoute === '/editar-producto' ? 'Editar' :'Crear'}`}</Button>
                         </div>
                     </>
                 }
             </Box>
             <Box className='enumFieldsWrapper'>
                 <p className='formTitle'>Campos con valores predeterminados</p>
-                {(!isReady || productLoading || loadingEnums)
+                {(!isReady || productLoading || (loadingEnums && !initialEnumsLoaded))
                     ? <LoadingSpinner spinnerInfo='formSpinner' containerClass='spinnerContainerCenter'/>
-                    : enumFields.map((el, index) => <EnumFieldsManager key={index} enumId={el._id} dataField={el.values} enumName={el.name} refetchEnums={refetchEnums}/>)}
+                    : enumFields.map((el, index) => <EnumFieldsManager key={el._id} enumId={el._id} dataField={el.values} enumName={el.name} refetchEnums={refetchEnums}/>)}
             </Box>
             <ConfirmMessage 
                 dialogClass='deleteProdDialog' windowStatus={open} 

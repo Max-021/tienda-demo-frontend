@@ -43,10 +43,29 @@ const StockManager = ({stock, onStockChange, values, colorModel}) => {
     return (
         <div style={{width: '100%'}}>
             <FormControl>
-                <Autocomplete name={'Color-autocomp'} disablePortal onChange={(_, v) => setNewColor(v || '')}
-                    options={values} value={values && values.includes(newColor) ? newColor : null}
-                    renderInput={(params) => <TextField variant='filled' {...params} label={`Color`}/>}/>
-                <Button variant='outlined' sx={{marginTop:'7px'}} type='button' onClick={() =>addColor(newColor)}>Agregar</Button>
+                <Autocomplete name={'Color-autocomp'} disablePortal
+                    options={values} 
+                    value={null}
+                    inputValue={newColor}
+                    renderInput={(params) => <TextField variant='filled' {...params} label={`Color`}/>}
+                    onChange={(_, v, reason) => {
+                        if(!v) {
+                            setNewColor('');
+                            return;
+                        }
+                        setNewColor(v);
+                        if(reason === 'selectOption' || reason === 'createOption') {
+                            addColor(v);
+                        }
+                    }}
+                    onInputChange={(_, inputValue, inputReason) => {
+                        if (inputReason === 'clear') {
+                        setNewColor('');
+                        } else {
+                        setNewColor(inputValue);
+                        }
+                    }}
+                />
             </FormControl>
             <div style={{marginTop: '12px'}}>
                 {stock.length > 0 && stock.map((color,index) => {

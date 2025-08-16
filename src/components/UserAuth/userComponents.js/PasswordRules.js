@@ -11,11 +11,11 @@ import { pwdRules } from '../../../auxiliaries/validationFunctions'
 import { usePasswordServerCheck } from '../../../hooks/usePasswordServerCheck';
 import { useDebounce } from '../../../hooks/useDebounce';
 
-const PasswordRules = ({ newPwd, oldPwd }) => {
+const PasswordRules = ({ newPwd, oldPwd, resetToken = null }) => {
   const rules = pwdRules(newPwd, oldPwd);
   const debouncedPassword = useDebounce(newPwd);
   const shouldCheck = debouncedPassword.length >= 12;
-  const { isValid, error, loading } = usePasswordServerCheck(shouldCheck ? debouncedPassword : '');
+  const { isValid, error, loading } = usePasswordServerCheck(shouldCheck ? debouncedPassword : '', {token: resetToken});
 
   const serverRule = {
     key: 'server',

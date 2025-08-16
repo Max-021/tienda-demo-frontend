@@ -22,3 +22,5 @@ export const passwordForgotten = (mail) => callAPI(() => post(userRoutes.PWD_FOR
 export const resetPassword = (newPwd, token) => callAPI(() => update(`${userRoutes.RESET_PWD}/${token}`, newPwd));
 
 export const validateResetToken = (token) => callAPI(() => get(`${userRoutes.VALIDATE_RESET_TOKEN}/${token}`,noCredentials));
+
+export const validateResetPassword = (pwd, token) => callAPI(() => post(`${userRoutes.VALIDATE_PASSWORD_RESET}/${token}`, {...pwd}))

@@ -1,7 +1,15 @@
 import { useState, useEffect } from 'react';
-import { validatePasswordStatus } from '../auxiliaries/axios/userAdvancedCalls';
+import { validateResetPassword, validatePasswordStatus } from '../auxiliaries/axios';
 
-export function usePasswordServerCheck(password) {
+/**
+ * usePasswordServerCheck
+ * @param {string} password - contraseña a validar (ya debounced desde el componente)
+ * @param {Object} [opts]
+ * @param {string} [opts.token] - si está presente se usa el endpoint de reset (no requiere sesión)
+ */
+export function usePasswordServerCheck(password, opts = {}) {
+  const { token = null } = opts;
+
   const [state, setState] = useState({
     loading: false,
     isValid: false,
@@ -9,7 +17,6 @@ export function usePasswordServerCheck(password) {
   });
 
   useEffect(() => {
-    // Si no hay contraseña, reseteamos
     if (!password) {
       setState({ loading: false, isValid: false, error: null });
       return;
@@ -18,25 +25,30 @@ export function usePasswordServerCheck(password) {
     let cancelled = false;
     setState(s => ({ ...s, loading: true, error: null }));
 
-    validatePasswordStatus({ password })
-    .then(() => {
-        if (!cancelled) {
-          setState({ loading: false, isValid: true, error: null });
+    const callServer = async () => {
+      try {
+        if (token) {
+          await validateResetPassword(password, token);
+        } else {
+          await validatePasswordStatus({ password });
         }
-      })
-      .catch(err => {
-        const msgs = err.response?.data?.errors || [err.message];
+
+        if (!cancelled) setState({ loading: false, isValid: true, error: null });
+      } catch (err) {
+        if (cancelled) return;
+        const msgs = err.response?.data?.errors || [err.response?.data?.message || err.message];
         setState({
           loading: false,
           isValid: false,
-          error: msgs.join('; '),
+          error: Array.isArray(msgs) ? msgs.join('; ') : String(msgs),
         });
-      });
-
-    return () => {
-      cancelled = true;
+      }
     };
-  }, [password]);
+
+    callServer();
+
+    return () => { cancelled = true; };
+  }, [password, token]);
 
   return state;
 }

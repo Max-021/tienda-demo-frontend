@@ -5,6 +5,7 @@ import { currentViewValue } from '../../redux/searchBarSlice';
 import { authenticateStatus, userRole } from '../../redux/UserSlice';
 import { MdEditSquare } from "react-icons/md";
 import { allowedEditingRole } from '../../data/permissions';
+import { formatPrice } from '../../auxiliaries/format';
 
 const ProductPreview = ({ind, product, handleOpen}) => {
     const currentView = useSelector(currentViewValue);
@@ -21,7 +22,7 @@ const ProductPreview = ({ind, product, handleOpen}) => {
             <div className='productInfo'>
                 <p key={`${ind}-prodName`} title={product.name}>{product.name}</p>
                 <p>{hasStock ? 'Unidades disponibles' : 'No disponible por el momento, consultar por el producto'}</p>
-                <p>$ {product.price}</p>
+                <p>{formatPrice(product.price)}</p>
                 <p>{product.stock.length} {`color${product.stock.length>1?'es':''}`}</p>
             </div>
             {authStatus && allowedEditingRole.includes(role) ?

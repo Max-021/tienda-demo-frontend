@@ -4,6 +4,7 @@ import { useNotification } from './reusables/NotificationContext';
 import { checkOrder } from '../auxiliaries/axios/productsCalls';
 import { prepareOrderPayload } from '../auxiliaries/functions';
 import { verifyCaptcha } from '../auxiliaries/axios/captchaCalls';
+import { formatPrice } from '../auxiliaries/format';
 
 import { cartList, totalProducts, deleteFromCart,changeAmount } from '../redux/CartSlice'
 
@@ -18,20 +19,29 @@ const Transition = React.forwardRef(function Transition(props,ref) {
   return <Slide direction='up' ref={ref} {...props}/>
 })
 
+const buildWhatsAppUrl = (tel, items) => {
+  const lines = items.map(el =>
+    `Producto: ${el.name}\nCantidad: ${el.quantity}\nColor: ${el.color}\nPrecio: ${formatPrice(el.price)}`
+  ).join('\n\n');
+  const text = `Hola! Esta es mi lista de compra:\n\n${lines}`;
+  return `https://api.whatsapp.com/send/?phone=${tel}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
+};
+
 const Cart = () => {
     const notify = useNotification();
     const dispatch = useDispatch();
-    const [openTel, setOpenTel] = useState(false)//borrar esto en produccion, temporal
-    const [telNumber, setTelNumber] = useState(null) //borrar esto en produccion, temporal
+
+    const [openTel, setOpenTel] = useState(false); // temporal/demo
+    const [telNumber, setTelNumber] = useState(''); // temporal/demo
     const [open, setOpen] = useState(false);
     const [activeIndex,setActiveIndex] = useState(-1);
-    const [allowOrder, setAllowOrder] = useState(false);
     const [checkLoading, setCheckLoading] = useState(false);
     const [excededList, setExcededList] = useState([]);
     const [captchaToken, setCaptchaToken] = useState(null);
     const [captchaError, setCaptchaError] = useState('');
     const [hiddenKeys, setHiddenKeys] = useState(new Set());
     const [lastDeleted, setLastDeleted] = useState(null);
+    const [sending, setSending] = useState(false);
     const pendingDeleteRef = useRef({});
 
     const prodList = useSelector(cartList);
@@ -40,14 +50,6 @@ const Cart = () => {
 
     useEffect(() => { prodListRef.current = prodList }, [prodList]);
 
-    const prevAllowOrder = useRef(allowOrder);
-    useEffect(() => {
-        if(prevAllowOrder.current === true && allowOrder === false) {
-            notify('info', 'La cantidad de productos fue modificada, se necesita volver a confirmar la compra.');
-        }
-        prevAllowOrder.current = allowOrder;
-    }, [allowOrder, notify]);
-
     useEffect(() => {
         return () => {
             Object.values(pendingDeleteRef.current).forEach(id => clearTimeout(id));
@@ -55,21 +57,16 @@ const Cart = () => {
         };
     }, []);
 
-    const handleChange = (e) => setTelNumber(e.target.value)//tambien tengo que borrar esto fuera de la demo
+    const handleChange = (e) => setTelNumber(e.target.value);//para la demo
 
     const sendOrder = () => {
-        const lista=`Hola! Esta es mi lista de compra:%0a${prodList.map((el,index) => {
-            return `Producto: *${el.name}*%0a* Cantidad: ${el.quantity}%0a* Color: ${el.color}%0a* Precio: ${el.price}%0a`;
-        })}`;
-
-        const url =`https://api.whatsapp.com/send/?phone=${telNumber}&text=${(lista)}&type=phone_number&app_absent=0`
+        const url = buildWhatsAppUrl(telNumber, prodList);
         window.open(url,'_blank');
     }
 
-    const verifyPurchase = (e) => {
+    const verifyPurchase = async (e) => {
         e.preventDefault();
-
-        setOpen(false);
+        setOpenTel(false);
         sendOrder();
     }
 
@@ -90,7 +87,7 @@ const Cart = () => {
 
         setLastDeleted({ key, id: prod._id, color: prod.color, name: prod.name });
 
-        notify('info', `${prod.name} eliminado,`, {
+        notify('info', `${prod.name} eliminado.`, {
           actionText: 'Deshacer',
           action: () => {
             const timeoutId = pendingDeleteRef.current[key];
@@ -126,67 +123,50 @@ const Cart = () => {
         pendingDeleteRef.current[key] = timeoutId;
     }
 
-    const handleUndo = () => {
-        if(!lastDeleted) return;
-        const {key} = lastDeleted;
-
-        const timeoutId = pendingDeleteRef.current[key];
-        if(timeoutId) {
-            clearTimeout(timeoutId);
-            delete pendingDeleteRef.current[key];
-        }
-
-        setHiddenKeys(prev => {
-            const s = new Set(prev);
-            s.delete(key);
-            return s;
-        })
-
-        setLastDeleted(null);
-        notify('success', 'Acción deshecha.');
-    }
-
-    const validateOrder = async () => {
-        try {
-            setCheckLoading(true);
-            const payload = prepareOrderPayload(prodList);
-            const res = await checkOrder(payload);
-
-            if(res.data.limitsExceded.length > 0) {
-                setExcededList(res.data.limitsExceded);
-            }else if(res.data.limitsExceded.length === 0) {
-                setAllowOrder(true);
-                notify('success', 'La orden fue confirmada con éxito!');
-            }
-        } catch (error) {
-            notify('error', error.message);
-        }finally{
-            setCheckLoading(false);
-        }
-    }
-
     const checckIfExceded = (prodId, color) => {
         const isExceded = excededList.find(item => item._id === prodId && item.color === color);
-
         if(!isExceded) return false;
         return isExceded;
     }
 
-    const handlePurchase = async () => {
-        setCaptchaError('');
-        try {
-            await verifyCaptcha({ 'cf-turnstile-response': captchaToken });
-            setCaptchaToken(null);
-            window.turnstile.reset && window.turnstile.reset();
-            setOpenTel(true);
-        } catch (err) {
-            setCaptchaError(err);
-            notify('error',err.message);
-        } finally {
-        }
-    }
+    // NUEVA función: valida orden y, si pasa, verifica captcha y abre dialog telefono.
+    const verifyOrder = async () => {
+      if (sending || checkLoading) return;
+      setCaptchaError('');
+      setCheckLoading(true);
 
-    const formatPrice = (value) => new Intl.NumberFormat('es-AR', {style: 'currency', currency: 'ARS', maximumFractionDigits: 0}).format(value);
+      try {
+        const payload = prepareOrderPayload(prodList);
+        const res = await checkOrder(payload);
+
+        if (res.data.limitsExceded && res.data.limitsExceded.length > 0) {
+          setExcededList(res.data.limitsExceded);
+          notify('error', 'Algunos productos exceden el stock. Ajustá las cantidades.');
+          const first = res.data.limitsExceded[0];
+          if(first) {
+            const el = document.querySelector(`[data-cart-key="${first._id}-${first.color}"]`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          return;
+        }
+
+        if (!captchaToken) {
+          notify('info', 'Por favor completá el captcha antes de comprar.');
+          return;
+        }
+
+        setSending(true);
+        await verifyCaptcha({ 'cf-turnstile-response': captchaToken });
+        setCaptchaToken(null);
+        window.turnstile?.reset?.();
+        setOpenTel(true);
+      } catch (err) {
+        notify('error', err?.message || 'Error validando la orden.');
+      } finally {
+        setCheckLoading(false);
+        setSending(false);
+      }
+    };
 
     return <div className='cartContainer'>
         {
@@ -197,7 +177,7 @@ const Cart = () => {
                 const key = `${prod._id}-${prod.color}`;
                 const isHidden = hiddenKeys.has(key);
                 const conflict = checckIfExceded(prod._id, prod.color);
-                return <div key={key} className={`cartProdRow ${isHidden ? 'removed' : ''}`} role='group' aria-label={`Producto ${prod.name}`}>
+                return <div key={key} data-cart-key={key} className={`cartProdRow ${isHidden ? 'removed' : ''}`} role='group' aria-label={`Producto ${prod.name}`}>
                     <div className={`cartProdItem`}>
                         <div className='cartProdInfoLeft'>
                             <p className='cartProdName'>Producto: {prod.name}</p>
@@ -214,7 +194,6 @@ const Cart = () => {
                                         <p>Cantidad:&nbsp;</p>
                                         <button type="button" onClick={()=> {
                                             dispatch(changeAmount(['-',index]))
-                                            setAllowOrder(false);
                                             setExcededList(prev => prev.filter(item => !(item._id === prod._id && item.color === prod.color)));
                                         }} title='Restar un producto'>
                                             -
@@ -222,7 +201,6 @@ const Cart = () => {
                                         <p>{prod.quantity}</p>
                                         <button type="button" onClick={()=> {
                                             dispatch(changeAmount(['+',index]))
-                                            setAllowOrder(false);
                                             setExcededList(prev => prev.filter(item => !(item._id === prod._id && item.color === prod.color)));
                                         }} title='Sumar un producto' style={{marginRight:'0'}}>
                                             +
@@ -257,30 +235,32 @@ const Cart = () => {
                 <div className='cartProdItemSeparator'></div>
                     <div className='cartResumeInfo'>
                         <p>Subtotal:</p>
-                        <p>{prodList.reduce((acc, item)=> acc + (item.price * item.quantity), 0)}</p>
+                        <p>{formatPrice(prodList.reduce((acc, item)=> acc + (item.price * item.quantity), 0))}</p>
                     </div>
                     <div className='cartResumeInfo'>
                         <p>Cantidad total de productos:</p>
                         <p>{productsCount}</p>
                     </div>
-                    <button className='cartBtn confirmOrder' type='button' onClick={() => validateOrder()} disabled={(productsCount <= 0) || checkLoading || excededList.length > 0}>
-                        {checkLoading && <LoadingSpinner spinnerInfo='smallSpinner'/>}
-                        Confirmar compra
-                    </button>
             </div>
             <div className='cartResumeDetails'>
                 <div className='cartResumeFinalAmount'>
                     <p>Precio final:</p>
-                    <p>{prodList.reduce((acc, item)=> acc + (item.price * item.quantity), 0)}</p>
+                    <p>{formatPrice(prodList.reduce((acc, item)=> acc + (item.price * item.quantity), 0))}</p>
                 </div>
                 <div className='cartProdItemSeparator'></div>
-                {allowOrder && (
-                    <>
-                        <TurnstileCaptcha siteKey={process.env.REACT_APP_TURNSTILE_SITEKEY} onVerify={setCaptchaToken}/>
-                    </>
-                )}
-                <button className='cartBtn sendOrder' onClick={handlePurchase} disabled={!allowOrder || !captchaToken}>
-                    Comprar
+                <TurnstileCaptcha siteKey={process.env.REACT_APP_TURNSTILE_SITEKEY} onVerify={setCaptchaToken}/>                
+                <button
+                  className='cartBtn sendOrder'
+                  onClick={verifyOrder}
+                  disabled={
+                    prodList.length === 0 ||
+                    checkLoading ||
+                    sending ||
+                    excededList.length > 0
+                  }
+                  aria-busy={checkLoading || sending}
+                >
+                    {(checkLoading || sending) ? <LoadingSpinner spinnerInfo='smallSpinner'/> : 'Comprar'}
                 </button>
                 <div className='cartMsgInfoBox' title='*Se generará un mensaje con el pedido completo para enviar al vendedor.'>
                     *Se generará un mensaje con el pedido completo para enviar al vendedor.
@@ -290,7 +270,7 @@ const Cart = () => {
         <Dialog open={openTel} onClose={() => setOpenTel(false)} TransitionComponent={Transition}>
             <form style={{padding: '8px'}} onSubmit={verifyPurchase}>
                 <p>Ingrese su número de teléfono</p>
-                <TextField name='Teléfono' type='number' value={telNumber} onChange={handleChange} required/>
+                <TextField name='Teléfono' type='tel' value={telNumber} onChange={handleChange} required/>
                 <div style={{display:'flex', flexDirection: 'row', gap:'12px', marginTop:'12px'}}>
                     <button style={{boxSizing:'border-box', padding: '6px 18px', backgroundColor:'hsl(203, 30%, 26%)', borderRadius:'6px', color:'whitesmoke', border:'1px solid black'}}
                         type='submit' title='Confirmar'> Sí </button>
