@@ -1,4 +1,4 @@
-const apiUrl = process.env.REACT_APP_TURNSTILE_SITEKEY;//temporal, poner valor final aca <-----------------CAMBIAR PARA PRODUCTO FINAL
+const apiUrl = process.env.API_URL;//temporal, poner valor final aca <-----------------CAMBIAR PARA PRODUCTO FINAL
 const localUrl = 'http://localhost:9000/api/v1';
 export const API_BASE = process.env.NODE_ENV === 'production' ? apiUrl : localUrl;
 
