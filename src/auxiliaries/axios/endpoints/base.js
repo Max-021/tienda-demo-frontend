@@ -1,6 +1,6 @@
-const apiUrl = 'https://shoptemplateserver.onrender.com/api/v1/';//temporal, poner valor final aca <-----------------CAMBIAR PARA PRODUCTO FINAL
+const apiUrl = process.env.REACT_APP_TURNSTILE_SITEKEY;//temporal, poner valor final aca <-----------------CAMBIAR PARA PRODUCTO FINAL
 const localUrl = 'http://localhost:9000/api/v1';
-export const API_BASE = process.env.NODE_ENV === 'development' ? localUrl : apiUrl;
+export const API_BASE = process.env.NODE_ENV === 'production' ? apiUrl : localUrl;
 
 export const USERS_ROUTE = 'user/';
 export const USERBASICS_ROUTE = 'userBasics/';
