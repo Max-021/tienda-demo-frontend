@@ -13,7 +13,7 @@ import { omit } from "lodash";
 
 const apiUrl = 'https://shoptemplateserver.onrender.com/api/v1'
 
-const apiSource = process.env.NODE_ENV === 'development' ? 'http://localhost:9000/api/v1' : apiUrl;
+const apiSource = import.meta.env.MODE === 'development' ? 'http://localhost:9000/api/v1' : apiUrl;
 
 const userRoute = '/user' 
 const productsRoute = '/products'
