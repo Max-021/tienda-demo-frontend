@@ -1,4 +1,3 @@
-# ---------- Stage 1: build ----------
 FROM node:18-alpine AS builder
 WORKDIR /app
 
@@ -15,8 +14,10 @@ RUN npm ci --production=false --silent
 COPY . .
 
 # Si necesitás pasar variables VITE_* en build time, usá ARG + ENV (ver más abajo)
-# ARG VITE_API_URL
-# ENV VITE_API_URL=$VITE_API_URL
+ARG VITE_API_URL
+ARG VITE_TURNSTILE_SITEKEY
+ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_TURNSTILE_SITEKEY=${VITE_TURNSTILE_SITEKEY}
 
 # Ejecutamos build (genera /app/dist por defecto)
 RUN npm run build
