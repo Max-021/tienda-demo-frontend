@@ -46,7 +46,7 @@ const Navbar = () => {
   return (
     <div className={`navBar ${showCats === '/nuevo-producto' || showCats === '/editar-producto' ? 'navBarSimple' : null}`}>
       <h1>
-        <Link to='/' reloadDocument>{import.meta.env.VITE_SHOP_NAME}</Link>
+        <Link to='/' reloadDocument>Tienda Demo</Link>
         {titleText()}
       </h1>
       { authSt && <button type='button' title='Cerrar sesión' className='icon-btn logout-btn' onClick={() => setOpen(true)}><MdLogout /></button> }
