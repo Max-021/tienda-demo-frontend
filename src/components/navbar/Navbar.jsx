@@ -5,6 +5,7 @@ import { authenticateStatus, userRole } from '../../redux/UserSlice';
 import { logout } from '../../auxiliaries/axios';
 import { MdLogout } from "react-icons/md";
 import { useNotification } from '../reusables/NotificationContext.jsx';
+import appInfo from '../../data/appInfo.js';
 
 import Menu from '../Menu/Menu.jsx'
 import SearchBar from '../Menu/SearchBar.jsx';
@@ -46,7 +47,7 @@ const Navbar = () => {
   return (
     <div className={`navBar ${showCats === '/nuevo-producto' || showCats === '/editar-producto' ? 'navBarSimple' : null}`}>
       <h1>
-        <Link to='/' reloadDocument>Tienda Demo</Link>
+        <Link to='/' reloadDocument>{appInfo.title}</Link>
         {titleText()}
       </h1>
       { authSt && <button type='button' title='Cerrar sesión' className='icon-btn logout-btn' onClick={() => setOpen(true)}><MdLogout /></button> }
