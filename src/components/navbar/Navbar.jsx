@@ -10,6 +10,7 @@ import appInfo from '../../data/appInfo.js';
 import Menu from '../Menu/Menu.jsx'
 import SearchBar from '../Menu/SearchBar.jsx';
 import ConfirmMessage from '../reusables/ConfirmMessage.jsx';
+import appInfo from '../../data/appInfo.js';
 
 const Navbar = () => {
   const notify = useNotification();

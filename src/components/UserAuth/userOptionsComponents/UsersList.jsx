@@ -43,7 +43,7 @@ const UsersList = () => {
     const {data: list, loading, error, refetch} = useLoadingHook(listUsers, []);
     useEffect(()=>{
         if(list){
-            setUsersList(list);
+            setUsersList(list.data);
         }
     }, [list]);
 

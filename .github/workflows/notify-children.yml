@@ -1,0 +1,33 @@
+name: Notify children on main push
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  notify-children:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare
+        run: echo "Notifying child repos..."
+
+      - name: Send repository_dispatch to children
+        env:
+          PAT: ${{ secrets.PARENT_TRIGGER_TOKEN }} # PAT con repo scope
+        run: |
+          # lista de repos hijos (owner/repo)
+          CHILD_REPOS=(
+            "Max-021/tienda-demo-frontend"
+            "otro-owner/otro-repo"
+          )
+
+          for r in "${CHILD_REPOS[@]}"; do
+            echo "Dispatching to $r"
+            curl -sS -X POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: token $PAT" \
+              https://api.github.com/repos/${r}/dispatches \
+              -d "{\"event_type\": \"upstream_change\", \"client_payload\": { \"upstream\":\"${{ github.repository }}\", \"sha\":\"${GITHUB_SHA}\" }}"
+          done
