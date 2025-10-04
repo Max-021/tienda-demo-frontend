@@ -5,7 +5,6 @@ import { authenticateStatus, userRole } from '../../redux/UserSlice';
 import { logout } from '../../auxiliaries/axios';
 import { MdLogout } from "react-icons/md";
 import { useNotification } from '../reusables/NotificationContext.jsx';
-import appInfo from '../../data/appInfo.js';
 
 import Menu from '../Menu/Menu.jsx'
 import SearchBar from '../Menu/SearchBar.jsx';
