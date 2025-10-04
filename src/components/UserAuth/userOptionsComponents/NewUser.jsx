@@ -17,8 +17,10 @@ const NewUser = () => {
     const {data: listRoles, loading: rolesLoading, error: rolesError, refetch} = useLoadingHook(getRolesList, []);
     useEffect(() => {
         if(listRoles){
-            setRolesList(listRoles.roles);
-            setNewUser(prev => ({...prev, role: listRoles.roles[0]}));
+            console.log("listroles")
+            console.log(listRoles.data.roles)
+            setRolesList(listRoles.data.roles);
+            setNewUser(prev => ({...prev, role: listRoles.data.roles[0]}));
         }
     }, [listRoles, rolesList])
 

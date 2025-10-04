@@ -9,6 +9,7 @@ import { useNotification } from '../reusables/NotificationContext.jsx';
 import Menu from '../Menu/Menu.jsx'
 import SearchBar from '../Menu/SearchBar.jsx';
 import ConfirmMessage from '../reusables/ConfirmMessage.jsx';
+import appInfo from '../../data/appInfo.js';
 
 const Navbar = () => {
   const notify = useNotification();
@@ -46,7 +47,7 @@ const Navbar = () => {
   return (
     <div className={`navBar ${showCats === '/nuevo-producto' || showCats === '/editar-producto' ? 'navBarSimple' : null}`}>
       <h1>
-        <Link to='/' reloadDocument>Fly shop</Link>
+        <Link to='/' reloadDocument>{appInfo.title}</Link>
         {titleText()}
       </h1>
       { authSt && <button type='button' title='Cerrar sesión' className='icon-btn logout-btn' onClick={() => setOpen(true)}><MdLogout /></button> }

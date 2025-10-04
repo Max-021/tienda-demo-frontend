@@ -23,18 +23,23 @@ const UserInfoForm = () => {
     const [pendingSubmit, setPendingSubmit] = useState(false)
     const [initialLoadDone, setInitialLoadDone] = useState(false);
 
+    const sanitizeUserData = (userData) => {
+        const {role, ...rest} = userData;
+        return rest;
+    }
+
     const {data: userData, loading, error, refetch} = useLoadingHook(getUserInfo, [userIdData], {immediate: Boolean(userIdData)});
     useEffect(()=> {
         if(userData){
             if(!initialLoadDone) setInitialLoadDone(true);
-            setUserInformation(userData);
-            setNewUserInfo(userData);
+            setUserInformation(userData.data);
+            setNewUserInfo(sanitizeUserData(userData.data));
         }
     }, [userData, initialLoadDone]);
 
     const handleChange = (e) => setNewUserInfo({...newuserInfo, [e.target.name]: e.target.value});
     const toggleEditing = () => {
-        setNewUserInfo(userInformation);
+        setNewUserInfo(sanitizeUserData(userInformation));
         setIsEditingActive(active => !active);
     }
 
@@ -62,7 +67,11 @@ const UserInfoForm = () => {
         <div className='userInfoForm'>
             <form className='userInformation' method='post' onSubmit={submitUserChanges}>
                 <div className='userInfoTitles'>
-                    <p>Mis datos {userInformation?.role === allowedEditingRole && '| Administrador'}</p>
+                    <div>
+                        <p style={{display: 'inline-block'}}>Mis datos </p>
+                        <p style={{color: 'grey', display: 'inline-block'}}>&nbsp;{`| ${userInformation.role}`}</p>
+                        {/* {userInformation?.role === allowedEditingRole && '| Administrador'} */}
+                    </div>
                     { Object.keys(newuserInfo).length && <button className={`userInfoTitleBtn ${isEditingActive ? null : 'active'}`} type='button' onClick={toggleEditing} title='Editar campos'>{isEditingActive ? 'Editar' : 'Cancelar edición'}<FaEdit/></button>}
                 </div>
                 <div className='userInfoFields'>
